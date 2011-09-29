@@ -151,12 +151,15 @@ function workbench_moderation_node_history_view($node) {
       $row['data']['moderation'] .= '<div class="moderation-actions">' . t('Moderate') . ': ' . drupal_render($moderate_form) . '</div>';
     }
 
+    //@TODO
+    // The entitifcation of moderation records likely requires rethinking this UI.
+
     // Build a table of the moderation history.
     $moderation_rows = array();
     $items = array();
     foreach ($moderations as $moderation) {
       if ($moderation->from_state) {
-        $items[] = t('From @from_state --> @to_state on %date by !user',
+        $item = t('From @from_state --> @to_state on %date by !user',
           array(
             '@from_state' => workbench_moderation_state_label($moderation->from_state),
             '@to_state' => workbench_moderation_state_label($moderation->state),
@@ -164,6 +167,10 @@ function workbench_moderation_node_history_view($node) {
             '!user' => theme('username', array('account' => $moderation)),
           )
         );
+
+        // This loading should be done somewhere else. Not in the foreach loop.
+        $moderation_entity = array_pop(entity_load('workbench_moderation', array($moderation->hid)));
+        $items[] = $item .  workbench_moderation_view($moderation_entity);
       }
       else {
         $items[] = t('Created as @to_state on %date by !user',

@@ -1919,3 +1919,18 @@ function workbench_moderation_entity_info() {
 
   return $return;
 }
+
+/**
+ * @TODO
+ * This is all ripped from node_build() and node_view and should be rethought.
+ */
+function workbench_moderation_view($workbench_moderation_entity, $view_mode = 'default', $langcode = NULL) {
+
+  field_attach_prepare_view('workbench_moderation', array($workbench_moderation_entity->hid => $workbench_moderation_entity), $view_mode, $langcode);
+  entity_prepare_view('workbench_moderation', array($workbench_moderation_entity->hid => $workbench_moderation_entity), $langcode);
+
+  $workbench_moderation_entity->content = array();
+  $workbench_moderation_entity->content += field_attach_view('workbench_moderation', $workbench_moderation_entity, $view_mode, $langcode);
+
+  return render($workbench_moderation_entity->content);
+}
