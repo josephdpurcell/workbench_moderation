@@ -25,7 +25,12 @@ function workbench_moderation_views_data() {
       'type' => 'INNER',
     ),
   );
-
+  $data['workbench_moderation_node_history']['table']['base'] = array(
+    'field' => 'hid',
+    'title' => t('Workbench Moderation'),
+    'entity type' => 'workbench_moderation',
+    'help' => t('Workbench Moderation records'),
+  );
   $data['workbench_moderation_node_history']['hid'] = array(
     'title' => t('Moderation History ID'),
     'help' => t('Content moderation history record ID.'),
@@ -79,6 +84,16 @@ function workbench_moderation_views_data() {
       'handler' => 'views_handler_argument_string',
       'name table' => 'workbench_moderation_states',
       'name field' => 'label',
+    ),
+  );
+  $data['workbench_moderation_node_history']['nid'] = array(
+    'title' => t('Node'),
+    'help' => t('Node with which this record is associated.'),
+    'relationship' => array(
+      'title' => t('Node'),
+      'label' => t('Moderated Node'),
+      'base' => 'node',
+      'base field' => 'nid',
     ),
   );
   $data['workbench_moderation_node_history']['uid'] = array(
