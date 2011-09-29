@@ -1575,7 +1575,6 @@ function workbench_moderation_moderate_form($form, &$form_state, $node, $destina
   global $user;
   $form = array();
 
-
   // @TODO
   // Get the entity version of the workbench moderation record.
   // This line of code is messy and should come out once the workbench_moderation entity
@@ -1605,6 +1604,8 @@ function workbench_moderation_moderate_form($form, &$form_state, $node, $destina
     );
     $form['#attributes']['class'][] = 'workbench-moderation-moderate-form';
     $form['#attached']['css'][] = drupal_get_path('module', 'workbench_moderation') . '/css/workbench_moderation.css';
+    // @TODO
+    // Should states be switched to a field?
     $form['state'] = array(
       '#type' => 'select',
       '#options' => $next_states,
@@ -1613,6 +1614,9 @@ function workbench_moderation_moderate_form($form, &$form_state, $node, $destina
     $form['submit'] = array(
       '#type' => 'submit',
       '#value' => t('Apply'),
+      // @TODO
+      // There is probably a smarter way to move this to the bottom.
+      '#weight' => 1000,
     );
 
     // Cache the form on first load to preserve the node for validation.
