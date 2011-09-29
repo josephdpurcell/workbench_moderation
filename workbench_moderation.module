@@ -1852,3 +1852,37 @@ function workbench_moderation_workbench_block() {
 
   return $output;
 }
+
+/**
+ * Implements hook_entity_info().
+ */
+function workbench_moderation_entity_info() {
+
+  $return = array(
+    'workbench_moderation' => array(
+      'label' => 'Workbench Moderation Record',
+      'base table' => 'workbench_moderation_node_history',
+      'static cache' => TRUE,
+      'fieldable' => TRUE,
+      'field cache' => TRUE,
+      'controller class' => 'DrupalDefaultEntityController',
+      'entity keys' => array(
+        'id' => 'hid',
+        'nid' => 'nid',
+      ),
+      'bundles' => array(
+        'workbench_moderation' => array(
+          'label' => t('Workbench Moderation'),
+          'admin' => array(
+            'path' => 'admin/config/workbench/moderation',
+            'access arguments' => array(
+              'administer workbench moderation',
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  return $return;
+}
