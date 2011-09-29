@@ -1934,3 +1934,57 @@ function workbench_moderation_view($workbench_moderation_entity, $view_mode = 'd
 
   return render($workbench_moderation_entity->content);
 }
+
+
+
+/**
+ * More experimental code for altering the allowed values in a list of checkboxes
+ * Or setting some options to disabled.
+ * Part of the difficult here is that the allowed_values_callback on list fields is global
+ * And can't be given contextual arguments about the current node.
+ * It might be best to have all possible values defined in the allowed values
+ * for the workbench_moderation_approval field and then let "workflows" and contextual
+ * information filter down that list in these hooks.
+
+function workbench_moderation_field_widget_form_alter(&$element, &$form_state, $context) {
+  if (!empty($element['#field_name']) && $element['#field_name'] === 'workbench_moderation_approval' && !empty($element['#entity_type']) && $element['#entity_type'] === 'workbench_moderation') {
+//    $element['508']['#disabled'] = TRUE;
+  //  $element['#options']['art'] = 'Illustration';
+
+    $new_options = array();
+    $new_allowed_values = workbench_moderation_get_allowed_approval_values();
+     foreach ($element['#options'] as $key => $value) {
+
+
+      // Should also check if a key is already in the default values.
+      if (array_key_exists($key, $new_allowed_values)) {
+        $new_options[$key] = $value;
+      }
+    }
+    $element['#options'] = $new_options;
+  }
+}
+
+// An unfinished test of "workflows" as entities. I just used a node type for testing.
+function workbench_moderation_get_allowed_approval_values() {
+  $workflow_node = node_load(5);
+  $return = array();
+  foreach ($workflow_node->workbench_moderation_approval['und'] as $key => $item) {
+    $return[$item['value']] = $item['value'];
+  }
+
+  return $return;
+}
+
+/**
+ *  Additional errors can be set here if a value in the list field
+ * workbench_moderation_approval isn't allowed based on the current context
+ * or some other condition.
+ * * /
+function workbench_moderation_field_attach_validate($entity_type, $entity, &$errors) {
+  if ($entity_type === 'workbench_moderation') {
+    $errors = array();
+  }
+}
+ *
+ */
