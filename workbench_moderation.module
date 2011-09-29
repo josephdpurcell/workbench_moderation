@@ -1467,6 +1467,7 @@ function workbench_moderation_moderate($node, $state) {
   if (!empty($node->workbench_moderation['published'])) {
     drupal_register_shutdown_function('workbench_moderation_store', $node);
   }
+  return $new_revision;
 }
 
 /**
@@ -1574,6 +1575,24 @@ function workbench_moderation_moderate_form($form, &$form_state, $node, $destina
   global $user;
   $form = array();
 
+
+  // @TODO
+  // Get the entity version of the workbench moderation record.
+  // This line of code is messy and should come out once the workbench_moderation entity
+  // is loaded directly on to the $node object
+  $workbench_moderation_entity = array_pop(entity_load('workbench_moderation', array($node->workbench_moderation['current']->hid)));
+
+  // Unset the moderation message because that should not carry over.
+  // @TODO
+  // Should all fields be moved to submodules?
+  if (!empty($workbench_moderation_entity->workbench_moderation_message)) {
+    unset($workbench_moderation_entity->workbench_moderation_message);
+  }
+
+  $form['#workbench_moderation_entity'] = $workbench_moderation_entity;
+  field_attach_form('workbench_moderation', $workbench_moderation_entity, $form, $form_state, $langcode = NULL);
+
+
   // Build links to available moderation states.
   $links = array();
   $my_revision = $node->workbench_moderation['my_revision'];
@@ -1622,6 +1641,9 @@ function workbench_moderation_moderate_form_validate($form, &$form_state) {
   // revision before changing the current revision's state.
   $moderated_node = $form_state['values']['node'];
   $current_node = workbench_moderation_node_current_load(node_load($moderated_node->nid));
+
+  entity_form_field_validate('workbench_moderation', $form, $form_state);
+
   if ($moderated_node->vid != $current_node->vid) {
     form_set_error('', t('The moderation state could not be changed because the draft has been updated by another user. Please review the current draft.'));
     // Redirect the form so that it rebuilds with the current revision.
@@ -1631,7 +1653,14 @@ function workbench_moderation_moderate_form_validate($form, &$form_state) {
 
 function workbench_moderation_moderate_form_submit($form, $form_state) {
   if (_workbench_moderation_moderate_access($form_state['values']['node'], $form_state['values']['state'])) {
-    workbench_moderation_moderate($form_state['values']['node'], $form_state['values']['state']);
+    $new_workbench_moderation_entity = workbench_moderation_moderate($form_state['values']['node'], $form_state['values']['state']);
+
+    // @TODO
+    // This is hacky. This saving ideally would happen all in workbench_moderation_moderate.
+    $workbench_moderation_entity = $form['#workbench_moderation_entity'];
+    $workbench_moderation_entity->hid = $new_workbench_moderation_entity->hid;
+    entity_form_submit_build_entity('workbench_moderation', $workbench_moderation_entity, $form, $form_state);
+    field_attach_update('workbench_moderation', $workbench_moderation_entity);
   }
 
   // This is not ideal, but if the form is invoked from a node's draft tab and
