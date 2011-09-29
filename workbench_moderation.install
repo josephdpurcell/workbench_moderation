@@ -569,3 +569,184 @@ function workbench_moderation_update_7007() {
     '%to' => $transition->to_name,
   ));
 }
+
+/**
+ * 7008 through 7010 are experimental update functions for adding workbench
+ * moderation specific fields to the workbench_moderation entity.
+ */
+
+/**
+ * Add the workbench_moderation_message field.
+ */
+function workbench_moderation_update_7008() {
+
+  $field_config = array (
+    'field_name' => 'workbench_moderation_message',
+    'type' => 'text_long',
+    'translatable' => false,
+  );
+
+  field_create_field($field_config);
+
+  $field_instance_config = array (
+    'field_name' => 'workbench_moderation_message',
+    'entity_type' => 'workbench_moderation',
+    'bundle' => 'workbench_moderation',
+    'label' => 'Message',
+    'widget' =>
+      array (
+        'type' => 'text_textarea',
+        'weight' => '8',
+      ),
+  );
+
+  field_create_instance($field_instance_config);
+
+  return t('Workbench Moderation message field has been added.');
+}
+
+/**
+ * Add the workbench_moderation_approval field.
+ */
+function workbench_moderation_update_7009() {
+
+  $field_config = array (
+    'field_name' => 'workbench_moderation_approval',
+    'type' => 'list_text',
+    'translatable' => false,
+  );
+
+  field_create_field($field_config);
+
+  $field_instance_config = array (
+    'label' => 'Approval',
+    'widget' =>
+    array (
+      'weight' => '3',
+      'type' => 'options_buttons',
+      'module' => 'options',
+      'active' => 1,
+    ),
+    'settings' =>
+    array (
+      'user_register_form' => false,
+    ),
+    'display' =>
+    array (
+      'default' =>
+      array (
+        'label' => 'above',
+        'type' => 'list_default',
+        'settings' =>
+        array (
+        ),
+        'module' => 'list',
+        'weight' => 15,
+      ),
+    ),
+    'required' => 0,
+    'description' => '',
+    'default_value' => NULL,
+    'id' => '23',
+    'field_id' => '18',
+    'field_name' => 'workbench_moderation_approval',
+    'entity_type' => 'workbench_moderation',
+    'bundle' => 'workbench_moderation',
+    'deleted' => '0',
+  );
+
+  field_create_instance($field_instance_config);
+
+  return t('Workbench Moderation approval field has been added.');
+}
+
+/**
+ * Update the workbench_moderation_approval field.
+ */
+function workbench_moderation_update_7010() {
+
+$field_config = array (
+  'translatable' => '0',
+  'entity_types' =>
+  array (
+  ),
+  'settings' =>
+  array (
+    'allowed_values' =>
+    array (
+      508 => '508 Compliant',
+      'legal' => 'Legal Approved',
+      'marketing' => 'Marketing Approved',
+    ),
+    'allowed_values_function' => '',
+  ),
+  'storage' =>
+  array (
+    'type' => 'field_sql_storage',
+    'settings' =>
+    array (
+    ),
+    'module' => 'field_sql_storage',
+    'active' => '1',
+    'details' =>
+    array (
+      'sql' =>
+      array (
+        'FIELD_LOAD_CURRENT' =>
+        array (
+          'field_data_workbench_moderation_approval' =>
+          array (
+            'value' => 'workbench_moderation_approval_value',
+          ),
+        ),
+        'FIELD_LOAD_REVISION' =>
+        array (
+          'field_revision_workbench_moderation_approval' =>
+          array (
+            'value' => 'workbench_moderation_approval_value',
+          ),
+        ),
+      ),
+    ),
+  ),
+  'foreign keys' =>
+  array (
+  ),
+  'indexes' =>
+  array (
+    'value' =>
+    array (
+      0 => 'value',
+    ),
+  ),
+
+    // This id should not be hard coded.
+  'id' => '19',
+  'field_name' => 'workbench_moderation_approval',
+  'type' => 'list_text',
+  'module' => 'list',
+  'active' => '1',
+  'locked' => '0',
+  'cardinality' => '-1',
+  'deleted' => '0',
+  'columns' =>
+  array (
+    'value' =>
+    array (
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => false,
+    ),
+  ),
+  'bundles' =>
+  array (
+    'workbench_moderation' =>
+    array (
+      0 => 'workbench_moderation',
+    ),
+  ),
+);
+
+field_update_field($field_config);
+
+}
