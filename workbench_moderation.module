@@ -562,7 +562,7 @@ function workbench_moderation_views_api() {
 
 /**
  * Implements hook_views_default_views().
- */
+ * /
 function workbench_moderation_views_default_views() {
   $module = 'workbench_moderation';
   $directory = 'views';

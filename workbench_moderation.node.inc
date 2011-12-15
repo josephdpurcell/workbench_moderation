@@ -12,7 +12,7 @@
  *
  * @param $node
  *   The node being acted upon.
- */
+ * /
 function workbench_moderation_node_current_view($node) {
   if (_workbench_moderation_access_current_draft($node)) {
     drupal_goto('node/' . $node->nid . '/draft');
@@ -75,7 +75,7 @@ function workbench_moderation_node_view_revision($node) {
  *
  * @return
  *   A themed table of data and links for node moderation actions.
- */
+ * /
 function workbench_moderation_node_history_view($node) {
   global $user;
 
@@ -238,7 +238,7 @@ function workbench_moderation_node_history_view($node) {
  *
  * @return
  *   A Drupal confirmation form to unpublish the live revision.
- */
+ * /
 function workbench_moderation_node_unpublish_form($form, &$form_state, $node) {
   global $user;
 
@@ -279,7 +279,7 @@ function workbench_moderation_node_unpublish_form($form, &$form_state, $node) {
 
 /**
  * Submit handler for unpublishing a live revision of a node.
- */
+ * /
 function workbench_moderation_node_unpublish_form_submit($form, &$form_state) {
   global $user;
   $node = $form['node']['#value'];
