@@ -31,7 +31,7 @@ class workbenchModeration extends StateFlow {
       'origin' => array(
        $from_name => $from_name),
       'target' => $to_name,
-      'guard' => 'workbench_states_guard',
+      'guard' => 'workbench_moderation_guard',
       'title' => $to_name,
     );
 
