@@ -14,3 +14,7 @@ files[] = includes/workbench_moderation_handler_filter_moderated_type.inc
 files[] = includes/workbench_moderation_handler_filter_user_can_moderate.inc
 files[] = tests/workbench_moderation.test
 files[] = tests/workbench_moderation.files.test
+
+
+; Core classes
+files[] = plugins/state_flow/workbench_moderation.inc

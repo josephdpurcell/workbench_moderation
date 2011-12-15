@@ -1900,3 +1900,29 @@ function workbench_moderation_ctools_plugin_api($module, $api) {
     return array('version' => 1);
   }
 }
+
+/**
+ * Implements hook_state_flow_plugins().
+ */
+function workbench_moderation_state_flow_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'workbench_moderation') . '/plugins/state_flow';
+
+  $info['workbench_moderation'] = array(
+    'handler' => array(
+      'parent' => 'state_flow',
+      'class' => 'workbenchModeration',
+      'file' => 'workbench_moderation.inc',
+      'path' => $path,
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Guard callback for the workbenchStates publish and unpublish events.
+ */
+function workbench_moderation_guard($event) {
+  return TRUE;
+}
