@@ -965,7 +965,7 @@ function workbench_moderation_state_allowed($account, $from_state, $to_state, $n
  *
  * @param $node
  *   The node being acted upon.
- */
+ * /
 function workbench_moderation_node_data($node) {
   // Make sure that this node type is moderated.
   if (!workbench_moderation_node_type_moderated($node->type)) {
@@ -1924,5 +1924,7 @@ function workbench_moderation_state_flow_plugins() {
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_moderation_guard($event) {
-  return TRUE;
+
+  global $user;
+  return workbench_moderation_state_allowed($user, $event->machine->current, $event->options['target'], $event->machine->object->type);
 }
