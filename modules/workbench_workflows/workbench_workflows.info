@@ -1,0 +1,8 @@
+name = workbench workflows
+description = Create workbench workflows
+dependencies[] = workbench_events
+core = 7.x
+files[] = plugins/export_ui/workbench_workflows_ui.class.php
+core = "7.x"
+
+
