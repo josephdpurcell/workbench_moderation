@@ -1949,6 +1949,5 @@ function workbench_moderation_state_flow_plugins() {
  */
 function workbench_moderation_guard($event) {
 
-  global $user;
-  return workbench_moderation_state_allowed($user, $event->machine->current, $event->options['target'], $event->machine->object->type);
+  return workbench_moderation_event_access($event->name, $event->machine->object);
 }

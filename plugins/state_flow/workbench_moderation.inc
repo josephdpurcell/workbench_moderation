@@ -18,7 +18,9 @@ class workbenchModeration extends StateFlow {
     $this->create_state($state_name, $state_array);
   }
 
-  $transitions = workbench_moderation_transitions();
+ //
+/*
+ $transitions = workbench_moderation_transitions();
 
   foreach ($transitions as $transition) {
 
@@ -38,6 +40,35 @@ class workbenchModeration extends StateFlow {
     // Initialize events.
     $this->create_event($event_name, $event_array);
   }
+*/
+
+    ctools_include('export');
+    $workbench_events = ctools_export_load_object('workbench_events');
+
+    foreach ($workbench_events as $workbench_event) {
+
+      $origins = array();
+
+      foreach($workbench_event->origin_states as $key => $state_value) {
+
+        // $state_value might be 0.
+        // This transformation is a little annoying. It might be better to fix
+        // This in the validation of saving workbench_events.
+        if (!empty($state_value)) {
+          $origins[$key] = $state_value;
+        }
+      }
+
+      $event_array = array(
+        'origin' => $origins,
+        'target' => $workbench_event->target_state,
+        'guard' => 'workbench_moderation_guard',
+        'title' => $workbench_event->admin_title,
+      );
+
+      // Initialize events.
+      $this->create_event($workbench_event->name, $event_array);
+    }
   }
 
   public function on_event_fail($event) {
@@ -60,7 +91,6 @@ class workbenchModeration extends StateFlow {
 }
 
 class workbench_moderation_Event extends StateFlow_Event {
-
   /**
    * Can this event be used to transition from the specified state?
    */
