@@ -116,34 +116,20 @@ function workbench_moderation_init() {
     dsm('TRUE');
   } else {
     dsm('FALSE');
-  }
-
-
- */
+  }*/
 }
 
 function workbench_moderation_event_access($event_machine_name, $node) {
 
-  require drupal_get_path('module', 'ctools') . '/plugins/contexts/entity.inc';
-  $plugin = array(
-    'keyword' => 'node',
-    'name' => 'entity:node'
-  );
-
-  $node_context = ctools_context_create_entity(NULL, $node, FALSE, $plugin);
-
   ctools_include('export');
-  $item = ctools_export_crud_load('workbench_events', $event_machine_name);
+  ctools_include('context');
+  $node_context = ctools_context_create('entity:node', $node);
+  $event = ctools_export_crud_load('workbench_events', $event_machine_name);
 
-
-  $contexts = ctools_context_match_required_contexts($item->requiredcontexts, array($node_context));
-  $contexts = ctools_context_load_contexts($item, FALSE, $contexts);
-
-  return ctools_access($item->access, $contexts);
+  $contexts = ctools_context_match_required_contexts($event->requiredcontexts, array($node_context));
+  $contexts = ctools_context_load_contexts($event, FALSE, $contexts);
+  return ctools_access($event->access, $contexts);
 }
-
-
-
 
 /**
  * Implements hook_menu_alter().
