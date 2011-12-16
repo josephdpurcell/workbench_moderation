@@ -38,7 +38,7 @@ class workbench_events_ui extends ctools_export_ui {
 
   function edit_form_submit(&$form, &$form_state) {
     parent::edit_form_submit($form, $form_state);
-    $form_state['item']->target_state = $form_state['values']['target_state'];
+    //$form_state['item']->target_state = $form_state['values']['target_state'];
   }
 
 
