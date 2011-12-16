@@ -12,7 +12,7 @@ function workbench_events_schema() {
     'export' => array(
       'identifier' => 'ruleset',
       'bulk export' => TRUE,
-      'primary key' => 'rsid',
+      'primary key' => 'eventid',
       'api' => array(
         'owner' => 'ctools',
         'api' => 'ctools_rulesets',
