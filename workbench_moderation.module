@@ -107,6 +107,44 @@ function workbench_moderation_menu() {
   return $items;
 }
 
+function workbench_moderation_init() {
+/*
+  $node = node_load(47);
+
+  if (workbench_moderation_event_access('draft', $node)) {
+
+    dsm('TRUE');
+  } else {
+    dsm('FALSE');
+  }
+
+
+ */
+}
+
+function workbench_moderation_event_access($event_machine_name, $node) {
+
+  require drupal_get_path('module', 'ctools') . '/plugins/contexts/entity.inc';
+  $plugin = array(
+    'keyword' => 'node',
+    'name' => 'entity:node'
+  );
+
+  $node_context = ctools_context_create_entity(NULL, $node, FALSE, $plugin);
+
+  ctools_include('export');
+  $item = ctools_export_crud_load('workbench_events', $event_machine_name);
+
+
+  $contexts = ctools_context_match_required_contexts($item->requiredcontexts, array($node_context));
+  $contexts = ctools_context_load_contexts($item, FALSE, $contexts);
+
+  return ctools_access($item->access, $contexts);
+}
+
+
+
+
 /**
  * Implements hook_menu_alter().
  */
