@@ -91,10 +91,4 @@ class workbenchModeration extends StateFlow {
 }
 
 class workbench_moderation_Event extends StateFlow_Event {
-  /**
-   * Can this event be used to transition from the specified state?
-   */
-  public function can_transition_from($state) {
-    return in_array($state, $this->options['origin']);
-  }
 }
