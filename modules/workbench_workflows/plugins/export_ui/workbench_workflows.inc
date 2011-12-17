@@ -6,9 +6,10 @@ $plugin = array(
   'create access' => 'create workbench workflows',
 
   'menu' => array(
+    'menu prefix' => 'admin/config/workbench/workflows',
     'menu item' => 'workbench-workflows',
     'menu title' => 'workbench workflows',
-    'menu description' => 'Add, edit or delete workbench workflows, which can be used as blocks or content panes in other panels.',
+    'menu description' => 'Add, edit or delete workbench workflows.',
   ),
 
   'title singular' => t('workbench workflow'),

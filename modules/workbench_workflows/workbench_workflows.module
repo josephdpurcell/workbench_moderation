@@ -23,40 +23,6 @@ function workbench_workflows_permission() {
   );
 }
 
-/**
- * Implementation of hook_menu().
- */
-function workbench_workflows_menu() {
-  // Safety: go away if CTools is not at an appropriate version.
-  if (!defined('PANELS_REQUIRED_CTOOLS_API') || !module_invoke('ctools', 'api_version', PANELS_REQUIRED_CTOOLS_API)) {
-    return array();
-  }
-
-  $items['admin/structure/workbench-workflows/settings'] = array(
-    'title' => 'Settings',
-    'page callback' => 'workbench_workflows_settings',
-    'access arguments' => array('create workbench workflows'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  // Also provide settings on the main panel UI
-  $items['admin/structure/panels/settings/workbench-workflow'] = array(
-    'title' => 'workbench workflows',
-    'page callback' => 'workbench_workflows_settings',
-    'access arguments' => array('create workbench workflows'),
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  return $items;
-}
-
-/**
- * Settings for workbench workflows.
- */
-function workbench_workflows_settings() {
-  ctools_include('common', 'panels');
-  return drupal_get_form('panels_common_settings', 'workbench_workflows');
-}
 
 // ---------------------------------------------------------------------------
 // Allow the rest of the system access to workbench workflows
@@ -273,4 +239,3 @@ function workbench_workflows_panels_cache_save($key, $cache) {
  */
 function workbench_workflows_panels_cache_break_lock($key, $cache) {
 }
-
