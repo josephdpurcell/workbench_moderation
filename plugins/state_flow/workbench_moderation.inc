@@ -4,43 +4,19 @@ class workbenchModeration extends StateFlow {
 
   public function init() {
 
-  $states = workbench_moderation_state_labels();
+    $states = workbench_moderation_state_labels();
 
-  foreach ($states as $state_name => $state_label) {
-    $state_array = array(
-      'title' => $state_label,
-    );
+    foreach ($states as $state_name => $state_label) {
+      $state_array = array(
+        'title' => $state_label,
+      );
 
-    if ($state_name === 'published') {
-      $state_array['on_enter'] = array($this, 'on_enter_published');
-      $state_array['on_exit'] = array($this, 'on_exit_published');
+      if ($state_name === 'published') {
+        $state_array['on_enter'] = array($this, 'on_enter_published');
+        $state_array['on_exit'] = array($this, 'on_exit_published');
+      }
+      $this->create_state($state_name, $state_array);
     }
-    $this->create_state($state_name, $state_array);
-  }
-
- //
-/*
- $transitions = workbench_moderation_transitions();
-
-  foreach ($transitions as $transition) {
-
-    $to_name = $transition->to_name;
-    $from_name = $transition->from_name;
-    // This is silly.
-    $event_name = $from_name . '__' . $transition->to_name;
-
-    $event_array = array(
-      'origin' => array(
-       $from_name => $from_name),
-      'target' => $to_name,
-      'guard' => 'workbench_moderation_guard',
-      'title' => $to_name,
-    );
-
-    // Initialize events.
-    $this->create_event($event_name, $event_array);
-  }
-*/
 
     ctools_include('export');
     $workbench_events = ctools_export_load_object('workbench_events');
