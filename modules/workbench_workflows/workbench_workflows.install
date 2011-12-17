@@ -105,7 +105,11 @@ function workbench_workflows_schema_1() {
         'serialize' => TRUE,
         'object default' => array(),
       ),
-
+      'weight' => array(
+        'type' => 'int',
+        'no export' => TRUE,
+        'description' => 'Weight',
+      ),
     ),
     'primary key' => array('pid'),
     'unique keys' => array(

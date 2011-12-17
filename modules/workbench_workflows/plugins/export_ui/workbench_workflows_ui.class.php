@@ -5,15 +5,11 @@ class workbench_workflows_ui extends ctools_export_ui {
     parent::init($plugin);
     ctools_include('context');
   }
-  
 /*
   function list_form(&$form, &$form_state) {
-    ctools_include('plugins', 'panels');
-    $this->layouts = panels_get_layouts();
 
     parent::list_form($form, $form_state);
 
-    $categories = $layouts = array('all' => t('- All -'));
     foreach ($this->items as $item) {
       $categories[$item->category] = $item->category ? $item->category : t('workbench workflows');
     }
@@ -26,17 +22,6 @@ class workbench_workflows_ui extends ctools_export_ui {
       '#weight' => -10,
     );
 
-    foreach ($this->layouts as $name => $plugin) {
-      $layouts[$name] = $plugin['title'];
-    }
-
-    $form['top row']['layout'] = array(
-      '#type' => 'select',
-      '#title' => t('Layout'),
-      '#options' => $layouts,
-      '#default_value' => 'all',
-      '#weight' => -9,
-    );
   }
 
   function list_filter($form_state, $item) {
@@ -44,13 +29,10 @@ class workbench_workflows_ui extends ctools_export_ui {
       return TRUE;
     }
 
-    if ($form_state['values']['layout'] != 'all' && $form_state['values']['layout'] != $item->display->layout) {
-      return TRUE;
-    }
 
     return parent::list_filter($form_state, $item);
   }
-
+*/
   function list_sort_options() {
     return array(
       'disabled' => t('Enabled, title'),
@@ -58,7 +40,7 @@ class workbench_workflows_ui extends ctools_export_ui {
       'name' => t('Name'),
       'category' => t('Category'),
       'storage' => t('Storage'),
-      'layout' => t('Layout'),
+      'weight' => t('Weight'),
     );
   }
 
@@ -77,15 +59,14 @@ class workbench_workflows_ui extends ctools_export_ui {
       case 'category':
         $this->sorts[$item->name] = ($item->category ? $item->category : t('workbench workflows')) . $item->admin_title;
         break;
-      case 'layout':
-        $this->sorts[$item->name] = $item->display->layout . $item->admin_title;
+      case 'weight':
+        $this->sorts[$item->name] = $item->weight;
         break;
       case 'storage':
         $this->sorts[$item->name] = $item->type . $item->admin_title;
         break;
     }
 
-    $layout = !empty($this->layouts[$item->display->layout]) ? $this->layouts[$item->display->layout]['title'] : t('Missing layout');
     $category = $item->category ? check_plain($item->category) : t('workbench workflows');
 
     $this->rows[$item->name] = array(
@@ -93,8 +74,8 @@ class workbench_workflows_ui extends ctools_export_ui {
         array('data' => check_plain($item->admin_title), 'class' => array('ctools-export-ui-title')),
         array('data' => check_plain($item->name), 'class' => array('ctools-export-ui-name')),
         array('data' => $category, 'class' => array('ctools-export-ui-category')),
-        array('data' => $layout, 'class' => array('ctools-export-ui-layout')),
         array('data' => $item->type, 'class' => array('ctools-export-ui-storage')),
+        array('data' => $item->weight, 'class' => array('ctools-export-ui-weight')),
         array('data' => theme('links', array('links' => $operations)), 'class' => array('ctools-export-ui-operations')),
       ),
       'title' => !empty($item->admin_description) ? check_plain($item->admin_description) : '',
@@ -107,12 +88,12 @@ class workbench_workflows_ui extends ctools_export_ui {
       array('data' => t('Title'), 'class' => array('ctools-export-ui-title')),
       array('data' => t('Name'), 'class' => array('ctools-export-ui-name')),
       array('data' => t('Category'), 'class' => array('ctools-export-ui-category')),
-      array('data' => t('Layout'), 'class' => array('ctools-export-ui-layout')),
       array('data' => t('Storage'), 'class' => array('ctools-export-ui-storage')),
+      array('data' => t('Weight'), 'class' => array('ctools-export-ui-weight')),
       array('data' => t('Operations'), 'class' => array('ctools-export-ui-operations')),
     );
   }
-*/
+
   function edit_form(&$form, &$form_state) {
     // Get the basic edit form
     parent::edit_form($form, $form_state);
@@ -126,6 +107,13 @@ class workbench_workflows_ui extends ctools_export_ui {
       '#default_value' => $form_state['item']->states,
       '#title' => t('States'),
       '#description' => t("States available in this workflow."),
+    );
+
+    $form['weight'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $form_state['item']->weight,
+      '#title' => t('Weight'),
+      '#element_validate' => array('element_validate_integer_positive'),
     );
   }
 
@@ -198,7 +186,6 @@ class workbench_workflows_ui extends ctools_export_ui {
 
     ctools_include('context-admin');
     ctools_context_admin_includes();
-
 
     // Set this up and we can use CTools' Export UI's built in wizard caching,
     // which already has callbacks for the context cache under this name.

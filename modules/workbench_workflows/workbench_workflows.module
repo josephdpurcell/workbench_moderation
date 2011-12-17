@@ -102,16 +102,7 @@ function workbench_workflows_load($name) {
     ctools_include('export');
     $result = ctools_export_load_object('workbench_workflows', 'names', array($name));
     if (isset($result[$name])) {
-      if (empty($result[$name]->display)) {
-        $result[$name]->display = panels_load_display($result[$name]->did);
-        if (!empty($result[$name]->title) && empty($result[$name]->display->title)) {
-          $result[$name]->display->title = $result[$name]->title;
-        }
-      }
       $cache[$name] = $result[$name];
-      if (!empty($result[$name]->title) && empty($result[$name]->admin_title)) {
-        $cache[$name]->admin_title = $result[$name]->title;
-      }
     }
     else {
       $cache[$name] = NULL;
@@ -139,34 +130,10 @@ function workbench_workflows_load_all($reset = FALSE) {
     }
 
     ctools_include('export');
-    $minis = ctools_export_load_object('workbench_workflows');
-    $dids = array();
-    foreach ($minis as $mini) {
-      if (empty($cache[$mini->name])) {
-        if (!empty($mini->did)) {
-          $dids[$mini->did] = $mini->name;
-        }
-        else {
-        // Translate old style titles into new titles.
-          if (!empty($mini->title) && empty($mini->display->title)) {
-            $mini->display->title = $mini->title;
-          }
-        }
-        // Translate old style titles into new titles.
-        if (isset($mini->title) && empty($mini->admin_title)) {
-          $mini->admin_title = $mini->title;
-        }
-        $cache[$mini->name] = $mini;
-      }
-    }
+    $workbench_workflows = ctools_export_load_object('workbench_workflows');
+    uasort($workbench_workflows, 'ctools_plugin_sort');
 
-    $displays = panels_load_displays(array_keys($dids));
-    foreach ($displays as $did => $display) {
-      if (!empty($cache[$dids[$did]]->title) && empty($display->title)) {
-        $display->title = $cache[$dids[$did]]->title;
-      }
-      $cache[$dids[$did]]->display = $display;
-    }
+    $cache = $workbench_workflows;
   }
 
   return $cache;
