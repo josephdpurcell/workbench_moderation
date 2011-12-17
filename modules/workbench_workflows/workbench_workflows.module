@@ -239,3 +239,27 @@ function workbench_workflows_panels_cache_save($key, $cache) {
  */
 function workbench_workflows_panels_cache_break_lock($key, $cache) {
 }
+
+/**
+ * Return the appropriate workflow for a node.
+ */
+function workbench_workflows_select_workflow($node) {
+
+  ctools_include('export');
+  ctools_include('context');
+  $node_context = ctools_context_create('entity:node', $node);
+
+
+  $workflows = workbench_workflows_load_all();
+  foreach($workflows as $workflow) {
+
+    $contexts = ctools_context_match_required_contexts($workflow->requiredcontexts, array($node_context));
+    $contexts = ctools_context_load_contexts($workflow, FALSE, $contexts);
+
+    if (ctools_access($workflow->access, $contexts)) {
+      // Return the first workflow for which ctools_access() returns TRUE.
+      return $workflow;
+    }
+  }
+  return FALSE;
+}
