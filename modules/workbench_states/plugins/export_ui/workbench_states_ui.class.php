@@ -3,25 +3,8 @@
 class workbench_states_ui extends ctools_export_ui {
 
   function edit_form(&$form, &$form_state) {
-  // Get the basic edit form
-  parent::edit_form($form, $form_state);
-
-    $form['target_state'] = array(
-      '#type' => 'select',
-
-      '#options' => workbench_moderation_state_labels(),
-        '#default_value' => $form_state['item']->target_state,
-      '#title' => t('Target State'),
-      '#description' => t(""),
-    );
-
-    $form['origin_states'] = array(
-      '#type' => 'checkboxes',
-      '#options' => workbench_moderation_state_labels(),
-      '#default_value' => $form_state['item']->origin_states,
-      '#title' => t('Origin States'),
-      '#description' => t(""),
-    );
+    // Get the basic edit form
+    parent::edit_form($form, $form_state);
   }
 
   /**
