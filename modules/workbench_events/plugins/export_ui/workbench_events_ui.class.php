@@ -30,15 +30,9 @@ class workbench_events_ui extends workbench_base_ui {
    */
   function edit_form_basic_validate($form, &$form_state) {
     parent::edit_form_validate($form, $form_state);
-    // Need to validate target and origin_states
 
 // if (preg_match("/[^A-Za-z0-9 ]/", $form_state['values']['category'])) {
      // form_error($form['category'], t('Categories may contain only alphanumerics or spaces.'));
    // }
-  }
-
-  function edit_form_submit(&$form, &$form_state) {
-    parent::edit_form_submit($form, $form_state);
-    //$form_state['item']->target_state = $form_state['values']['target_state'];
   }
 }
