@@ -3,16 +3,16 @@
 /**
  * Schema for customizable access rulesets.
  */
-function workbench_events_schema() {
+function workbench_states_schema() {
 
   $schema = array();
 
-  $schema['workbench_events'] = array(
+  $schema['workbench_states'] = array(
     'description' => 'Contains exportable customized access rulesets.',
     'export' => array(
       'identifier' => 'ruleset',
       'bulk export' => TRUE,
-      'primary key' => 'eventid',
+      'primary key' => 'stateid',
       'api' => array(
         'owner' => 'ctools',
         'api' => 'ctools_rulesets',
@@ -21,7 +21,7 @@ function workbench_events_schema() {
       ),
     ),
     'fields' => array(
-      'eventid' => array(
+      'stateid' => array(
         'type' => 'serial',
         'description' => 'A database primary key to ensure uniqueness',
         'not null' => TRUE,
@@ -89,7 +89,7 @@ function workbench_events_schema() {
         'object default' => array(),
       ),
     ),
-    'primary key' => array('eventid'),
+    'primary key' => array('stateid'),
   );
 
   return $schema;

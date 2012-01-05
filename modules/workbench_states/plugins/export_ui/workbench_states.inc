@@ -1,22 +1,22 @@
 <?php
 
 $plugin = array(
-  'schema' => 'workbench_events',
-  'access' => 'administer workbench events',
+  'schema' => 'workbench_states',
+  'access' => 'administer workbench states',
 
   'menu' => array(
-    'menu prefix' => 'admin/config/workbench/events',
-    'menu item' => 'workbench-events',
-    'menu title' => 'Workbench Events',
+    'menu prefix' => 'admin/config/workbench/states',
+    'menu item' => 'workbench-states',
+    'menu title' => 'Workbench states',
     'menu description' => '',
   ),
 
-  'title singular' => t('event'),
-  'title singular proper' => t('Event'),
-  'title plural' => t('events'),
-  'title plural proper' => t('Events'),
+  'title singular' => t('state'),
+  'title singular proper' => t('State'),
+  'title plural' => t('states'),
+  'title plural proper' => t('States'),
 
-  'handler' => 'workbench_events_ui',
+  'handler' => 'workbench_states_ui',
 
   'use wizard' => TRUE,
   'form info' => array(

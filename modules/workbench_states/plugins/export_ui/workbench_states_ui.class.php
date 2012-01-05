@@ -1,6 +1,6 @@
 <?php
 
-class workbench_events_ui extends ctools_export_ui {
+class workbench_states_ui extends ctools_export_ui {
 
   function edit_form(&$form, &$form_state) {
   // Get the basic edit form

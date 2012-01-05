@@ -2,12 +2,12 @@
 
 /**
  * @file
- * workbench_events module
+ * workbench_states module
  *
  * This module allows styles to be created and managed on behalf of modules
  * that implement styles.
  *
- * The workbench_events tool allows recolorable styles to be created via a miniature
+ * The workbench_states tool allows recolorable styles to be created via a miniature
  * scripting language. Panels utilizes this to allow administrators to add
  * styles directly to any panel display.
  */
@@ -15,10 +15,10 @@
 /**
  * Implementation of hook_permission()
  */
-function workbench_events_permission() {
+function workbench_states_permission() {
   return array(
-    'administer workbench events' => array(
-      'title' => t('Administer workbench events'),
+    'administer workbench states' => array(
+      'title' => t('Administer workbench states'),
       'description' => t(''),
     ),
   );
@@ -28,9 +28,9 @@ function workbench_events_permission() {
  * Implementation of hook_ctools_plugin_directory() to let the system know
  * we implement task and task_handler plugins.
  */
-function workbench_events_ctools_plugin_directory($module, $plugin) {
+function workbench_states_ctools_plugin_directory($module, $plugin) {
   // Most of this module is implemented as an export ui plugin, and the
-  // rest is in ctools/includes/workbench_events.inc
+  // rest is in ctools/includes/workbench_states.inc
   if ($module == 'ctools' && ($plugin == 'export_ui' || $plugin == 'access')) {
     return 'plugins/' . $plugin;
   }
