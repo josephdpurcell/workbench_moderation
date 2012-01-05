@@ -10,16 +10,15 @@ class workbench_events_ui extends workbench_base_ui {
 
     $form['target_state'] = array(
       '#type' => 'select',
-
-      '#options' => workbench_moderation_state_labels(),
-        '#default_value' => $form_state['item']->target_state,
+      '#options' => workbench_states_options(),
+      '#default_value' => $form_state['item']->target_state,
       '#title' => t('Target State'),
       '#description' => t(""),
     );
 
     $form['origin_states'] = array(
       '#type' => 'checkboxes',
-      '#options' => workbench_moderation_state_labels(),
+      '#options' => workbench_states_options(),
       '#default_value' => $form_state['item']->origin_states,
       '#title' => t('Origin States'),
       '#description' => t(""),

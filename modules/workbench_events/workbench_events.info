@@ -3,5 +3,4 @@ description = exportable events
 core = 7.x
 package = Workbench
 dependencies[] = ctools
-dependencies[] = workbench_moderation
 dependencies[] = workbench_states

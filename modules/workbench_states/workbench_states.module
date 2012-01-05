@@ -36,3 +36,41 @@ function workbench_states_ctools_plugin_directory($module, $plugin) {
   }
 }
 
+/**
+ * Load all workbench workflows.
+ */
+function workbench_states_load_all($reset = FALSE) {
+
+  $cache = &drupal_static('workbench_states_load_all', array());
+  static $all_loaded = FALSE;
+
+  // We check our own private static because individual minis could have
+  // been loaded prior to load all and we need to know that.
+  if (!$all_loaded || $reset) {
+    $all_loaded = TRUE;
+    if ($reset) {
+      $cache = array();
+    }
+
+    ctools_include('export');
+    $workbench_states = ctools_export_load_object('workbench_states');
+
+    // @todo do states need weights?
+    //uasort($workbench_states, 'ctools_plugin_sort');
+
+    $cache = $workbench_states;
+  }
+
+  return $cache;
+}
+
+function workbench_states_options($label_key = 'admin_title', $reset = FALSE) {
+  $states = workbench_states_load_all($reset = FALSE);
+
+  $output = array();
+  foreach($states as $state) {
+    $output[$state->name] = $state->{$label_key};
+  }
+
+  return $output;
+}
