@@ -1951,3 +1951,14 @@ function workbench_moderation_guard($event) {
 
   return workbench_moderation_event_access($event->name, $event->machine->object);
 }
+
+/**
+ * Implements hook_state_flow_machine_type_alter()
+ *
+ * @TODO, actually implement this. I think both here and in hook_state_flow_plugins
+ * we need top loop through the workflows if they exist. Otherwise just one machine.
+ * made of the existing events.
+ */
+function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $node) {
+  //$machine_type = 'workbench_moderation';
+}
