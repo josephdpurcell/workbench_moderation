@@ -32,18 +32,6 @@ function workbench_states_schema() {
         'length' => '255',
         'description' => 'Unique ID for this ruleset. Used to identify it programmatically.',
       ),
-      'target_state' => array(
-        'type' => 'varchar',
-        'length' => '255',
-        'description' => 'target state',
-      ),
-      'origin_states' => array(
-        'type' => 'text',
-        'size' => 'big',
-        'description' => 'Origin states',
-        'serialize' => TRUE,
-        'object default' => array(),
-      ),
       'editor_title' => array(
         'type' => 'varchar',
         'length' => '255',
