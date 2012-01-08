@@ -1,10 +1,10 @@
 <?php
 
-class workbenchModeration extends StateFlow {
+class workbenchMachine extends StateFlow {
 
   public function init() {
 
-    $states = workbench_moderation_state_labels();
+    $states = workbench_states_options();
 
     foreach ($states as $state_name => $state_label) {
       $state_array = array(
@@ -38,7 +38,7 @@ class workbenchModeration extends StateFlow {
       $event_array = array(
         'origin' => $origins,
         'target' => $workbench_event->target_state,
-        'guard' => 'workbench_moderation_guard',
+        'guard' => 'workbench_machine_guard',
         'title' => $workbench_event->admin_title,
       );
 
@@ -59,12 +59,12 @@ class workbenchModeration extends StateFlow {
 
     if (is_array($this->events[$key])) {
       $options = $this->events[$key];
-      $this->events[$key] = new workbench_moderation_Event($key, $this, $options);
+      $this->events[$key] = new workbench_machine_Event($key, $this, $options);
     }
 
     return $this->events[$key];
   }
 }
 
-class workbench_moderation_Event extends StateFlow_Event {
+class workbench_machine_Event extends StateFlow_Event {
 }
