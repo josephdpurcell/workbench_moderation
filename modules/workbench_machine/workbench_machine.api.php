@@ -29,28 +29,3 @@ function hook_workbench_machine_plugins() {
   return $info;
 }
 
-/**
- * Define a new workflow for a node type
- */
-class StateFlowTest extends StateFlow {
-	/**
-	 * Override the init method to set the new states
-	 *
-	 * Add a to review state and "Review" event
-	 */
-	public function init() {
-	  sefl::init();
-		$this->add_state('review');
-
-    $this->create_event('review', array(
-      'origin' => 'draft',
-      'target' => 'review',
-    ));
-
-	  // Initialize events
-	  $this->create_event('publish', array(
-	    'origin' => 'review',
-	    'target' => 'published',
-	  ));
-	}
-}
