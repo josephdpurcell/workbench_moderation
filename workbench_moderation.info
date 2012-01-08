@@ -2,7 +2,7 @@ name = Workbench Moderation
 description = Provides content moderation services
 package = Workbench
 core = 7.x
-dependencies[] = state_flow
+
 configure = admin/config/workbench/moderation
 
 files[] = workbench_moderation.module
