@@ -11,7 +11,7 @@
  */
 function workbench_machine_ctools_plugin_directory($module, $plugin) {
   if ($module == 'workbench_machine') {
-    return 'plugins/' . $plugin;
+    return 'plugins/workbench_machine/' . $plugin;
   }
 }
 
@@ -50,14 +50,15 @@ function workbench_machine_entity_property_info_alter(&$info) {
  */
 function workbench_machine_workbench_machine_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'workbench_machine') . '/plugins';
+  $path = drupal_get_path('module', 'workbench_machine') . '/plugins/workbench_machine/';
   $info['workbench_machine'] = array(
     'handler' => array(
-      'class' => 'StateFlow',
+      'class' => 'workbenchMachine',
       'file' => 'workbench_machine.inc',
       'path' => $path,
     ),
   );
+
   return $info;
 }
 
@@ -135,6 +136,7 @@ function workbench_machine_load_state_machine($node, $reset = FALSE) {
       $objects[$node->vid] = $workbench_machine_object;
     }
   }
+
   return $objects[$node->vid];
 }
 

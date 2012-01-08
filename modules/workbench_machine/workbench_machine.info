@@ -8,7 +8,7 @@ dependencies[] = workbench_workflows
 package = "State Machine"
 
 ; Core classes
-files[] = plugins/workbench_machine.inc
+files[] = plugins/workbench_machine/workbench_machine.inc
 files[] = workbench_machine.api.php
 
 ; Tests

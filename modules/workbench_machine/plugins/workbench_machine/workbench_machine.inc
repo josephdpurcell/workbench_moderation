@@ -1,6 +1,6 @@
 <?php
 
-class workbenchMachine extends StateFlow {
+class workbenchMachine extends StateMachine {
 
   public function init() {
 
@@ -66,5 +66,5 @@ class workbenchMachine extends StateFlow {
   }
 }
 
-class workbench_machine_Event extends StateFlow_Event {
+class workbench_machine_Event extends StateMachine_Event {
 }
