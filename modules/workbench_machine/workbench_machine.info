@@ -4,7 +4,7 @@ name = State Flow
 description = A base implementation of the State Machine designed to work with ERS
 dependencies[] = state_machine
 dependencies[] = ctools
-dependencies[] = workbench_worflows
+dependencies[] = workbench_workflows
 package = "State Machine"
 
 ; Core classes
