@@ -103,7 +103,7 @@ class workbench_workflows_ui extends workbench_base_ui {
 
     $form['states'] = array(
       '#type' => 'checkboxes',
-      '#options' => workbench_moderation_state_labels(),
+      '#options' => workbench_states_options(),
       '#default_value' => $form_state['item']->states,
       '#title' => t('States'),
       '#description' => t("States available in this workflow."),
