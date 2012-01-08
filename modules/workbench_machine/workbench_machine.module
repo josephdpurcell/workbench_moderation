@@ -9,18 +9,18 @@
 /**
  * Implements hook_menu().
  */
-function state_flow_menu() {
+function workbench_machine_menu() {
   $items = array();
   $items['node/%node/workflow'] = array(
     'title' => 'Workflow',
     'description' => 'Information about the workflow status of this content',
     'type' => MENU_LOCAL_TASK,
-    'page callback' => 'state_flow_events',
+    'page callback' => 'workbench_machine_events',
     'page arguments' => array(1),
-    'access callback' => 'state_flow_menu_node_access',
+    'access callback' => 'workbench_machine_menu_node_access',
     'access arguments' => array(1),
     'weight' => 10,
-    'file' => 'state_flow.pages.inc',
+    'file' => 'workbench_machine.pages.inc',
   );
   $items['node/%node/revisions/%/edit'] = array(
     'title' => 'Edit an earlier revision',
@@ -36,10 +36,10 @@ function state_flow_menu() {
     'title' => 'Transition a revision to a new workflow state',
     'load arguments' => array(3),
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('state_flow_events_revision', 1, 5),
-    'access callback' => 'state_flow_events_revisions_access',
+    'page arguments' => array('workbench_machine_events_revision', 1, 5),
+    'access callback' => 'workbench_machine_events_revisions_access',
     'access arguments' => array(1, 5),
-    'file' => 'state_flow.pages.inc',
+    'file' => 'workbench_machine.pages.inc',
   );
   return $items;
 }
@@ -47,7 +47,7 @@ function state_flow_menu() {
 /**
  * Implements hook_permission().
  */
-function state_flow_permission() {
+function workbench_machine_permission() {
   return array(
     'manage content workflow' => array(
       'title' => t('Manage content workflow'),
@@ -59,7 +59,7 @@ function state_flow_permission() {
 /**
  * Implements hook_admin_paths().
  */
-function state_flow_admin_paths() {
+function workbench_machine_admin_paths() {
   if (variable_get('node_admin_theme')) {
     $paths = array(
       'node/*/workflow' => TRUE,
@@ -74,8 +74,8 @@ function state_flow_admin_paths() {
 /**
  * Implements hook_ctools_plugin_directory().
  */
-function state_flow_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'state_flow') {
+function workbench_machine_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'workbench_machine') {
     return 'plugins/' . $plugin;
   }
 }
@@ -83,7 +83,7 @@ function state_flow_ctools_plugin_directory($module, $plugin) {
 /**
  * Implements hook_ctools_plugin_type().
  */
-function state_flow_ctools_plugin_type() {
+function workbench_machine_ctools_plugin_type() {
   $plugins = array(
     'plugins' => array(
       'cache' => TRUE,
@@ -98,28 +98,28 @@ function state_flow_ctools_plugin_type() {
  *
  * Adds a "state" property on nodes that are configured with state flow.
  */
-function state_flow_entity_property_info_alter(&$info) {
+function workbench_machine_entity_property_info_alter(&$info) {
   foreach ($info['node']['bundles'] as $entity_type => $entity_info) {
-    if (variable_get('state_flow_' . $entity_type, '')) {
+    if (variable_get('workbench_machine_' . $entity_type, '')) {
       $info['node']['bundles'][$entity_type]['properties']['state'] = array(
         'label' => t('Workflow state'),
         'description' => t('The current workflow state for this node revision.'),
-        'getter callback' => 'state_flow_entity_get_state',
+        'getter callback' => 'workbench_machine_entity_get_state',
       );
     }
   }
 }
 
 /**
- * Implements hook_state_flow_plugins().
+ * Implements hook_workbench_machine_plugins().
  */
-function state_flow_state_flow_plugins() {
+function workbench_machine_workbench_machine_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'state_flow') . '/plugins';
-  $info['state_flow'] = array(
+  $path = drupal_get_path('module', 'workbench_machine') . '/plugins';
+  $info['workbench_machine'] = array(
     'handler' => array(
       'class' => 'StateFlow',
-      'file' => 'state_flow.inc',
+      'file' => 'workbench_machine.inc',
       'path' => $path,
     ),
   );
@@ -129,25 +129,25 @@ function state_flow_state_flow_plugins() {
 /**
  * Implements hook_views_api().
  */
-function state_flow_views_api() {
+function workbench_machine_views_api() {
   return array(
     'api' => 2,
-    'path' => drupal_get_path('module', 'state_flow') . '/includes/views',
+    'path' => drupal_get_path('module', 'workbench_machine') . '/includes/views',
   );
 }
 
 /**
  * Implements hook_node_presave().
  */
-function state_flow_node_presave($node) {
+function workbench_machine_node_presave($node) {
   // If the node is not new and is not marked to be ignored by
-  // state_flow_promote_node_revision(), then check its current state.
-  if (!empty($node->nid) && empty($node->state_flow_ignore_state)) {
-    $state_flow = state_flow_load_state_machine($node);
+  // workbench_machine_promote_node_revision(), then check its current state.
+  if (!empty($node->nid) && empty($node->workbench_machine_ignore_state)) {
+    $workbench_machine = workbench_machine_load_state_machine($node);
 
     //Check to see if we should go through workflow
     if (empty($node->stateflow_skip_workflow)) {
-      $state = $state_flow->get_current_state();
+      $state = $workbench_machine->get_current_state();
       if ($state == 'published') {
         // If the node being updated is in the published state, then ensure that
         // changes are saved to a new revision.
@@ -156,12 +156,12 @@ function state_flow_node_presave($node) {
       else if ($state != 'draft') {
         // If the node being updated is not in the draft state, then mark this
         // node to be reverted to draft state.
-        $node->state_flow_revert_draft = TRUE;
+        $node->workbench_machine_revert_draft = TRUE;
       }
     }
     else {
       if ($node->status) {
-        $state_flow->fire_event('publish');
+        $workbench_machine->fire_event('publish');
       }
     }
   }
@@ -170,39 +170,39 @@ function state_flow_node_presave($node) {
 /**
  * Implements hook_node_insert().
  */
-function state_flow_node_insert($node) {
+function workbench_machine_node_insert($node) {
   global $user;
-  $state_flow = state_flow_load_state_machine($node);
-  $state_flow->persist();
-  $state_flow->write_history($user->uid);
+  $workbench_machine = workbench_machine_load_state_machine($node);
+  $workbench_machine->persist();
+  $workbench_machine->write_history($user->uid);
 }
 
 /**
  * Implements hook_node_update().
  */
-function state_flow_node_update($node) {
+function workbench_machine_node_update($node) {
   global $user;
-  $state_flow = state_flow_load_state_machine($node);
+  $workbench_machine = workbench_machine_load_state_machine($node);
 
   //Check to see if we should go through workflow
   if (empty($node->stateflow_skip_workflow)) {
-    if (!empty($node->state_flow_revert_draft) && $state_flow->get_current_state() !== 'draft') {
-      $state_flow->fire_event('to draft');
+    if (!empty($node->workbench_machine_revert_draft) && $workbench_machine->get_current_state() !== 'draft') {
+      $workbench_machine->fire_event('to draft');
     }
     else {
-      $state_flow->persist();
+      $workbench_machine->persist();
       if (!empty($node->revision)) {
-        $state_flow->write_history($user->uid);
+        $workbench_machine->write_history($user->uid);
       }
     }
-    state_flow_prevent_live_revision($node);
+    workbench_machine_prevent_live_revision($node);
   }
 }
 
 /**
  * Implements hook_node_delete().
  */
-function state_flow_node_delete($node) {
+function workbench_machine_node_delete($node) {
   $result = db_delete('node_revision_states')
     ->condition('nid', $node->nid)
     ->execute();
@@ -214,7 +214,7 @@ function state_flow_node_delete($node) {
 /**
  * Implements hook_node_revision_delete().
  */
-function state_flow_node_revision_delete($node) {
+function workbench_machine_node_revision_delete($node) {
   $result = db_delete('node_revision_states')
     ->condition('vid', $node->vid)
     ->execute();
@@ -226,7 +226,7 @@ function state_flow_node_revision_delete($node) {
 /**
  * Menu access callback for accessing the node workflow pages.
  */
-function state_flow_menu_node_access($node, $account = NULL) {
+function workbench_machine_menu_node_access($node, $account = NULL) {
   global $user;
 
   // If no user account is given, then use the current user.
@@ -239,7 +239,7 @@ function state_flow_menu_node_access($node, $account = NULL) {
   $access = user_access('manage content workflow', $account);
 
   // Allow other modules to alter this decision
-  drupal_alter('state_flow_menu_node_access', $access, $node, $account);
+  drupal_alter('workbench_machine_menu_node_access', $access, $node, $account);
 
   return $access;
 }
@@ -247,14 +247,12 @@ function state_flow_menu_node_access($node, $account = NULL) {
 /**
  * Menu access callback for the node revision workflow transition page.
  */
-function state_flow_events_revisions_access($node, $event_name = NULL) {
-  return !empty($event_name) ? state_flow_access($node, $event_name) : state_flow_menu_node_access($node);
-}
+function workbench_machine_events_revisions_access($node, $event_name = NULL) workbench_machine
 
 /**
  * Determine whether a user has permission to transition a node with an event.
  */
-function state_flow_access($node, $event_name, $account = NULL) {
+function workbench_machine_access($node, $event_name, $account = NULL) {
   global $user;
 
   // If no user account is given, then use the current user.
@@ -263,42 +261,42 @@ function state_flow_access($node, $event_name, $account = NULL) {
   }
 
   // If the user cannot edit the node, then deny access to any events.
-  if (!state_flow_menu_node_access($node, $account)) {
+  if (!workbench_machine_menu_node_access($node, $account)) {
     return FALSE;
   }
 
   // Load the state machine for the node and test whether the event is allowed.
-  $state_flow = state_flow_load_state_machine($node);
-  $state_event = $state_flow ? $state_flow->get_event($event_name) : FALSE;
+  $workbench_machine = workbench_machine_load_state_machine($node);
+  $state_event = $workbench_machine ? $workbench_machine->get_event($event_name) : FALSE;
   return $state_event ? $state_event->validate() : FALSE;
 }
 
 /**
  * Getter callback for the "state" property on node bundles using workflow.
  */
-function state_flow_entity_get_state($data, $options, $name, $type, $info) {
-  $state_flow = state_flow_load_state_machine($data);
-  return $state_flow->get_current_state();
+function workbench_machine_entity_get_state($data, $options, $name, $type, $info) {
+  $workbench_machine = workbench_machine_load_state_machine($data);
+  return $workbench_machine->get_current_state();
 }
 
 /**
  * Inform external systems about a workflow transition.
  */
-function state_flow_invoke_event_handlers($object, $state) {
+function workbench_machine_invoke_event_handlers($object, $state) {
   // Load related objects
   $node = node_load($object->nid, $object->vid);
   $author = !empty($node->uid) ? user_load($node->uid) : drupal_anonymous_user();
 
-  // Invoke the Rules state_flow_event_fired event.
+  // Invoke the Rules workbench_machine_event_fired event.
   if ($node && module_exists('rules')) {
-    rules_invoke_event('state_flow_event_fired', $node, $author, $state);
+    rules_invoke_event('workbench_machine_event_fired', $node, $author, $state);
   }
 }
 
 /**
  * Retrieve the states history for a node.
  */
-function state_flow_get_history($nid) {
+function workbench_machine_get_history($nid) {
   $history = db_query('
     SELECT nrsh.*, u.uid, u.name AS user_name
     FROM {node_revision_states_history} nrsh
@@ -312,23 +310,23 @@ function state_flow_get_history($nid) {
 }
 
 /**
- * Load the state_flow state_machine for the given node.
+ * Load the workbench_machine state_machine for the given node.
  */
-function state_flow_load_state_machine($node, $reset = FALSE) {
+function workbench_machine_load_state_machine($node, $reset = FALSE) {
   $objects = &drupal_static(__FUNCTION__);
 
   if (!isset($objects[$node->vid]) || $reset) {
     ctools_include('plugins');
 
-    $machine_type = 'state_flow';
+    $machine_type = 'workbench_machine';
     //allow other modules to invoke other machine types
-    drupal_alter('state_flow_machine_type', $machine_type, $node);
-    $plugin = ctools_get_plugins('state_flow', 'plugins', $machine_type);
+    drupal_alter('workbench_machine_machine_type', $machine_type, $node);
+    $plugin = ctools_get_plugins('workbench_machine', 'plugins', $machine_type);
 
     if (!empty($plugin)) {
       $class = ctools_plugin_get_class($plugin, 'handler');
-      $state_flow_object = new $class($node);
-      $objects[$node->vid] = $state_flow_object;
+      $workbench_machine_object = new $class($node);
+      $objects[$node->vid] = $workbench_machine_object;
     }
   }
   return $objects[$node->vid];
@@ -345,18 +343,18 @@ function state_flow_load_state_machine($node, $reset = FALSE) {
  * In Drupal 7, the old approach of "munging the node vid" is not compatible
  * with fields. See: http://drupal.org/node/1184318
  */
-function state_flow_prevent_live_revision($node) {
-  // If this node is marked to be ignored by state_flow_promote_node_revision(),
+function workbench_machine_prevent_live_revision($node) {
+  // If this node is marked to be ignored by workbench_machine_promote_node_revision(),
   // then skip handling it.
-  if (!empty($node->state_flow_ignore_state)) {
+  if (!empty($node->workbench_machine_ignore_state)) {
     return;
   }
 
   // If the revision being saved is not the current published version, then
   // ensure that the published version is re-saved to make it the most recent.
-  $published_revision = state_flow_live_revision($node->nid);
+  $published_revision = workbench_machine_live_revision($node->nid);
   if (!empty($published_revision[0]->vid) && $published_revision[0]->vid != $node->vid) {
-    state_flow_promote_node_revision($published_revision[0], $node->nid, $published_revision[0]->vid);
+    workbench_machine_promote_node_revision($published_revision[0], $node->nid, $published_revision[0]->vid);
 
     // When a draft is saved and does not become the current revision, then
     // redirect the user to the revision saved. This hijacks the redirection by
@@ -372,7 +370,7 @@ function state_flow_prevent_live_revision($node) {
  * node_revision_states, and node_revision_states_history tables. Finally,
  * delete the original revision if a new revision is created.
  */
-function state_flow_promote_node_revision($rev_state_rec, $nid, $current_vid) {
+function workbench_machine_promote_node_revision($rev_state_rec, $nid, $current_vid) {
   // Load data about the current revision
   $current_rev = node_load($nid, $current_vid);
   $current_timestamp = !empty($current_rev->revision_timestamp) ? $current_rev->revision_timestamp : REQUEST_TIME;
@@ -407,7 +405,7 @@ function state_flow_promote_node_revision($rev_state_rec, $nid, $current_vid) {
   // Re-save the node. Create a new revision if the given revision is not the
   // most recent.
   $current_rev->revision = ($latest_vid > $current_vid) ? TRUE : FALSE;
-  $current_rev->state_flow_ignore_state = TRUE;
+  $current_rev->workbench_machine_ignore_state = TRUE;
   node_save($current_rev);
   // node_save() has updated the $current_rev object, so it is the new revision.
   $new_rev = $current_rev;
@@ -423,7 +421,7 @@ function state_flow_promote_node_revision($rev_state_rec, $nid, $current_vid) {
     ->condition('vid', $new_rev->vid)
     ->execute();
 
-  // If a new revision was created, update state_flow records for the revision.
+  // If a new revision was created, update workbench_machine records for the revision.
   if ($new_rev->revision) {
     // Update the node_revision_states record for the new published revision
     // to match the old revision
@@ -458,7 +456,7 @@ function state_flow_promote_node_revision($rev_state_rec, $nid, $current_vid) {
 /**
  * Helper function to return all node_revision_states records for a node.
  */
-function state_flow_get_revisions($nid) {
+function workbench_machine_get_revisions($nid) {
   $revisions = db_query('
     SELECT *
     FROM {node_revision_states}
@@ -475,8 +473,8 @@ function state_flow_get_revisions($nid) {
  * Helper function to return node_revision_states records for all published
  * revisions of a node.
  */
-function state_flow_live_revision($nid) {
-  $state = variable_get('state_flow_published_state', 'published');
+function workbench_machine_live_revision($nid) {
+  $state = variable_get('workbench_machine_published_state', 'published');
   $revision_state = db_query('
       SELECT *
       FROM {node_revision_states}

@@ -7,7 +7,7 @@
 
 state_machine_load_class_file();
 
-class StateFlow extends StateMachine {
+class workbenchMachine extends StateMachine {
   /**
    * Called from StateMachine::__construct to initialize the states and events.
    * Define two states.
@@ -108,8 +108,8 @@ class StateFlow extends StateMachine {
       // Allow the event to "finish".
       $event->finish();
 
-      // Allow state_flow to provide other hooks or event triggers.
-      state_flow_invoke_event_handlers($this->object, $new_state);
+      // Allow workbench_machine to provide other hooks or event triggers.
+      workbench_machine_invoke_event_handlers($this->object, $new_state);
     }
     else {
       $this->on_event_fail($event);
@@ -176,7 +176,7 @@ class StateFlow extends StateMachine {
         $rev_vid = isset($rev->vid) ? intval($rev->vid) : FALSE;
         $rev_node = $rev_vid ? node_load($this->object->nid, $rev_vid) : FALSE;
         if ($rev_node) {
-          $rev_state = state_flow_load_state_machine($rev_node, TRUE);
+          $rev_state = workbench_machine_load_state_machine($rev_node, TRUE);
           $rv = $rev_state->fire_event('unpublish', NULL, t('Unpublished due to the publication of revision @vid.', array('@vid' => $this->object->vid)));
         }
       }
@@ -235,7 +235,7 @@ class StateFlow extends StateMachine {
     $vid = $this->get_latest_revision($this->object->nid);
     if (!empty($vid) && ($vid != $this->object->vid)) {
       $rev_state_rec = $this->revision_state_record($this->object->nid, $this->object->vid);
-      state_flow_promote_node_revision($rev_state_rec, $this->object->nid, $this->object->vid);
+      workbench_machine_promote_node_revision($rev_state_rec, $this->object->nid, $this->object->vid);
     }
     $result = db_update('node_revision')
         ->fields(array(

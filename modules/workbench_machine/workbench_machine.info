@@ -1,20 +1,21 @@
-project = "state_flow"
+project = "workbench_machine"
 core = "7.x"
 name = State Flow
-description = A base implementation of the State Machine
+description = A base implementation of the State Machine designed to work with ERS
 dependencies[] = state_machine
 dependencies[] = ctools
+dependencies[] = workbench_worflows
 package = "State Machine"
 
 ; Core classes
-files[] = plugins/state_flow.inc
-files[] = state_flow.api.php
+files[] = plugins/workbench_machine.inc
+files[] = workbench_machine.api.php
 
 ; Tests
-files[] = tests/state_flow.test
+files[] = tests/workbench_machine.test
 
 ; Views includes
-files[] = includes/views/state_flow.view.inc
-files[] = includes/views/state_flow_handler_field_events.inc
-files[] = includes/views/state_flow_handler_field_workflow_link.inc
-files[] = includes/views/state_flow_handler_filter_state.inc
+files[] = includes/views/workbench_machine.view.inc
+files[] = includes/views/workbench_machine_handler_field_events.inc
+files[] = includes/views/workbench_machine_handler_field_workflow_link.inc
+files[] = includes/views/workbench_machine_handler_filter_state.inc
