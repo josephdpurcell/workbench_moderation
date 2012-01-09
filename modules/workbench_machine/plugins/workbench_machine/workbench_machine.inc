@@ -84,15 +84,17 @@ class workbenchMachine extends StateMachine {
 
   public function load() {
 
-    return 'draft';
-
     $state = FALSE;
-    if (!empty($this->object->vid)) {
-      $state = $this->revision_state($this->object->vid);
+    // @todo, This new_revision_state property is not a great way to do this.
+    // It's accommodating the fact that ERS allows non-draft (non-editable) vids to be "published"/moderated.
+    // Ideally, that revision would actually be loaded as the object.
+    if (!empty($this->object->new_revision_state)) {
+      $state = $this->object->new_revision_state;
     }
-    elseif (!empty($this->object->nid)) {
-      $state = $this->latest_state($this->object->nid);
+    elseif (!empty($this->object->draft_revision_id_state)) {
+      $state = $this->object->draft_revision_id_state;
     }
+
     return $state;
   }
 
