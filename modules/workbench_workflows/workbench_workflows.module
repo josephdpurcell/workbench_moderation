@@ -106,52 +106,6 @@ function workbench_workflows_load_all($reset = FALSE) {
 }
 
 /**
- * Write a workbench workflow to the database.
- */
-function workbench_workflows_save(&$mini) {
-  if (!empty($mini->display)) {
-    $display = panels_save_display($mini->display);
-    $mini->did = $display->did;
-  }
-
-  $update = (isset($mini->pid) && $mini->pid != 'new') ? array('pid') : array();
-  drupal_write_record('workbench_workflows', $mini, $update);
-
-  return $mini;
-}
-
-/**
- * Remove a workbench workflow.
- */
-function workbench_workflows_delete($mini) {
-  db_delete('workbench_workflows')
-    ->condition('name', $mini->name)
-    ->execute();
-
-  if ($mini->type != t('Overridden')) {
-    // Also remove from block table as long as there isn't a default that may appear.
-    db_delete('block')
-      ->condition('delta', $mini->name)
-      ->condition('module', 'workbench_workflows')
-      ->execute();
-  }
-  return panels_delete_display($mini->did);
-}
-
-/**
- * Export a workbench workflow.
- */
-function workbench_workflows_export($mini, $indent = '') {
-  ctools_include('export');
-  $output = ctools_export_object('workbench_workflows', $mini, $indent);
-  // Export the primary display
-  $display = !empty($mini->display) ? $mini->display : panels_load_display($mini->did);
-  $output .= panels_export_display($display, $indent);
-  $output .= $indent . '$mini->display = $display' . ";\n";
-  return $output;
-}
-
-/**
  * Implementation of hook_ctools_plugin_directory() to let the system know
  * we implement task and task_handler plugins.
  */
@@ -159,85 +113,6 @@ function workbench_workflows_ctools_plugin_directory($module, $plugin) {
   if ($module == 'ctools' && $plugin == 'export_ui') {
     return 'plugins/' . $plugin;
   }
-}
-
-/**
- * Get the display cache for the workbench_workflows plugin.
- */
-function _workbench_workflows_panels_cache_get($key) {
-  ctools_include('export-ui');
-  $plugin = ctools_get_export_ui('workbench_workflows');
-  $handler = ctools_export_ui_get_handler($plugin);
-  if (!$handler) {
-    return;
-  }
-
-  $item = $handler->edit_cache_get($key);
-  if (!$item) {
-    $item = ctools_export_crud_load($handler->plugin['schema'], $key);
-  }
-
-  return array($handler, $item);
-}
-
-/**
- * Get display edit cache for the panels mini export UI
- *
- * The key is the second half of the key in this form:
- * workbench_workflows:TASK_NAME:HANDLER_NAME;
- */
-function workbench_workflows_panels_cache_get($key) {
-  ctools_include('common', 'panels');
-  list($handler, $item) = _workbench_workflows_panels_cache_get($key);
-  if (isset($item->mini_panels_display_cache)) {
-    return $item->mini_panels_display_cache;
-  }
-
-  $cache = new stdClass();
-  $cache->display = $item->display;
-  $cache->display->context = ctools_context_load_contexts($item);
-  $cache->display->cache_key = 'workbench_workflows:' . $key;
-  $cache->content_types = panels_common_get_allowed_types('workbench_workflows', $cache->display->context);
-  $cache->display_title = TRUE;
-
-  // @TODO support locking
-  $cache->locked = FALSE;
-
-  return $cache;
-}
-
-/**
- * Store a display edit in progress in the page cache.
- */
-function workbench_workflows_panels_cache_set($key, $cache) {
-  list($handler, $item) = _workbench_workflows_panels_cache_get($key);
-  $item->mini_panels_display_cache = $cache;
-  $handler->edit_cache_set_key($item, $key);
-}
-
-/**
- * Save all changes made to a display using the panels mini UI cache.
- */
-function workbench_workflows_panels_cache_clear($key, $cache) {
-  list($handler, $item) = _workbench_workflows_panels_cache_get($key);
-  $handler->edit_cache_clear($item);
-}
-
-/**
- * Save all changes made to a display using the panels mini UI cache.
- */
-function workbench_workflows_panels_cache_save($key, $cache) {
-  list($handler, $item) = _workbench_workflows_panels_cache_get($key);
-  $item->display = $cache->display;
-  workbench_workflows_save($item);
-
-  $handler->edit_cache_clear($item);
-}
-
-/**
- * Break the lock on a panels mini page.
- */
-function workbench_workflows_panels_cache_break_lock($key, $cache) {
 }
 
 /**
