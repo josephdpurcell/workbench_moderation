@@ -119,24 +119,3 @@ function workbench_workflows_schema_1() {
 
   return $schema;
 }
-
-/**
- * Implementation of hook_uninstall().
- */
-function workbench_workflows_uninstall() {
-  $panels_exists = db_table_exists('panels_display');
-
-  $result = db_query("SELECT * FROM {workbench_workflows}");
-  $deltas = array();
-  foreach ($result as $panel_mini) {
-    // Delete all associated displays.
-    if (!function_exists('panels_delete_display')) {
-      require_once drupal_get_path('module', 'panels') .'/panels.module';
-    }
-    if ($panels_exists) {
-      panels_delete_display($panel_mini->did);
-    }
-
-    $deltas[] = $panel_mini->pid;
-  }
-}
