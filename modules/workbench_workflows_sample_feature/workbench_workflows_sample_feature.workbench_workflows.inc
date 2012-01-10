@@ -38,6 +38,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows() {
   $workflow->contexts = array();
   $workflow->relationships = array();
   $workflow->access = array();
+  $workflow->weight = 0;
   $export['sample_workflow'] = $workflow;
 
   return $export;
