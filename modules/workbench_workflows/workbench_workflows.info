@@ -1,5 +1,5 @@
-name = workbench workflows
-description = Create workbench workflows
+name = Workbench Workflows
+description = Exportable workflows
 dependencies[] = workbench_events
 core = 7.x
 files[] = plugins/export_ui/workbench_workflows_ui.class.php

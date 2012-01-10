@@ -1,5 +1,5 @@
-name = Workbench states
-description = exportable states
+name = Workbench States
+description = Exportable states
 core = 7.x
 package = Workbench
 dependencies[] = ctools
