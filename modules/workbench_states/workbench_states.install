@@ -1,21 +1,23 @@
 <?php
 
 /**
- * Schema for customizable access rulesets.
+ * Schema for customizable states.
  */
 function workbench_states_schema() {
 
   $schema = array();
 
   $schema['workbench_states'] = array(
-    'description' => 'Contains exportable customized access rulesets.',
+    'description' => 'Contains exportable customized states.',
     'export' => array(
-      'identifier' => 'ruleset',
+      'identifier' => 'state',
       'bulk export' => TRUE,
       'primary key' => 'stateid',
+
+      // @todo I'm not sure what this array should be.
       'api' => array(
         'owner' => 'ctools',
-        'api' => 'ctools_rulesets',
+        'api' => 'workbench_states',
         'minimum_version' => 1,
         'current_version' => 1,
       ),
@@ -30,49 +32,49 @@ function workbench_states_schema() {
       'name' => array(
         'type' => 'varchar',
         'length' => '255',
-        'description' => 'Unique ID for this ruleset. Used to identify it programmatically.',
+        'description' => 'Unique ID for this state. Used to identify it programmatically.',
       ),
       'editor_title' => array(
         'type' => 'varchar',
         'length' => '255',
-        'description' => 'Administrative title for this ruleset.',
+        'description' => 'Administrative title for this state.',
       ),
       'admin_title' => array(
         'type' => 'varchar',
         'length' => '255',
-        'description' => 'Administrative title for this ruleset.',
+        'description' => 'Administrative title for this state.',
       ),
       'admin_description' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'Administrative description for this ruleset.',
+        'description' => 'Administrative description for this state.',
         'object default' => '',
       ),
       'requiredcontexts' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'Any required contexts for this ruleset.',
+        'description' => 'Any required contexts for this state.',
         'serialize' => TRUE,
         'object default' => array(),
       ),
       'contexts' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'Any embedded contexts for this ruleset.',
+        'description' => 'Any embedded contexts for this state.',
         'serialize' => TRUE,
         'object default' => array(),
       ),
       'relationships' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'Any relationships for this ruleset.',
+        'description' => 'Any relationships for this state.',
         'serialize' => TRUE,
         'object default' => array(),
       ),
       'access' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'The actual group of access plugins for this ruleset.',
+        'description' => 'The actual group of access plugins for this state.',
         'serialize' => TRUE,
         'object default' => array(),
       ),

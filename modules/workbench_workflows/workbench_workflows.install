@@ -20,22 +20,21 @@ function workbench_workflows_schema_1() {
       'identifier' => 'workflow',
       'load callback' => 'workbench_workflows_load',
       'load all callback' => 'workbench_workflows_load_all',
-      'save callback' => 'workbench_workflows_save',
-      'delete callback' => 'workbench_workflows_delete',
-      'export callback' => 'workbench_workflows_export',
+
+      // @todo I'm not sure what this array should be.
       'api' => array(
-        'owner' => 'workbench_workflows',
-        'api' => 'panels_default',
+        'owner' => 'ctools',
+        'api' => 'workbench_workflows',
         'minimum_version' => 1,
         'current_version' => 1,
       ),
     ),
     'fields' => array(
-      'pid' => array(
+      'workflowid' => array(
         'type' => 'serial',
+        'description' => 'A database primary key to ensure uniqueness',
         'not null' => TRUE,
         'no export' => TRUE,
-        'description' => 'The primary key for uniqueness.',
       ),
       'name' => array(
         'type' => 'varchar',
@@ -46,11 +45,6 @@ function workbench_workflows_schema_1() {
         'type' => 'varchar',
         'length' => '64',
         'description' => 'The category this workbench workflow appears in on the add content pane.',
-      ),
-      'did' => array(
-        'type' => 'int',
-        'no export' => TRUE,
-        'description' => 'The display ID of the panel.',
       ),
       'admin_title' => array(
         'type' => 'varchar',
@@ -84,24 +78,31 @@ function workbench_workflows_schema_1() {
         'object default' => array(),
         'description' => 'An array of required contexts.',
       ),
+      'requiredcontexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any required contexts for this workflow.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
       'contexts' => array(
         'type' => 'text',
         'size' => 'big',
+        'description' => 'Any embedded contexts for this workflow.',
         'serialize' => TRUE,
         'object default' => array(),
-        'description' => 'An array of contexts embedded into the panel.',
       ),
       'relationships' => array(
         'type' => 'text',
         'size' => 'big',
+        'description' => 'Any relationships for this workflow.',
         'serialize' => TRUE,
         'object default' => array(),
-        'description' => 'An array of relationships embedded into the panel.',
       ),
       'access' => array(
         'type' => 'text',
         'size' => 'big',
-        'description' => 'The actual group of access plugins for this ruleset.',
+        'description' => 'The actual group of access plugins for this state.',
         'serialize' => TRUE,
         'object default' => array(),
       ),
@@ -111,7 +112,7 @@ function workbench_workflows_schema_1() {
         'description' => 'Weight',
       ),
     ),
-    'primary key' => array('pid'),
+    'primary key' => array('workflowid'),
     'unique keys' => array(
       'name' => array('name'),
     ),
