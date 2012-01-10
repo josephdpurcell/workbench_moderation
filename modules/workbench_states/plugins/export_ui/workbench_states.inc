@@ -7,14 +7,14 @@ $plugin = array(
   'menu' => array(
     'menu prefix' => 'admin/config/workbench/states',
     'menu item' => 'workbench-states',
-    'menu title' => 'Workbench states',
-    'menu description' => '',
+    'menu title' => 'Workbench States',
+    'menu description' => 'Add, edit or delete Workbench States.',
   ),
 
-  'title singular' => t('state'),
-  'title singular proper' => t('State'),
-  'title plural' => t('states'),
-  'title plural proper' => t('States'),
+  'title singular' => t('workbench state'),
+  'title singular proper' => t('Workbench State'),
+  'title plural' => t('workbench states'),
+  'title plural proper' => t('Workbench States'),
 
   'handler' => 'workbench_states_ui',
 
@@ -23,7 +23,7 @@ $plugin = array(
     'order' => array(
       'basic' => t('Basic information'),
       'context' => t('Contexts'),
-      'rules' => t('Rules'),
+      'access' => t('Access'),
     ),
   ),
 );

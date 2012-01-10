@@ -8,14 +8,14 @@ $plugin = array(
   'menu' => array(
     'menu prefix' => 'admin/config/workbench/workflows',
     'menu item' => 'workbench-workflows',
-    'menu title' => 'workbench workflows',
-    'menu description' => 'Add, edit or delete workbench workflows.',
+    'menu title' => 'Workbench Workflows',
+    'menu description' => 'Add, edit or delete Workbench Workflows.',
   ),
 
   'title singular' => t('workbench workflow'),
-  'title singular proper' => t('workbench workflow'),
+  'title singular proper' => t('Workbench Workflow'),
   'title plural' => t('workbench workflows'),
-  'title plural proper' => t('workbench workflows'),
+  'title plural proper' => t('Workbench Workflows'),
 
   'handler' => array(
     'class' => 'workbench_workflows_ui',
@@ -28,7 +28,7 @@ $plugin = array(
       'basic' => t('Settings'),
       'events' => t('Events'),
       'context' => t('Context'),
-      'rules' => t('Rules'),
+      'access' => t('Access'),
     ),
     // We have to add this form specially because it's invisible.
     'forms' => array(

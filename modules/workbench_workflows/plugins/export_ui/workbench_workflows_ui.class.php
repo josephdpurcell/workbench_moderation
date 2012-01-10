@@ -147,7 +147,7 @@ class workbench_workflows_ui extends workbench_base_ui {
 
     foreach ($workbench_events as $workbench_event) {
 
-      // @@TODO
+      // @todo
       // Exclude events when there is not an origin state in the workflow.
       if (in_array($workbench_event->target_state, $available_states)) {
         $event_options[$workbench_event->name] = $workbench_event->admin_title;
@@ -163,9 +163,12 @@ class workbench_workflows_ui extends workbench_base_ui {
       '#options' => $event_options,
       '#default_value' => $form_state['item']->events,
       '#title' => t('Events'),
-      // @@TODO
-      // Handle pluralization of event/events
-      '#description' => t("Unavailable events include: " . $unavailable_text_string, $unavailable_events_replacements),
     );
+
+    // @@TODO
+    // Handle pluralization of event/events
+    if (!empty($unavailable_text_string)) {
+      $form['events']['#description'] = t("Unavailable events include: " . $unavailable_text_string, $unavailable_events_replacements);
+    }
   }
 }

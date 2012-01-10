@@ -8,13 +8,13 @@ $plugin = array(
     'menu prefix' => 'admin/config/workbench/events',
     'menu item' => 'workbench-events',
     'menu title' => 'Workbench Events',
-    'menu description' => '',
+    'menu description' => 'Add, edit or delete Workbench Events.',
   ),
 
-  'title singular' => t('event'),
-  'title singular proper' => t('Event'),
-  'title plural' => t('events'),
-  'title plural proper' => t('Events'),
+  'title singular' => t('workbench event'),
+  'title singular proper' => t('Workbench Event'),
+  'title plural' => t('workbench events'),
+  'title plural proper' => t('Workbench Events'),
 
   'handler' => 'workbench_events_ui',
 
@@ -23,7 +23,7 @@ $plugin = array(
     'order' => array(
       'basic' => t('Basic information'),
       'context' => t('Contexts'),
-      'rules' => t('Rules'),
+      'access' => t('Access'),
     ),
   ),
 );
