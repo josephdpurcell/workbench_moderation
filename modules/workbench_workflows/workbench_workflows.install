@@ -4,15 +4,7 @@
  * Implementation of hook_schema().
  */
 function workbench_workflows_schema() {
-  // This should always point to our 'current' schema. This makes it relatively easy
-  // to keep a record of schema as we make changes to it.
-  return workbench_workflows_schema_1();
-}
 
-/**
- * Schema version 1 for Panels in D6.
- */
-function workbench_workflows_schema_1() {
   $schema = array();
 
   $schema['workbench_workflows'] = array(
@@ -23,7 +15,7 @@ function workbench_workflows_schema_1() {
 
       // @todo I'm not sure what this array should be.
       'api' => array(
-        'owner' => 'ctools',
+        'owner' => 'workbench_workflows',
         'api' => 'workbench_workflows',
         'minimum_version' => 1,
         'current_version' => 1,
@@ -44,7 +36,7 @@ function workbench_workflows_schema_1() {
       'category' => array(
         'type' => 'varchar',
         'length' => '64',
-        'description' => 'The category this workbench workflow appears in on the add content pane.',
+        'description' => 'The category this workbench workflow appears in.',
       ),
       'admin_title' => array(
         'type' => 'varchar',

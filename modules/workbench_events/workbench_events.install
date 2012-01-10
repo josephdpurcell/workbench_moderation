@@ -16,8 +16,8 @@ function workbench_events_schema() {
 
       // @todo I'm not sure what this array should be.
       'api' => array(
-        'owner' => 'ctools',
-        'api' => 'ctools_events',
+        'owner' => 'workbench_events',
+        'api' => 'workbench_events',
         'minimum_version' => 1,
         'current_version' => 1,
       ),

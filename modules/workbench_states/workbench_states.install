@@ -16,7 +16,7 @@ function workbench_states_schema() {
 
       // @todo I'm not sure what this array should be.
       'api' => array(
-        'owner' => 'ctools',
+        'owner' => 'workbench_states',
         'api' => 'workbench_states',
         'minimum_version' => 1,
         'current_version' => 1,
