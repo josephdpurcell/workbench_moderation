@@ -1,6 +1,6 @@
 project = "workbench_machine"
 core = "7.x"
-name = State Flow
+name = Workbench Machine
 description = A base implementation of the State Machine designed to work with ERS
 dependencies[] = state_machine
 dependencies[] = ctools
