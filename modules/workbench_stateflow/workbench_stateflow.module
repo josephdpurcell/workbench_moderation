@@ -30,17 +30,5 @@ function workbench_stateflow_state_flow_machine_type_alter(&$machine_type, $node
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_stateflow_guard($event) {
-  return workbench_stateflow_event_access($event->name, $event->get_machine()->get_object());
-}
-
-function workbench_stateflow_event_access($event_machine_name, $node) {
-
-  ctools_include('export');
-  ctools_include('context');
-  $node_context = ctools_context_create('entity:node', $node);
-  $event = ctools_export_crud_load('workbench_events', $event_machine_name);
-
-  $contexts = ctools_context_match_required_contexts($event->requiredcontexts, array($node_context));
-  $contexts = ctools_context_load_contexts($event, FALSE, $contexts);
-  return ctools_access($event->access, $contexts);
+  return workbench_events_event_access($event->name, $event->get_machine()->get_object());
 }
