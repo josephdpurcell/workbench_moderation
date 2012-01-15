@@ -56,23 +56,4 @@ class workbenchStateflow extends StateFlow {
     $key = array_search($event, $this->events);
     drupal_set_message(t('Could not transition node using %event event.', array('%event' => $key)), 'error');
   }
-
-  public function get_event($key) {
-    if (!array_key_exists($key, $this->events)) {
-      return FALSE;
-    }
-
-    if (is_array($this->events[$key])) {
-      $options = $this->events[$key];
-      $this->events[$key] = new workbench_stateflow_Event($key, $this, $options);
-    }
-
-    return $this->events[$key];
-  }
-}
-
-/**
- * Not sure if this class will be needed.
- */
-class workbench_stateflow_Event extends StateFlow_Event {
 }
