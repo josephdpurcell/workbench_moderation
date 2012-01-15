@@ -1,0 +1,86 @@
+<?php
+
+/**
+ * Schema for customizable states.
+ */
+function workbench_states_schema() {
+
+  $schema = array();
+
+  $schema['workbench_states'] = array(
+    'description' => 'Contains exportable customized states.',
+    'export' => array(
+      'identifier' => 'state',
+      'bulk export' => TRUE,
+      'primary key' => 'stateid',
+
+      // @todo I'm not sure what this array should be.
+      'api' => array(
+        'owner' => 'workbench_states',
+        'api' => 'workbench_states',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'stateid' => array(
+        'type' => 'serial',
+        'description' => 'A database primary key to ensure uniqueness',
+        'not null' => TRUE,
+        'no export' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'description' => 'Unique ID for this state. Used to identify it programmatically.',
+      ),
+      'editor_title' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'description' => 'Administrative title for this state.',
+      ),
+      'admin_title' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'description' => 'Administrative title for this state.',
+      ),
+      'admin_description' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Administrative description for this state.',
+        'object default' => '',
+      ),
+      'requiredcontexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any required contexts for this state.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'contexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any embedded contexts for this state.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'relationships' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any relationships for this state.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'access' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'The actual group of access plugins for this state.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+    ),
+    'primary key' => array('stateid'),
+  );
+
+  return $schema;
+}

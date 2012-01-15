@@ -1,0 +1,114 @@
+<?php
+
+/**
+ * Implementation of hook_schema().
+ */
+function workbench_workflows_schema() {
+
+  $schema = array();
+
+  $schema['workbench_workflows'] = array(
+    'export' => array(
+      'identifier' => 'workflow',
+      'load callback' => 'workbench_workflows_load',
+      'load all callback' => 'workbench_workflows_load_all',
+
+      // @todo I'm not sure what this array should be.
+      'api' => array(
+        'owner' => 'workbench_workflows',
+        'api' => 'workbench_workflows',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'workflowid' => array(
+        'type' => 'serial',
+        'description' => 'A database primary key to ensure uniqueness',
+        'not null' => TRUE,
+        'no export' => TRUE,
+      ),
+      'name' => array(
+        'type' => 'varchar',
+        'length' => '255',
+        'description' => 'The unique name of the workbench workflow.',
+      ),
+      'category' => array(
+        'type' => 'varchar',
+        'length' => '64',
+        'description' => 'The category this workbench workflow appears in.',
+      ),
+      'admin_title' => array(
+        'type' => 'varchar',
+        'length' => '128',
+        'description' => 'The administrative title of the workbench workflow.',
+      ),
+      'admin_description' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Administrative title of this workbench workflow.',
+        'object default' => '',
+      ),
+      'states' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'serialize' => TRUE,
+        'object default' => array(),
+        'description' => 'An array of states allowed in the workflow',
+      ),
+      'events' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'serialize' => TRUE,
+        'object default' => array(),
+        'description' => 'An array of events allowed in the workflow',
+      ),
+      'requiredcontexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'serialize' => TRUE,
+        'object default' => array(),
+        'description' => 'An array of required contexts.',
+      ),
+      'requiredcontexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any required contexts for this workflow.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'contexts' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any embedded contexts for this workflow.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'relationships' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Any relationships for this workflow.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'access' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'The actual group of access plugins for this state.',
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+      'weight' => array(
+        'type' => 'int',
+        'no export' => TRUE,
+        'description' => 'Weight',
+      ),
+    ),
+    'primary key' => array('workflowid'),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
+  );
+
+  return $schema;
+}

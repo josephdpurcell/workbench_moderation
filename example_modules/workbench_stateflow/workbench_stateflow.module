@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * Implements hook_state_flow_plugins().
+ */
+function workbench_stateflow_state_flow_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'workbench_stateflow') . '/plugins/state_flow';
+
+  $info['workbench_stateflow'] = array(
+    'handler' => array(
+      'parent' => 'state_flow',
+      'class' => 'workbenchStateflow',
+      'file' => 'workbench_stateflow.inc',
+      'path' => $path,
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_state_flow_machine_type_alter()
+ */
+function workbench_stateflow_state_flow_machine_type_alter(&$machine_type, $node) {
+  $machine_type = 'workbench_stateflow';
+}
+
+/**
+ * Guard callback for the workbenchStates publish and unpublish events.
+ */
+function workbench_stateflow_guard($event) {
+  return workbench_events_event_access($event->name, $event->get_machine()->get_object());
+}

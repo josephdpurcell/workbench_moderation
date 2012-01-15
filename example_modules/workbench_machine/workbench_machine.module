@@ -1,0 +1,148 @@
+<?php
+
+/**
+ * @file
+ * An implementation of node revision workflow for Drupal based on the
+ * State Machine system.
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ */
+function workbench_machine_ctools_plugin_directory($module, $plugin) {
+  if ($module == 'workbench_machine') {
+    return 'plugins/workbench_machine/' . $plugin;
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function workbench_machine_ctools_plugin_type() {
+  $plugins = array(
+    'plugins' => array(
+      'cache' => TRUE,
+      'use hooks' => TRUE,
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_entity_property_info_alter().
+ *
+ * Adds a "state" property on nodes that are configured with state flow.
+ * /
+function workbench_machine_entity_property_info_alter(&$info) {
+  foreach ($info['node']['bundles'] as $entity_type => $entity_info) {
+    if (variable_get('workbench_machine_' . $entity_type, '')) {
+      $info['node']['bundles'][$entity_type]['properties']['state'] = array(
+        'label' => t('Workflow state'),
+        'description' => t('The current workflow state for this node revision.'),
+        'getter callback' => 'workbench_machine_entity_get_state',
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_workbench_machine_plugins().
+ */
+function workbench_machine_workbench_machine_plugins() {
+  $info = array();
+  $path = drupal_get_path('module', 'workbench_machine') . '/plugins/workbench_machine/';
+  $info['workbench_machine'] = array(
+    'handler' => array(
+      'class' => 'workbenchMachine',
+      'file' => 'workbench_machine.inc',
+      'path' => $path,
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_views_api().
+ * /
+function workbench_machine_views_api() {
+  return array(
+    'api' => 2,
+    'path' => drupal_get_path('module', 'workbench_machine') . '/includes/views',
+  );
+}
+
+/**
+ * Determine whether a user has permission to transition a node with an event.
+ */
+function workbench_machine_access($node, $event_name, $account = NULL) {
+  global $user;
+
+  // If no user account is given, then use the current user.
+  if (empty($account)) {
+    $account = $user;
+  }
+
+  // If the user cannot edit the node, then deny access to any events.
+  if (!workbench_machine_menu_node_access($node, $account)) {
+    return FALSE;
+  }
+
+  // Load the state machine for the node and test whether the event is allowed.
+  $workbench_machine = workbench_machine_load_state_machine($node);
+  $state_event = $workbench_machine ? $workbench_machine->get_event($event_name) : FALSE;
+  return $state_event ? $state_event->validate() : FALSE;
+}
+
+/**
+ * Getter callback for the "state" property on node bundles using workflow.
+ * /
+function workbench_machine_entity_get_state($data, $options, $name, $type, $info) {
+  $workbench_machine = workbench_machine_load_state_machine($data);
+  return $workbench_machine->get_current_state();
+}
+
+/**
+ * Inform external systems about a workflow transition.
+ */
+function workbench_machine_invoke_event_handlers($object, $state) {
+  // Load related objects
+  $node = node_load($object->nid, $object->vid);
+  $author = !empty($node->uid) ? user_load($node->uid) : drupal_anonymous_user();
+
+  // Invoke the Rules workbench_machine_event_fired event.
+  if ($node && module_exists('rules')) {
+    rules_invoke_event('workbench_machine_event_fired', $node, $author, $state);
+  }
+}
+
+/**
+ * Load the workbench_machine state_machine for the given node.
+ */
+function workbench_machine_load_state_machine($node, $reset = FALSE) {
+  $objects = &drupal_static(__FUNCTION__);
+
+  if (!isset($objects[$node->vid]) || $reset) {
+    ctools_include('plugins');
+
+    $machine_type = 'workbench_machine';
+    //allow other modules to invoke other machine types
+    drupal_alter('workbench_machine_machine_type', $machine_type, $node);
+    $plugin = ctools_get_plugins('workbench_machine', 'plugins', $machine_type);
+
+    if (!empty($plugin)) {
+      $class = ctools_plugin_get_class($plugin, 'handler');
+      $workbench_machine_object = new $class($node);
+      $objects[$node->vid] = $workbench_machine_object;
+    }
+  }
+
+  return $objects[$node->vid];
+}
+
+/**
+ * Guard callback for the workbenchStates publish and unpublish events.
+ */
+function workbench_machine_guard($event) {
+  return workbench_events_event_access($event->name, $event->get_machine()->get_object());
+}
