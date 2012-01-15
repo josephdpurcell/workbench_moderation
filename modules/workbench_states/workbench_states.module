@@ -64,6 +64,9 @@ function workbench_states_load_all($reset = FALSE) {
   return $cache;
 }
 
+/**
+ * Create an array of states suitable for FAPI.
+ */
 function workbench_states_options($label_key = 'admin_title', $reset = FALSE) {
   $states = workbench_states_load_all($reset = FALSE);
 
@@ -73,4 +76,20 @@ function workbench_states_options($label_key = 'admin_title', $reset = FALSE) {
   }
 
   return $output;
+}
+
+/**
+ * @todo document.
+ */
+function workbench_states_state_access($state_machine_name, $node) {
+
+  ctools_include('export');
+  ctools_include('context');
+  $node_context = ctools_context_create('entity:node', $node);
+  $state = ctools_export_crud_load('workbench_states', $state_machine_name);
+
+  $contexts = ctools_context_match_required_contexts($state->requiredcontexts, array($node_context));
+  $contexts = ctools_context_load_contexts($state, FALSE, $contexts);
+
+  return ctools_access($state->access, $contexts);
 }

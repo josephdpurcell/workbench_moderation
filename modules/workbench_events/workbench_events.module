@@ -36,6 +36,9 @@ function workbench_events_ctools_plugin_directory($module, $plugin) {
   }
 }
 
+/**
+ * @todo document.
+ */
 function workbench_events_event_access($event_machine_name, $node) {
 
   ctools_include('export');
@@ -45,5 +48,10 @@ function workbench_events_event_access($event_machine_name, $node) {
 
   $contexts = ctools_context_match_required_contexts($event->requiredcontexts, array($node_context));
   $contexts = ctools_context_load_contexts($event, FALSE, $contexts);
-  return ctools_access($event->access, $contexts);
+
+  if (!ctools_access($event->access, $contexts)) {
+    return FALSE;
+  } else {
+    return workbench_states_state_access($event->target_state, $node);
+  }
 }
