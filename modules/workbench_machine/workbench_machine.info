@@ -1,7 +1,7 @@
 project = "workbench_machine"
 core = "7.x"
 name = Workbench Machine
-description = A base implementation of the State Machine designed to work with ERS
+description = A base implementation of the State Machine designed to work with ERS instead of State Flow.
 dependencies[] = state_machine
 dependencies[] = ctools
 dependencies[] = workbench_workflows

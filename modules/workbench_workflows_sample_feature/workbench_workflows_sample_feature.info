@@ -1,4 +1,4 @@
-name = "workbench_workflows_sample_feature"
+name = "Workbench Workflows Sample Feature"
 description = "Contains the states and events: draft, needs_review and published. Also the workflow "main_workflow.""
 core = "7.x"
 package = "Features"

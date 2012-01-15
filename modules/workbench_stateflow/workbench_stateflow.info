@@ -1,7 +1,8 @@
 name = Workbench Stateflow
 description = Extends State Flow with Workbench Workflows
-package = Workbench
+package = State Machine
 core = 7.x
 ; Core classes
 files[] = plugins/state_flow/workbench_stateflow.inc
 dependencies[] = state_flow
+dependencies[] = workbench_workflows
