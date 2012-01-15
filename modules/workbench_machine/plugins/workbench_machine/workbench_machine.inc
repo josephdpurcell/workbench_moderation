@@ -75,9 +75,10 @@ class workbenchMachine extends StateMachine {
 
     $event_options = array();
     foreach($events as $event) {
-      $event_options[$event->name] = $event->title;
+      if ($event->validate()) {
+        $event_options[$event->name] = $event->title;
+      }
     }
-
     return $event_options;
   }
 
@@ -98,8 +99,13 @@ class workbenchMachine extends StateMachine {
     return $state;
   }
 
-
+  public function get_object() {
+    return $this->object;
+  }
 }
 
 class workbench_machine_Event extends StateMachine_Event {
+  public function get_machine() {
+    return $this->machine;
+  }
 }

@@ -163,6 +163,5 @@ function workbench_machine_event_access($event_machine_name, $node) {
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_machine_guard($event) {
-
-  return workbench_machine_event_access($event->name, $event->machine->object);
+  return workbench_machine_event_access($event->name, $event->get_machine()->get_object());
 }
