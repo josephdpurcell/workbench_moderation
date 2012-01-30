@@ -5,7 +5,7 @@ $plugin = array(
   'access' => 'administer workbench states',
 
   'menu' => array(
-    'menu prefix' => 'admin/config/workbench/states',
+    'menu prefix' => 'admin/structure',
     'menu item' => 'workbench-states',
     'menu title' => 'Workbench States',
     'menu description' => 'Add, edit or delete Workbench States.',

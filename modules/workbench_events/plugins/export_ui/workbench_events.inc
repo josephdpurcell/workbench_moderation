@@ -5,7 +5,7 @@ $plugin = array(
   'access' => 'administer workbench events',
 
   'menu' => array(
-    'menu prefix' => 'admin/config/workbench/events',
+    'menu prefix' => 'admin/structure',
     'menu item' => 'workbench-events',
     'menu title' => 'Workbench Events',
     'menu description' => 'Add, edit or delete Workbench Events.',
