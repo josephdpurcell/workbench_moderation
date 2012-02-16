@@ -23,6 +23,7 @@ function workbench_moderation_state_flow_plugins() {
     // This array will be built up and included with the state_flow plugin.
     $workflow_options = array();
 
+    // Build up states in a way compatible with state_flow_plugins.
     foreach ($workflow->states as $state_name => $state) {
       $state_array = array(
         'label' => $state_exportables[$state_name]->admin_title,
@@ -36,7 +37,7 @@ function workbench_moderation_state_flow_plugins() {
       $workflow_options['states'][$state_name] = $state_array;
     }
 
-
+    // Build up events in a way compatible with state_flow_plugins.
     foreach ($workflow->events as $event_name => $event) {
 
       $origins = array();
@@ -54,7 +55,7 @@ function workbench_moderation_state_flow_plugins() {
       $event_array = array(
         'origin' => $origins,
         'target' => $event_exportables[$event_name]->target_state,
-        'guard' => 'workbench_stateflow_guard',
+        'guard' => 'workbench_moderation_guard',
         'title' => $event_exportables[$event_name]->admin_title,
       );
 
@@ -73,70 +74,9 @@ function workbench_moderation_state_flow_plugins() {
         'workflow_options' => $workflow_options,
       ),
     );
-
-
-
   }
 
-
-
-
-    $workflow_options = array(
-    'states' => array(
-      'draft' => array('label' => t('Draft')),
-      'published' => array(
-        'label' => t('Published'),
-        'on_enter' => 'on_enter_published',
-        'on_exit' => 'on_exit_published',
-      ),
-      'unpublished' => array('label' => t('Unpublished')),
-    ),
-    'events' => array(
-      'publish' => array(
-        'label' => t('Publish--'),
-        'origin' => 'draft',
-        'target' => 'published',
-      ),
-      'unpublish' => array(
-        'label' => t('Unpublish'),
-        'origin' => 'published',
-        'target' => 'unpublished',
-        'permission' => 'publish and unpublish content',
-      ),
-      'to draft' => array(
-        'label' => t('To Draft'),
-        'origin' => 'unpublished',
-        'target' => 'draft',
-      ),
-    ),
-  );
-
-
-
-  // @TODO simplify workflow_options and put this more complicated setup
-  // in SFN
-  $info['workbench_moderation'] = array(
-    'handler' => array(
-      'class' => 'StateFlowNode',
-      'file' => 'state_flow_node.inc',
-      'path' => $class_path,
-      'parent' => 'state_flow_entity',
-      'workflow_options' => $workflow_options,
-    ),
-  );
-
-
-
-
-
-  dsm($info);
-
-
-
-
-
-
-
+//  dsm($info);
   return $info;
 }
 
@@ -145,8 +85,15 @@ function workbench_moderation_state_flow_plugins() {
  */
 function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $node) {
 
-//  $workflow = workbench_workflows_select_workflow($node);
-  //dsm($machine_type);
+  $workflow = workbench_workflows_select_workflow($node);
+
+
+  if (!empty($workflow->name)) {
+    $machine_type = 'workbench_moderation__' . $workflow->name;
+
+  }
+
+ // dsm($machine_type);
 
   //dsm($workflow);
 
@@ -160,5 +107,8 @@ function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $nod
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_moderation_guard($event) {
+
+  //dsm($event);
+  return TRUE;
   return workbench_events_event_access($event->name, $event->get_machine()->get_object());
 }
