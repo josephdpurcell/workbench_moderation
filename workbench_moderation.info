@@ -1,8 +1,8 @@
-name = Workbench Stateflow
-description = Extends State Flow with Workbench Workflows
+name = Workbench Moderation
+description = Workbench Moderation now extends State Flow
 package = State Machine
 core = 7.x
 ; Core classes
-files[] = plugins/state_flow/workbench_stateflow.inc
+; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
 dependencies[] = state_flow
 dependencies[] = workbench_workflows

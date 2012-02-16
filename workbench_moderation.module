@@ -3,15 +3,16 @@
 /**
  * Implements hook_state_flow_plugins().
  */
-function workbench_stateflow_state_flow_plugins() {
+function workbench_moderation_state_flow_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'workbench_stateflow') . '/plugins/state_flow';
+  $path = drupal_get_path('module', 'workbench_moderation') . '/plugins/state_flow';
 
-  $info['workbench_stateflow'] = array(
+  // @todo, use stateflow as the class and just provide workflow_options
+  $info['workbench_moderation'] = array(
     'handler' => array(
       'parent' => 'state_flow',
       'class' => 'workbenchStateflow',
-      'file' => 'workbench_stateflow.inc',
+      'file' => 'workbench_moderation.inc',
       'path' => $path,
     ),
   );
@@ -22,13 +23,13 @@ function workbench_stateflow_state_flow_plugins() {
 /**
  * Implements hook_state_flow_machine_type_alter()
  */
-function workbench_stateflow_state_flow_machine_type_alter(&$machine_type, $node) {
-  $machine_type = 'workbench_stateflow';
+function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $node) {
+  $machine_type = 'workbench_moderation';
 }
 
 /**
  * Guard callback for the workbenchStates publish and unpublish events.
  */
-function workbench_stateflow_guard($event) {
+function workbench_moderation_guard($event) {
   return workbench_events_event_access($event->name, $event->get_machine()->get_object());
 }
