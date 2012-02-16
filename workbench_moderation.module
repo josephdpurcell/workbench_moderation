@@ -14,9 +14,6 @@ function workbench_moderation_state_flow_plugins() {
 
   // We're just building on top of the state_flow plugins.
   $class_path = drupal_get_path('module', 'state_flow') . '/plugins';
-  dsm($workflows);
-
-
 
   foreach ($workflows as $workflow) {
 
@@ -56,14 +53,11 @@ function workbench_moderation_state_flow_plugins() {
         'origin' => $origins,
         'target' => $event_exportables[$event_name]->target_state,
         'guard' => 'workbench_moderation_guard',
-        'title' => $event_exportables[$event_name]->admin_title,
+        'label' => $event_exportables[$event_name]->admin_title,
       );
 
       $workflow_options['events'][$event_name] = $event_array;
     }
-
-
-
 
     $info['workbench_moderation__' . $workflow->name] = array(
       'handler' => array(
@@ -76,7 +70,6 @@ function workbench_moderation_state_flow_plugins() {
     );
   }
 
-//  dsm($info);
   return $info;
 }
 
@@ -86,29 +79,14 @@ function workbench_moderation_state_flow_plugins() {
 function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $node) {
 
   $workflow = workbench_workflows_select_workflow($node);
-
-
   if (!empty($workflow->name)) {
     $machine_type = 'workbench_moderation__' . $workflow->name;
-
   }
-
- // dsm($machine_type);
-
-  //dsm($workflow);
-
-
-
-
-  //$machine_type = 'workbench_moderation';
 }
 
 /**
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_moderation_guard($event) {
-
-  //dsm($event);
-  return TRUE;
   return workbench_events_event_access($event->name, $event->get_machine()->get_object());
 }
