@@ -5,17 +5,137 @@
  */
 function workbench_moderation_state_flow_plugins() {
   $info = array();
-  $path = drupal_get_path('module', 'workbench_moderation') . '/plugins/state_flow';
 
-  // @todo, use stateflow as the class and just provide workflow_options
-  $info['workbench_moderation'] = array(
-    'handler' => array(
-      'parent' => 'state_flow',
-      'class' => 'workbenchStateflow',
-      'file' => 'workbench_moderation.inc',
-      'path' => $path,
+  // Load all workflows, events and states.
+  $workflows = workbench_workflows_load_all();
+  // @todo, workbench_events should have a helper function for this.
+  $event_exportables = ctools_export_load_object('workbench_events');
+  $state_exportables = workbench_states_load_all();
+
+  // We're just building on top of the state_flow plugins.
+  $class_path = drupal_get_path('module', 'state_flow') . '/plugins';
+  dsm($workflows);
+
+
+
+  foreach ($workflows as $workflow) {
+
+    // This array will be built up and included with the state_flow plugin.
+    $workflow_options = array();
+
+    foreach ($workflow->states as $state_name => $state) {
+      $state_array = array(
+        'label' => $state_exportables[$state_name]->admin_title,
+      );
+
+      if ($state_name === 'published') {
+        $state_array['on_enter'] = 'on_enter_published';
+        $state_array['on_exit'] = 'on_exit_published';
+      }
+
+      $workflow_options['states'][$state_name] = $state_array;
+    }
+
+
+    foreach ($workflow->events as $event_name => $event) {
+
+      $origins = array();
+
+      foreach($event_exportables[$event_name]->origin_states as $key => $state_value) {
+
+        // $state_value might be 0.
+        // This transformation is a little annoying. It might be better to fix
+        // This in the validation of saving workbench_events.
+        if (!empty($state_value)) {
+          $origins[$key] = $state_value;
+        }
+      }
+
+      $event_array = array(
+        'origin' => $origins,
+        'target' => $event_exportables[$event_name]->target_state,
+        'guard' => 'workbench_stateflow_guard',
+        'title' => $event_exportables[$event_name]->admin_title,
+      );
+
+      $workflow_options['events'][$event_name] = $event_array;
+    }
+
+
+
+
+    $info['workbench_moderation__' . $workflow->name] = array(
+      'handler' => array(
+        'class' => 'StateFlowNode',
+        'file' => 'state_flow_node.inc',
+        'path' => $class_path,
+        'parent' => 'state_flow_entity',
+        'workflow_options' => $workflow_options,
+      ),
+    );
+
+
+
+  }
+
+
+
+
+    $workflow_options = array(
+    'states' => array(
+      'draft' => array('label' => t('Draft')),
+      'published' => array(
+        'label' => t('Published'),
+        'on_enter' => 'on_enter_published',
+        'on_exit' => 'on_exit_published',
+      ),
+      'unpublished' => array('label' => t('Unpublished')),
+    ),
+    'events' => array(
+      'publish' => array(
+        'label' => t('Publish--'),
+        'origin' => 'draft',
+        'target' => 'published',
+      ),
+      'unpublish' => array(
+        'label' => t('Unpublish'),
+        'origin' => 'published',
+        'target' => 'unpublished',
+        'permission' => 'publish and unpublish content',
+      ),
+      'to draft' => array(
+        'label' => t('To Draft'),
+        'origin' => 'unpublished',
+        'target' => 'draft',
+      ),
     ),
   );
+
+
+
+  // @TODO simplify workflow_options and put this more complicated setup
+  // in SFN
+  $info['workbench_moderation'] = array(
+    'handler' => array(
+      'class' => 'StateFlowNode',
+      'file' => 'state_flow_node.inc',
+      'path' => $class_path,
+      'parent' => 'state_flow_entity',
+      'workflow_options' => $workflow_options,
+    ),
+  );
+
+
+
+
+
+  dsm($info);
+
+
+
+
+
+
 
   return $info;
 }
@@ -24,7 +144,16 @@ function workbench_moderation_state_flow_plugins() {
  * Implements hook_state_flow_machine_type_alter()
  */
 function workbench_moderation_state_flow_machine_type_alter(&$machine_type, $node) {
-  $machine_type = 'workbench_moderation';
+
+//  $workflow = workbench_workflows_select_workflow($node);
+  //dsm($machine_type);
+
+  //dsm($workflow);
+
+
+
+
+  //$machine_type = 'workbench_moderation';
 }
 
 /**
