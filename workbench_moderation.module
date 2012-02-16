@@ -26,6 +26,8 @@ function workbench_moderation_state_flow_plugins() {
         'label' => $state_exportables[$state_name]->admin_title,
       );
 
+      // @todo, should there be a UI way of adding more of these?
+      // Perhaps just a ui flag for "treat this as a published state."
       if ($state_name === 'published') {
         $state_array['on_enter'] = 'on_enter_published';
         $state_array['on_exit'] = 'on_exit_published';
@@ -61,6 +63,9 @@ function workbench_moderation_state_flow_plugins() {
 
     $info['workbench_moderation__' . $workflow->name] = array(
       'handler' => array(
+        // @todo, Once StateFlow can handle non-nodes, these properties will have
+        // to respond to something in the $workflow variable to change the class
+        // name and the file, parent etc.
         'class' => 'StateFlowNode',
         'file' => 'state_flow_node.inc',
         'path' => $class_path,
