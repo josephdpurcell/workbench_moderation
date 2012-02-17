@@ -1,10 +1,89 @@
 <?php
 
-
 /**
  * Implements hook_views_api().
  */
  function workbench_moderation_views_api() {
    // @todo, Should this be 3.0?
    return array('api' => 2.0);
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function workbench_moderation_menu_alter(&$items) {
+
+  // Redirect node/%node/revisions
+  $items['node/%node/revisions']['page callback'] = 'workbench_moderation_node_revisions_redirect';
+  $items['node/%node/revisions']['page arguments'] = array(1);
+  $items['node/%node/revisions']['type'] = MENU_NORMAL_ITEM;
+
+  // Redirect node/%node/workflow
+  if (!empty($items['node/%node/workflow']) && $items['node/%node/workflow']['module'] === 'state_flow') {
+    // @todo, Uncomment this when the moderation tab is ready.
+    // $items['node/%node/workflow']['page callback'] = 'workbench_moderation_node_revisions_redirect';
+    // $items['node/%node/workflow']['page arguments'] = array(1);
+    // $items['node/%node/workflow']['type'] = MENU_NORMAL_ITEM;
+  }
+
+  /**
+   * @todo, revisit these alters from version 1.x
+
+  // Override the node revision view callback.
+  $items['node/%node/revisions/%/view']['page callback'] = 'workbench_moderation_node_view_revision';
+  $items['node/%node/revisions/%/view']['file path'] = drupal_get_path('module', 'workbench_moderation');
+  $items['node/%node/revisions/%/view']['file'] = 'workbench_moderation.node.inc';
+
+  // For revert and delete operations, use our own access check.
+  $items['node/%node/revisions/%/revert']['access callback'] = '_workbench_moderation_revision_access';
+  $items['node/%node/revisions/%/delete']['access callback'] = '_workbench_moderation_revision_access';
+
+  // Provide a container administration menu item, if one doesn't already exist.
+  if (!isset($items['admin/config/workbench'])) {
+    $items['admin/config/workbench'] = array(
+      'title' => 'Workbench',
+      'description' => 'Workbench',
+      'page callback' => 'system_admin_menu_block_page',
+      'access arguments' => array('administer site configuration'),
+      'position' => 'right',
+      'file' => 'system.admin.inc',
+      'file path' => drupal_get_path('module', 'system'),
+    );
+  }
+   *
+   *
+   */
+}
+
+/**
+ * Redirects 'node/%node/revisions' to node/%node/moderation
+ *
+ * workbench_moderation_menu_alter() changes the page callback
+ * for 'node/%node/revisions' to this function
+ *
+ * @param $node
+ *   The node being acted upon.
+ */
+function workbench_moderation_node_revisions_redirect($node) {
+
+  drupal_goto('node/' . $node->nid . '/moderation');
+
+  /**
+   * @todo Revisit this additional logic from version 1.x
+  // Redirect node types subject to moderation.
+  if (workbench_moderation_node_type_moderated($node->type) === TRUE) {
+    drupal_goto('node/' . $node->nid . '/moderation');
+  }
+  // Return the normal node revisions page for unmoderated types.
+  else {
+
+    if (module_exists('diff')) {
+      return diff_diffs_overview($node);
+    }
+    else {
+      return node_revision_overview($node);
+    }
+  }
+   *
+   */
 }
