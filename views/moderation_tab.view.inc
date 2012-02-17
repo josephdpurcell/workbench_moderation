@@ -1,0 +1,123 @@
+<?php
+
+$view = new view;
+$view->name = 'moderation_tab';
+$view->description = '';
+$view->tag = 'default';
+$view->base_table = 'node_revision';
+$view->human_name = 'moderation_tab';
+$view->core = 7;
+$view->api_version = '3.0';
+$view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+/* Display: Master */
+$handler = $view->new_display('default', 'Master', 'default');
+$handler->display->display_options['title'] = 'Moderation';
+$handler->display->display_options['access']['type'] = 'perm';
+$handler->display->display_options['access']['perm'] = 'view revisions';
+$handler->display->display_options['cache']['type'] = 'none';
+$handler->display->display_options['query']['type'] = 'views_query';
+$handler->display->display_options['query']['options']['query_comment'] = FALSE;
+$handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['pager']['type'] = 'full';
+$handler->display->display_options['pager']['options']['items_per_page'] = '25';
+$handler->display->display_options['style_plugin'] = 'table';
+/* Field: Content revision: Vid */
+$handler->display->display_options['fields']['vid']['id'] = 'vid';
+$handler->display->display_options['fields']['vid']['table'] = 'node_revision';
+$handler->display->display_options['fields']['vid']['field'] = 'vid';
+$handler->display->display_options['fields']['vid']['alter']['alter_text'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['make_link'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['absolute'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['external'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['replace_spaces'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['trim_whitespace'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['nl2br'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['word_boundary'] = 1;
+$handler->display->display_options['fields']['vid']['alter']['ellipsis'] = 1;
+$handler->display->display_options['fields']['vid']['alter']['strip_tags'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['trim'] = 0;
+$handler->display->display_options['fields']['vid']['alter']['html'] = 0;
+$handler->display->display_options['fields']['vid']['element_label_colon'] = 1;
+$handler->display->display_options['fields']['vid']['element_default_classes'] = 1;
+$handler->display->display_options['fields']['vid']['hide_empty'] = 0;
+$handler->display->display_options['fields']['vid']['empty_zero'] = 0;
+$handler->display->display_options['fields']['vid']['hide_alter_empty'] = 1;
+/* Field: Content revision: Updated date */
+$handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
+$handler->display->display_options['fields']['timestamp']['table'] = 'node_revision';
+$handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
+$handler->display->display_options['fields']['timestamp']['alter']['alter_text'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['make_link'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['absolute'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['word_boundary'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['ellipsis'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['strip_tags'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['trim'] = 0;
+$handler->display->display_options['fields']['timestamp']['alter']['html'] = 0;
+$handler->display->display_options['fields']['timestamp']['hide_empty'] = 0;
+$handler->display->display_options['fields']['timestamp']['empty_zero'] = 0;
+/* Field: Content revision: Title */
+$handler->display->display_options['fields']['title']['id'] = 'title';
+$handler->display->display_options['fields']['title']['table'] = 'node_revision';
+$handler->display->display_options['fields']['title']['field'] = 'title';
+$handler->display->display_options['fields']['title']['label'] = 'title';
+$handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+$handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+$handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
+$handler->display->display_options['fields']['title']['alter']['external'] = 0;
+$handler->display->display_options['fields']['title']['alter']['replace_spaces'] = 0;
+$handler->display->display_options['fields']['title']['alter']['trim_whitespace'] = 0;
+$handler->display->display_options['fields']['title']['alter']['nl2br'] = 0;
+$handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
+$handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
+$handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+$handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+$handler->display->display_options['fields']['title']['alter']['html'] = 0;
+$handler->display->display_options['fields']['title']['element_label_colon'] = 1;
+$handler->display->display_options['fields']['title']['element_default_classes'] = 1;
+$handler->display->display_options['fields']['title']['hide_empty'] = 0;
+$handler->display->display_options['fields']['title']['empty_zero'] = 0;
+$handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
+$handler->display->display_options['fields']['title']['link_to_node'] = 0;
+$handler->display->display_options['fields']['title']['link_to_node_revision'] = 1;
+/* Field: Content revision: Log message */
+$handler->display->display_options['fields']['log']['id'] = 'log';
+$handler->display->display_options['fields']['log']['table'] = 'node_revision';
+$handler->display->display_options['fields']['log']['field'] = 'log';
+$handler->display->display_options['fields']['log']['alter']['alter_text'] = 0;
+$handler->display->display_options['fields']['log']['alter']['make_link'] = 0;
+$handler->display->display_options['fields']['log']['alter']['absolute'] = 0;
+$handler->display->display_options['fields']['log']['alter']['external'] = 0;
+$handler->display->display_options['fields']['log']['alter']['replace_spaces'] = 0;
+$handler->display->display_options['fields']['log']['alter']['trim_whitespace'] = 0;
+$handler->display->display_options['fields']['log']['alter']['nl2br'] = 0;
+$handler->display->display_options['fields']['log']['alter']['word_boundary'] = 1;
+$handler->display->display_options['fields']['log']['alter']['ellipsis'] = 1;
+$handler->display->display_options['fields']['log']['alter']['strip_tags'] = 0;
+$handler->display->display_options['fields']['log']['alter']['trim'] = 0;
+$handler->display->display_options['fields']['log']['alter']['html'] = 0;
+$handler->display->display_options['fields']['log']['element_label_colon'] = 1;
+$handler->display->display_options['fields']['log']['element_default_classes'] = 1;
+$handler->display->display_options['fields']['log']['hide_empty'] = 0;
+$handler->display->display_options['fields']['log']['empty_zero'] = 0;
+$handler->display->display_options['fields']['log']['hide_alter_empty'] = 1;
+/* Contextual filter: Content: Nid */
+$handler->display->display_options['arguments']['nid']['id'] = 'nid';
+$handler->display->display_options['arguments']['nid']['table'] = 'node';
+$handler->display->display_options['arguments']['nid']['field'] = 'nid';
+$handler->display->display_options['arguments']['nid']['default_action'] = 'not found';
+$handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+$handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = 0;
+$handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+$handler->display->display_options['arguments']['nid']['break_phrase'] = 0;
+$handler->display->display_options['arguments']['nid']['not'] = 0;
+
+/* Display: Page */
+$handler = $view->new_display('page', 'Page', 'page');
+$handler->display->display_options['path'] = 'node/%/moderation';
+$handler->display->display_options['menu']['type'] = 'tab';
+$handler->display->display_options['menu']['title'] = 'Moderation';
+$handler->display->display_options['menu']['weight'] = '0';
