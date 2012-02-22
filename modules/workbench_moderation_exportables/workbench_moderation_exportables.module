@@ -1,6 +1,6 @@
 <?php
 
-function workbench_events_permission() {
+function workbench_moderation_exportables_permission() {
   return array(
     'administer_workbench_moderation_exportables' => array(
       'title' => t('Administer workbench moderation exportables'),
