@@ -1,0 +1,92 @@
+<?php
+
+
+
+
+
+
+
+/**
+ * Schema for customizable $plural.
+ */
+function workbench_moderation_exportables_common_starter_schema($type, $plural) {
+
+  $schema = array();
+
+  $schema["workbench_moderation_exportables_$plural"] = array(
+    "description" => "Contains exportable customized $plural.",
+    "export" => array(
+      "identifier" => "$type",
+      "bulk export" => TRUE,
+      "primary key" => $type . "id",
+
+      // @todo I"m not sure what this array should be.
+      "api" => array(
+        "owner" => "workbench_$plural",
+        "api" => "workbench_$plural",
+        "minimum_version" => 1,
+        "current_version" => 1,
+      ),
+    ),
+    "fields" => array(
+      $type . "id" => array(
+        "type" => "serial",
+        "description" => "A database primary key to ensure uniqueness",
+        "not null" => TRUE,
+        "no export" => TRUE,
+      ),
+      "name" => array(
+        "type" => "varchar",
+        "length" => "255",
+        "description" => "Unique ID for this $type. Used to identify it programmatically.",
+      ),
+      "editor_title" => array(
+        "type" => "varchar",
+        "length" => "255",
+        "description" => "Administrative title for this $type.",
+      ),
+      "admin_title" => array(
+        "type" => "varchar",
+        "length" => "255",
+        "description" => "Administrative title for this $type.",
+      ),
+      "admin_description" => array(
+        "type" => "text",
+        "size" => "big",
+        "description" => "Administrative description for this $type.",
+        "object default" => "",
+      ),
+      "requiredcontexts" => array(
+        "type" => "text",
+        "size" => "big",
+        "description" => "Any required contexts for this $type.",
+        "serialize" => TRUE,
+        "object default" => array(),
+      ),
+      "contexts" => array(
+        "type" => "text",
+        "size" => "big",
+        "description" => "Any embedded contexts for this $type.",
+        "serialize" => TRUE,
+        "object default" => array(),
+      ),
+      "relationships" => array(
+        "type" => "text",
+        "size" => "big",
+        "description" => "Any relationships for this $type.",
+        "serialize" => TRUE,
+        "object default" => array(),
+      ),
+      "access" => array(
+        "type" => "text",
+        "size" => "big",
+        "description" => "The actual group of access plugins for this $type.",
+        "serialize" => TRUE,
+        "object default" => array(),
+      ),
+    ),
+    "primary key" => array("$typeid"),
+  );
+
+  return $schema;
+}
