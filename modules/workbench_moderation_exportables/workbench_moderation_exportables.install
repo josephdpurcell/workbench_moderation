@@ -1,19 +1,44 @@
 <?php
 
-
-
-
-
-
-
 /**
- * Schema for customizable $plural.
+ * Implements hook_schema().
  */
-function workbench_moderation_exportables_common_starter_schema($type, $plural) {
+function workbench_moderation_exportables_schema() {
 
   $schema = array();
+  // Define the states schema
+  $schema["workbench_moderation_exportables_states"] = workbench_moderation_exportables_starter_schema('state', 'states');
 
-  $schema["workbench_moderation_exportables_$plural"] = array(
+  // Define the events schema
+  $schema["workbench_moderation_exportables_events"] = workbench_moderation_exportables_starter_schema('event', 'events');
+
+  // Add fieds to the events schema
+  $additional_event_fields = array(
+    'target_state' => array(
+      'type' => 'varchar',
+      'length' => '255',
+      'description' => 'target state',
+    ),
+    'origin_states' => array(
+      'type' => 'text',
+      'size' => 'big',
+      'description' => 'Origin states',
+      'serialize' => TRUE,
+      'object default' => array(),
+    ),
+  );
+
+  $schema["workbench_moderation_exportables_events"]['fields'] = array_merge($schema["workbench_moderation_exportables_events"]['fields'], $additional_event_fields);
+
+  return $schema;
+}
+
+/**
+ * Helper function for defining schema.
+ */
+function workbench_moderation_exportables_starter_schema($type, $plural) {
+
+  $schema = array(
     "description" => "Contains exportable customized $plural.",
     "export" => array(
       "identifier" => "$type",
@@ -85,7 +110,7 @@ function workbench_moderation_exportables_common_starter_schema($type, $plural) 
         "object default" => array(),
       ),
     ),
-    "primary key" => array("$typeid"),
+    "primary key" => array($type. "id"),
   );
 
   return $schema;
