@@ -1,8 +1,8 @@
 <?php
 
 $plugin = array(
-  'schema' => 'workbench_events',
-  'access' => 'administer workbench events',
+  'schema' => 'workbench_moderation_exportable_events',
+  'access' => 'administer_workbench_moderation_exportables',
 
   'menu' => array(
     'menu prefix' => 'admin/structure',
