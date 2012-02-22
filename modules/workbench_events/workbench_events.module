@@ -31,7 +31,7 @@ function workbench_events_permission() {
 function workbench_events_ctools_plugin_directory($module, $plugin) {
   // Most of this module is implemented as an export ui plugin, and the
   // rest is in ctools/includes/workbench_events.inc
-  if ($module == 'ctools' && ($plugin == 'export_ui' || $plugin == 'access')) {
+  if ($module == 'ctools' && ($plugin == 'export_ui')) {
     return 'plugins/' . $plugin;
   }
 }
