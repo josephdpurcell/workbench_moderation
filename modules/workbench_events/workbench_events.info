@@ -1,6 +1,0 @@
-name = Workbench Events
-description = Exportable events
-core = 7.x
-package = Workbench
-dependencies[] = ctools
-dependencies[] = workbench_states

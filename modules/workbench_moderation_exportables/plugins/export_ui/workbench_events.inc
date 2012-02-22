@@ -1,7 +1,7 @@
 <?php
 
 $plugin = array(
-  'schema' => 'workbench_moderation_exportable_events',
+  'schema' => 'workbench_moderation_exportables_events',
   'access' => 'administer_workbench_moderation_exportables',
 
   'menu' => array(
