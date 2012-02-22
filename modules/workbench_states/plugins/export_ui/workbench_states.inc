@@ -1,8 +1,8 @@
 <?php
 
 $plugin = array(
-  'schema' => 'workbench_states',
-  'access' => 'administer workbench states',
+  'schema' => 'workbench_moderation_exportables_states',
+  'access' => 'administer_workbench_moderation_exportables',
 
   'menu' => array(
     'menu prefix' => 'admin/structure',
