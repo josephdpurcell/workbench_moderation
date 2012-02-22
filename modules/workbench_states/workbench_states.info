@@ -1,6 +1,0 @@
-name = Workbench States
-description = Exportable states
-core = 7.x
-package = Workbench
-dependencies[] = ctools
-dependencies[] = workbench_moderation_exportables
