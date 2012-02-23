@@ -2,32 +2,8 @@
 
 /**
  * @file workbench_workflows.module
- *
- * This module provides workbench workflows which are basically panels that can be
- * used within blocks or other panels.
  */
 
-
-// ---------------------------------------------------------------------------
-// Allow the rest of the system access to workbench workflows
-
-
-/**
- * Statically store all used IDs to ensure all workbench workflows get a unique id.
- */
-function workbench_workflows_get_id($name) {
-  $id_cache = &drupal_static(__FUNCTION__, array());
-
-  $id = 'workbench-workflow-' . $name;
-  if (!empty($id_cache[$name])) {
-    $id .= "-" . $id_cache[$name]++;
-  }
-  else {
-    $id_cache[$name] = 1;
-  }
-
-  return $id;
-}
 
 // ---------------------------------------------------------------------------
 // Database functions.
