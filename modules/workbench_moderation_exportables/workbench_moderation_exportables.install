@@ -30,6 +30,36 @@ function workbench_moderation_exportables_schema() {
 
   $schema["workbench_moderation_exportables_events"]['fields'] = array_merge($schema["workbench_moderation_exportables_events"]['fields'], $additional_event_fields);
 
+  // Define the workflows schema
+  $schema["workbench_moderation_exportables_workflows"] = workbench_moderation_exportables_starter_schema('workflow', 'workflows');
+
+  $additional_workflow_fields = array(
+
+    'category' => array(
+      'type' => 'varchar',
+      'length' => '64',
+      'description' => 'The category this workbench workflow appears in.',
+    ),
+    'states' => array(
+      'type' => 'text',
+      'size' => 'big',
+      'serialize' => TRUE,
+      'object default' => array(),
+      'description' => 'An array of states allowed in the workflow',
+    ),
+    'events' => array(
+      'type' => 'text',
+      'size' => 'big',
+      'serialize' => TRUE,
+      'object default' => array(),
+      'description' => 'An array of events allowed in the workflow',
+    ),
+  );
+
+  $schema["workbench_moderation_exportables_workflows"]['fields'] = array_merge($schema["workbench_moderation_exportables_workflows"]['fields'], $additional_workflow_fields);
+  $schema["workbench_moderation_exportables_workflows"]['load callback'] = 'workbench_workflows_load';
+  $schema["workbench_moderation_exportables_workflows"]['load all callback'] = 'workbench_workflows_load_all';
+
   return $schema;
 }
 
@@ -109,8 +139,16 @@ function workbench_moderation_exportables_starter_schema($type, $plural) {
         "serialize" => TRUE,
         "object default" => array(),
       ),
+      'weight' => array(
+        'type' => 'int',
+        'no export' => TRUE,
+        'description' => 'Weight',
+      ),
     ),
     "primary key" => array($type. "id"),
+    'unique keys' => array(
+      'name' => array('name'),
+    ),
   );
 
   return $schema;
