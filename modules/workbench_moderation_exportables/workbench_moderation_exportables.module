@@ -22,36 +22,13 @@ function workbench_moderation_exportables_ctools_plugin_directory($module, $plug
   }
 }
 
-
-
 /**
  * Load all workbench workflows.
  *
  * @todo, collapse the redundant load_all functions.
  */
 function workbench_states_load_all($reset = FALSE) {
-
-  $cache = &drupal_static('workbench_states_load_all', array());
-  static $all_loaded = FALSE;
-
-  // We check our own private static because individual minis could have
-  // been loaded prior to load all and we need to know that.
-  if (!$all_loaded || $reset) {
-    $all_loaded = TRUE;
-    if ($reset) {
-      $cache = array();
-    }
-
-    ctools_include('export');
-    $workbench_states = ctools_export_load_object('workbench_moderation_exportables_states');
-
-    // @todo do states need weights?
-    //uasort($workbench_states, 'ctools_plugin_sort');
-
-    $cache = $workbench_states;
-  }
-
-  return $cache;
+  return workbench_moderation_exportables_load_all('states', $reset);
 }
 
 /**
@@ -107,9 +84,6 @@ function workbench_events_event_access($event_machine_name, $node) {
   }
 }
 
-
-
-
 /**
  * Load a single workbench workflow.
  */
@@ -135,28 +109,38 @@ function workbench_workflows_load($name) {
 }
 
 /**
- * Load all workbench workflows.
+ * @todo, document. make event callback.
  */
-function workbench_workflows_load_all($reset = FALSE) {
-  $cache = &drupal_static('workbench_workflows_load_all', array());
-  static $all_loaded = FALSE;
+function workbench_moderation_exportables_load_all($type = 'states', $reset = FALSE) {
+
+  $cache = &drupal_static('workbench_moderation_exportables_load_all', array());
 
   // We check our own private static because individual minis could have
   // been loaded prior to load all and we need to know that.
-  if (!$all_loaded || $reset) {
+  if (empty($cache[$type]) || $reset) {
     $all_loaded = TRUE;
     if ($reset) {
       $cache = array();
     }
 
     ctools_include('export');
-    $workbench_workflows = ctools_export_load_object('workbench_moderation_exportables_workflows');
-    uasort($workbench_workflows, 'ctools_plugin_sort');
+    $type_exportables = ctools_export_load_object('workbench_moderation_exportables_' . $type);
 
-    $cache = $workbench_workflows;
+    if ($type == 'workflows') {
+      uasort($type_exportables, 'ctools_plugin_sort');
+    }
+
+    $cache[$type] = $type_exportables;
   }
 
-  return $cache;
+  return $cache[$type];
+}
+
+/**
+ * Load all workbench workflows.
+ */
+function workbench_workflows_load_all($reset = FALSE) {
+  return workbench_moderation_exportables_load_all('workflows', $reset);
 }
 
 /**
