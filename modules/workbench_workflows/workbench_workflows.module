@@ -7,22 +7,6 @@
  * used within blocks or other panels.
  */
 
-/**
- * Implementation of hook_permission().
- */
-function workbench_workflows_permission() {
-  return array(
-    'create workbench workflows' => array(
-      'title' => t('Create workbench workflows'),
-      'description' => t('Create new workbench workflows'),
-    ),
-    'administer workbench workflows' => array(
-      'title' => t('Administer workbench workflows'),
-      'description' => t('Edit and delete workbench workflows'),
-    ),
-  );
-}
-
 
 // ---------------------------------------------------------------------------
 // Allow the rest of the system access to workbench workflows
@@ -48,13 +32,6 @@ function workbench_workflows_get_id($name) {
 // ---------------------------------------------------------------------------
 // Database functions.
 
-/**
- * Create a new page with defaults appropriately set from schema.
- */
-function workbench_workflows_new($set_defaults = TRUE) {
-  ctools_include('export');
-  return ctools_export_new_object('workbench_workflows', $set_defaults);
-}
 
 /**
  * Load a single workbench workflow.
@@ -103,16 +80,6 @@ function workbench_workflows_load_all($reset = FALSE) {
   }
 
   return $cache;
-}
-
-/**
- * Implementation of hook_ctools_plugin_directory() to let the system know
- * we implement task and task_handler plugins.
- */
-function workbench_workflows_ctools_plugin_directory($module, $plugin) {
-  if ($module == 'ctools' && $plugin == 'export_ui') {
-    return 'plugins/' . $plugin;
-  }
 }
 
 /**
