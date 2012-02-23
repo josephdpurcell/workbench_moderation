@@ -1,5 +1,7 @@
 <?php
-module_load_include('php', 'workbench_states', 'plugins/export_ui/workbench_base_ui.class');
+
+module_load_include('php', 'workbench_moderation_exportables', 'plugins/export_ui/workbench_base_ui.class');
+
 class workbench_workflows_ui extends workbench_base_ui {
   function init($plugin) {
     parent::init($plugin);

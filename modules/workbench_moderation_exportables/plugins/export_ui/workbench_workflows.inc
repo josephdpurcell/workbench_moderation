@@ -1,9 +1,8 @@
 <?php
 
 $plugin = array(
-  'schema' => 'workbench_workflows',
-  'access' => 'administer workbench workflows',
-  'create access' => 'create workbench workflows',
+  'schema' => 'workbench_moderation_exportables_workflows',
+  'access' => 'administer_workbench_moderation_exportables',
 
   'menu' => array(
     'menu prefix' => 'admin/structure',
@@ -39,4 +38,3 @@ $plugin = array(
   ),
 
 );
-
