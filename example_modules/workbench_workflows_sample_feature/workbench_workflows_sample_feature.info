@@ -1,9 +1,16 @@
 name = "Workbench Workflows Sample Feature"
-description = "Contains the states and events: draft, needs_review and published. Also the workflow "main_workflow.""
+description = """Contains the states and events: draft, needs_review and published. Also the workflow "main_workflow.""""
 core = "7.x"
 package = "Features"
+php = "5.2.4"
 dependencies[] = "ctools"
-
-
+dependencies[] = "workbench_moderation_exportables"
 features[ctools][] = "workbench_events:workbench_events:1"
-
+features[ctools][] = "workbench_moderation_exportables:workbench_moderation_exportables:1"
+features[workbench_moderation_exportables_events][] = "draft"
+features[workbench_moderation_exportables_events][] = "needs_review"
+features[workbench_moderation_exportables_events][] = "published"
+features[workbench_moderation_exportables_states][] = "draft"
+features[workbench_moderation_exportables_states][] = "needs_review"
+features[workbench_moderation_exportables_states][] = "published"
+features[workbench_moderation_exportables_workflows][] = "sample_workflow"
