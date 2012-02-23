@@ -77,8 +77,8 @@ function workbench_moderation_exportables_starter_schema($type, $plural) {
 
       // @todo I"m not sure what this array should be.
       "api" => array(
-        "owner" => "workbench_$plural",
-        "api" => "workbench_$plural",
+        "owner" => "workbench_moderation_exportables",
+        "api" => "workbench_moderation_exportables",
         "minimum_version" => 1,
         "current_version" => 1,
       ),
