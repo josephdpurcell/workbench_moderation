@@ -45,7 +45,7 @@ function workbench_states_load_all($reset = FALSE) {
     }
 
     ctools_include('export');
-    $workbench_states = ctools_export_load_object('workbench_states');
+    $workbench_states = ctools_export_load_object('workbench_moderation_exportables_states');
 
     // @todo do states need weights?
     //uasort($workbench_states, 'ctools_plugin_sort');
