@@ -19,7 +19,7 @@ function workbench_workflows_load($name) {
   // isset() will try to load it again.
   if (!array_key_exists($name, $cache)) {
     ctools_include('export');
-    $result = ctools_export_load_object('workbench_workflows', 'names', array($name));
+    $result = ctools_export_load_object('workbench_moderation_exportables_workflows', 'names', array($name));
     if (isset($result[$name])) {
       $cache[$name] = $result[$name];
     }
@@ -49,7 +49,7 @@ function workbench_workflows_load_all($reset = FALSE) {
     }
 
     ctools_include('export');
-    $workbench_workflows = ctools_export_load_object('workbench_workflows');
+    $workbench_workflows = ctools_export_load_object('workbench_moderation_exportables_workflows');
     uasort($workbench_workflows, 'ctools_plugin_sort');
 
     $cache = $workbench_workflows;
@@ -91,7 +91,7 @@ function workbench_workflows_state_flow_plugins() {
   // Load all workflows, events and states.
   $workflows = workbench_workflows_load_all();
   // @todo, workbench_events should have a helper function for this.
-  $event_exportables = ctools_export_load_object('workbench_events');
+  $event_exportables = ctools_export_load_object('workbench_moderation_exportables_events');
   $state_exportables = workbench_states_load_all();
 
   // We're just building on top of the state_flow plugins.
