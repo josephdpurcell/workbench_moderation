@@ -5,4 +5,3 @@ core = 7.x
 ; Core classes
 ; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
 dependencies[] = state_flow
-dependencies[] = workbench_workflows
