@@ -106,3 +106,79 @@ function workbench_events_event_access($event_machine_name, $node) {
     return workbench_states_state_access($event->target_state, $node);
   }
 }
+
+
+
+
+/**
+ * Load a single workbench workflow.
+ */
+function workbench_workflows_load($name) {
+  $cache = &drupal_static('workbench_workflows_load_all', array());
+
+  // We use array_key_exists because failed loads will be NULL and
+  // isset() will try to load it again.
+  if (!array_key_exists($name, $cache)) {
+    ctools_include('export');
+    $result = ctools_export_load_object('workbench_moderation_exportables_workflows', 'names', array($name));
+    if (isset($result[$name])) {
+      $cache[$name] = $result[$name];
+    }
+    else {
+      $cache[$name] = NULL;
+    }
+  }
+
+  if (isset($cache[$name])) {
+    return $cache[$name];
+  }
+}
+
+/**
+ * Load all workbench workflows.
+ */
+function workbench_workflows_load_all($reset = FALSE) {
+  $cache = &drupal_static('workbench_workflows_load_all', array());
+  static $all_loaded = FALSE;
+
+  // We check our own private static because individual minis could have
+  // been loaded prior to load all and we need to know that.
+  if (!$all_loaded || $reset) {
+    $all_loaded = TRUE;
+    if ($reset) {
+      $cache = array();
+    }
+
+    ctools_include('export');
+    $workbench_workflows = ctools_export_load_object('workbench_moderation_exportables_workflows');
+    uasort($workbench_workflows, 'ctools_plugin_sort');
+
+    $cache = $workbench_workflows;
+  }
+
+  return $cache;
+}
+
+/**
+ * Return the appropriate workflow for a node.
+ */
+function workbench_workflows_select_workflow($node) {
+
+  ctools_include('export');
+  ctools_include('context');
+  $node_context = ctools_context_create('entity:node', $node);
+
+
+  $workflows = workbench_workflows_load_all();
+  foreach($workflows as $workflow) {
+
+    $contexts = ctools_context_match_required_contexts($workflow->requiredcontexts, array($node_context));
+    $contexts = ctools_context_load_contexts($workflow, FALSE, $contexts);
+
+    if (ctools_access($workflow->access, $contexts)) {
+      // Return the first workflow for which ctools_access() returns TRUE.
+      return $workflow;
+    }
+  }
+  return FALSE;
+}
