@@ -22,14 +22,16 @@ function workbench_moderation_exportables_ctools_plugin_directory($module, $plug
 }
 
 /**
- * Create an array of states suitable for FAPI.
+ * Create an array of exportable states/events/workflows suitable for FAPI.
+ *
+ * @todo, document.
  */
-function workbench_states_options($label_key = 'admin_title', $reset = FALSE) {
-  $states = workbench_moderation_exportables_load_all('states', $reset);
+function workbench_moderation_exportables_options($type = 'states', $label_key = 'admin_title', $reset = FALSE) {
+  $exportables = workbench_moderation_exportables_load_all($type, $reset);
 
   $output = array();
-  foreach($states as $state) {
-    $output[$state->name] = $state->{$label_key};
+  foreach($exportables as $exportable) {
+    $output[$exportable->name] = $exportable->{$label_key};
   }
 
   return $output;
