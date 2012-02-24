@@ -7,10 +7,10 @@ function workbench_moderation_exportables_schema() {
 
   $schema = array();
   // Define the states schema
-  $schema["workbench_moderation_exportables_states"] = workbench_moderation_exportables_starter_schema('state', 'states');
+  $schema["workbench_moderation_exportables_states"] = workbench_moderation_exportables_starter_schema('state');
 
   // Define the events schema
-  $schema["workbench_moderation_exportables_events"] = workbench_moderation_exportables_starter_schema('event', 'events');
+  $schema["workbench_moderation_exportables_events"] = workbench_moderation_exportables_starter_schema('event');
 
   // Add fieds to the events schema
   $additional_event_fields = array(
@@ -31,7 +31,7 @@ function workbench_moderation_exportables_schema() {
   $schema["workbench_moderation_exportables_events"]['fields'] = array_merge($schema["workbench_moderation_exportables_events"]['fields'], $additional_event_fields);
 
   // Define the workflows schema
-  $schema["workbench_moderation_exportables_workflows"] = workbench_moderation_exportables_starter_schema('workflow', 'workflows');
+  $schema["workbench_moderation_exportables_workflows"] = workbench_moderation_exportables_starter_schema('workflow');
 
   $additional_workflow_fields = array(
 
@@ -66,8 +66,9 @@ function workbench_moderation_exportables_schema() {
 /**
  * Helper function for defining schema.
  */
-function workbench_moderation_exportables_starter_schema($type, $plural) {
+function workbench_moderation_exportables_starter_schema($type) {
 
+  $plural = $type . 's';
   $schema = array(
     "description" => "Contains exportable customized $plural.",
     "export" => array(
