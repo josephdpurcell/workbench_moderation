@@ -75,30 +75,6 @@ function workbench_events_event_access($event_machine_name, $node) {
 }
 
 /**
- * Load a single workbench workflow.
- */
-function workbench_workflows_load($name) {
-  $cache = &drupal_static('workbench_workflows_load_all', array());
-
-  // We use array_key_exists because failed loads will be NULL and
-  // isset() will try to load it again.
-  if (!array_key_exists($name, $cache)) {
-    ctools_include('export');
-    $result = ctools_export_load_object('workbench_moderation_exportables_workflows', 'names', array($name));
-    if (isset($result[$name])) {
-      $cache[$name] = $result[$name];
-    }
-    else {
-      $cache[$name] = NULL;
-    }
-  }
-
-  if (isset($cache[$name])) {
-    return $cache[$name];
-  }
-}
-
-/**
  * Load a single workbench moderation exportable.
  *
  * @todo, document.
