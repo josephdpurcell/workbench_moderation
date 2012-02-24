@@ -40,12 +40,18 @@ function workbench_moderation_exportables_options($type = 'states', $label_key =
 /**
  * @todo document.
  */
-function workbench_moderation_exportables_exportable_access($node, $exportable_name, $exportable_type = 'states') {
+function workbench_moderation_exportables_exportable_access($node, $exportable, $exportable_type = 'states') {
 
-  ctools_include('export');
+
   ctools_include('context');
   $node_context = ctools_context_create('entity:node', $node);
-  $exportable = ctools_export_crud_load('workbench_moderation_exportables_' . $exportable_type, $exportable_name);
+
+  // The exportable might already be the loaded object.
+  if (is_string($exportable)) {
+    ctools_include('export');
+    $exportable = ctools_export_crud_load('workbench_moderation_exportables_' . $exportable_type, $exportable);
+  }
+
 
   $contexts = ctools_context_match_required_contexts($exportable->requiredcontexts, array($node_context));
   $contexts = ctools_context_load_contexts($exportable, FALSE, $contexts);
@@ -97,6 +103,8 @@ function workbench_moderation_exportables_load_all($type = 'states', $reset = FA
     ctools_include('export');
     $type_exportables = ctools_export_load_object('workbench_moderation_exportables_' . $type);
 
+    // @todo, getting errors when used on non-workflows.
+    // fix that.
     if ($type == 'workflows') {
       uasort($type_exportables, 'ctools_plugin_sort');
     }
@@ -112,17 +120,9 @@ function workbench_moderation_exportables_load_all($type = 'states', $reset = FA
  */
 function workbench_workflows_select_workflow($node) {
 
-  ctools_include('export');
-  ctools_include('context');
-  $node_context = ctools_context_create('entity:node', $node);
-
   $workflows = workbench_moderation_exportables_load_all('workflows');
   foreach($workflows as $workflow) {
-
-    $contexts = ctools_context_match_required_contexts($workflow->requiredcontexts, array($node_context));
-    $contexts = ctools_context_load_contexts($workflow, FALSE, $contexts);
-
-    if (ctools_access($workflow->access, $contexts)) {
+    if (workbench_moderation_exportables_exportable_access($node, $workflow, $exportable_type = 'states')) {
       // Return the first workflow for which ctools_access() returns TRUE.
       return $workflow;
     }
