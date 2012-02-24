@@ -60,17 +60,12 @@ function workbench_moderation_exportables_exportable_access($node, $exportable_n
  */
 function workbench_events_event_access($event_machine_name, $node) {
 
-  ctools_include('export');
-  ctools_include('context');
-  $node_context = ctools_context_create('entity:node', $node);
-  $event = ctools_export_crud_load('workbench_moderation_exportables_events', $event_machine_name);
-
-  $contexts = ctools_context_match_required_contexts($event->requiredcontexts, array($node_context));
-  $contexts = ctools_context_load_contexts($event, FALSE, $contexts);
-
-  if (!ctools_access($event->access, $contexts)) {
+  // Check if this is prohibited based on the events rules.
+  if (!workbench_moderation_exportables_exportable_access($node, $event_machine_name, $exportable_type = 'events')) {
     return FALSE;
   } else {
+    // If the event allows the change, check if the states explicitly prohibits it.
+    $event = workbench_moderation_exportables_load($event_machine_name, 'events');
     return workbench_moderation_exportables_exportable_access($node, $event->target_state, 'states');
   }
 }
