@@ -84,6 +84,8 @@ function workbench_workflows_state_flow_plugins() {
 
 /**
  * Implements hook_state_flow_machine_type_alter()
+ *
+ * @todo, this hook currently uses $node but will likely switch to $entity eventually.
  */
 function workbench_workflows_state_flow_machine_type_alter(&$machine_type, $node) {
 
