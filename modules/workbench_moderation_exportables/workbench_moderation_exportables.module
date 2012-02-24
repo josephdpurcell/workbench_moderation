@@ -24,17 +24,24 @@ function workbench_moderation_exportables_ctools_plugin_directory($module, $plug
 /**
  * Create an array of exportable states/events/workflows suitable for FAPI.
  *
- * @todo, document.
+ * @param string $type
+ *   Allowed values are 'states', 'events', and 'workflows'
+ * @param string $name
+ *   The machine name of the exportable.
+ * @param $reset
+ *   A boolean for whether the static cache should be reset.
  */
 function workbench_moderation_exportables_options($type = 'states', $label_key = 'admin_title', $reset = FALSE) {
+
+  // load all objects of this type
   $exportables = workbench_moderation_exportables_load_all($type, $reset);
 
-  $output = array();
+  $return = array();
   foreach($exportables as $exportable) {
-    $output[$exportable->name] = $exportable->{$label_key};
+    $return[$exportable->name] = $exportable->{$label_key};
   }
 
-  return $output;
+  return $return;
 }
 
 /**
@@ -96,6 +103,8 @@ function workbench_moderation_exportables_load($type, $name) {
  *   Allowed values are 'states', 'events', and 'workflows'
  * @param string $name
  *   The machine name of the exportable.
+ * @param $reset
+ *   A boolean for whether the static cache should be reset.
  * Returns a CTools exportable object.
  */
 function workbench_moderation_exportables_load_all($type = 'states', $reset = FALSE) {
