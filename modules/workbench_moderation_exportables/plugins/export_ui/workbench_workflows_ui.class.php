@@ -141,7 +141,7 @@ class workbench_workflows_ui extends workbench_base_ui {
     }
 
     ctools_include('export');
-    $workbench_events = ctools_export_load_object('workbench_events');
+    $workbench_events = workbench_moderation_exportables_load_all('events');
     $event_options = array();
     $unavailable_events = array();
     $unavailable_text_string = '';
