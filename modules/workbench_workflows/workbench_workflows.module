@@ -12,7 +12,7 @@ function workbench_workflows_state_flow_plugins() {
   $info = array();
 
   // Load all workflows, events and states.
-  $workflows = workbench_workflows_load_all();
+  $workflows = workbench_moderation_exportables_load_all('workflows');
   // @todo, workbench_events should have a helper function for this.
   $event_exportables = workbench_moderation_exportables_load_all('events');
   $state_exportables = workbench_moderation_exportables_load_all('states');

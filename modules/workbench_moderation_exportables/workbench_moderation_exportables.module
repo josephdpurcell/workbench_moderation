@@ -129,13 +129,6 @@ function workbench_moderation_exportables_load_all($type = 'states', $reset = FA
 }
 
 /**
- * Load all workbench workflows.
- */
-function workbench_workflows_load_all($reset = FALSE) {
-  return workbench_moderation_exportables_load_all('workflows', $reset);
-}
-
-/**
  * Return the appropriate workflow for a node.
  */
 function workbench_workflows_select_workflow($node) {
@@ -144,8 +137,7 @@ function workbench_workflows_select_workflow($node) {
   ctools_include('context');
   $node_context = ctools_context_create('entity:node', $node);
 
-
-  $workflows = workbench_workflows_load_all();
+  $workflows = workbench_moderation_exportables_load_all('workflows');
   foreach($workflows as $workflow) {
 
     $contexts = ctools_context_match_required_contexts($workflow->requiredcontexts, array($node_context));
