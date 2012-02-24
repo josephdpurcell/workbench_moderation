@@ -42,17 +42,17 @@ function workbench_moderation_exportables_options($type = 'states', $label_key =
  */
 function workbench_moderation_exportables_exportable_access($node, $exportable, $exportable_type = 'states') {
 
-
   ctools_include('context');
   $node_context = ctools_context_create('entity:node', $node);
 
   // The exportable might already be the loaded object.
   if (is_string($exportable)) {
     ctools_include('export');
-    $exportable = ctools_export_crud_load('workbench_moderation_exportables_' . $exportable_type, $exportable);
+    $exportable = workbench_moderation_exportables_load($exportable_type, $exportable);
   }
 
-
+  // Load all the contexts.
+  // @todo, we may need a user context other than "currently logged-in user."
   $contexts = ctools_context_match_required_contexts($exportable->requiredcontexts, array($node_context));
   $contexts = ctools_context_load_contexts($exportable, FALSE, $contexts);
 
@@ -62,9 +62,13 @@ function workbench_moderation_exportables_exportable_access($node, $exportable, 
 /**
  * Load a single workbench moderation exportable.
  *
- * @todo, document.
+ * @param string $type
+ *   Allowed values are 'states', 'events', and 'workflows'
+ * @param string $name
+ *   The machine name of the exportable.
+ * Returns a CTools exportable object.
  */
-function workbench_moderation_exportables_load($name, $type = 'states') {
+function workbench_moderation_exportables_load($type, $name) {
   $cache = &drupal_static('workbench_moderation_exportables_load_all', array());
 
   // We use array_key_exists because failed loads will be NULL and
@@ -86,7 +90,13 @@ function workbench_moderation_exportables_load($name, $type = 'states') {
 }
 
 /**
- * @todo, document. make event callback.
+ * Load a single workbench moderation exportable.
+ *
+ * @param string $type
+ *   Allowed values are 'states', 'events', and 'workflows'
+ * @param string $name
+ *   The machine name of the exportable.
+ * Returns a CTools exportable object.
  */
 function workbench_moderation_exportables_load_all($type = 'states', $reset = FALSE) {
 
