@@ -54,23 +54,6 @@ function workbench_moderation_exportables_exportable_access($node, $exportable_n
 }
 
 /**
- * @todo document.
- *
- * @todo, reduce code duplication with workbench_states_state_access().
- */
-function workbench_events_event_access($event_machine_name, $node) {
-
-  // Check if this is prohibited based on the events rules.
-  if (!workbench_moderation_exportables_exportable_access($node, $event_machine_name, $exportable_type = 'events')) {
-    return FALSE;
-  } else {
-    // If the event allows the change, check if the states explicitly prohibits it.
-    $event = workbench_moderation_exportables_load($event_machine_name, 'events');
-    return workbench_moderation_exportables_exportable_access($node, $event->target_state, 'states');
-  }
-}
-
-/**
  * Load a single workbench moderation exportable.
  *
  * @todo, document.

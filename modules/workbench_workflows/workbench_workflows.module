@@ -98,5 +98,12 @@ function workbench_workflows_state_flow_machine_type_alter(&$machine_type, $node
  * Guard callback for the workbenchStates publish and unpublish events.
  */
 function workbench_workflows_guard($event) {
-  return workbench_events_event_access($event->name, $event->get_machine()->get_object());
+
+  $node = $event->get_machine()->get_object();
+  // Check if this is prohibited based on the events rules.
+  if (!workbench_moderation_exportables_exportable_access($node, $event->name, 'events')) {
+    return FALSE;
+  } else {
+    return workbench_moderation_exportables_exportable_access($node, $event->get_option('target'), 'states');
+  }
 }
