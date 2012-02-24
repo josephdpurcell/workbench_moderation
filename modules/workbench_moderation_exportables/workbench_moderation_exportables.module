@@ -23,19 +23,10 @@ function workbench_moderation_exportables_ctools_plugin_directory($module, $plug
 }
 
 /**
- * Load all workbench workflows.
- *
- * @todo, collapse the redundant load_all functions.
- */
-function workbench_states_load_all($reset = FALSE) {
-  return workbench_moderation_exportables_load_all('states', $reset);
-}
-
-/**
  * Create an array of states suitable for FAPI.
  */
 function workbench_states_options($label_key = 'admin_title', $reset = FALSE) {
-  $states = workbench_states_load_all($reset = FALSE);
+  $states = workbench_moderation_exportables_load_all('states', $reset);
 
   $output = array();
   foreach($states as $state) {

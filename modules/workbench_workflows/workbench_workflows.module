@@ -14,8 +14,8 @@ function workbench_workflows_state_flow_plugins() {
   // Load all workflows, events and states.
   $workflows = workbench_workflows_load_all();
   // @todo, workbench_events should have a helper function for this.
-  $event_exportables = ctools_export_load_object('workbench_moderation_exportables_events');
-  $state_exportables = workbench_states_load_all();
+  $event_exportables = workbench_moderation_exportables_load_all('events');
+  $state_exportables = workbench_moderation_exportables_load_all('states');
 
   // We're just building on top of the state_flow plugins.
   $class_path = drupal_get_path('module', 'state_flow') . '/plugins';
