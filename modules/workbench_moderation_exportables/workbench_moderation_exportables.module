@@ -17,7 +17,6 @@ function workbench_moderation_exportables_ctools_plugin_directory($module, $plug
   // Most of this module is implemented as an export ui plugin, and the
   // rest is in ctools/includes/workbench_states.inc
   if ($module == 'ctools' && ($plugin == 'export_ui')) {
-    dsm($plugin);
     return 'plugins/' . $plugin;
   }
 }
