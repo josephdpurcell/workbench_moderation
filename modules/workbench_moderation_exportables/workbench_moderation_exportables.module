@@ -109,6 +109,32 @@ function workbench_workflows_load($name) {
 }
 
 /**
+ * Load a single workbench moderation exportable.
+ *
+ * @todo, document.
+ */
+function workbench_moderation_exportables_load($name, $type = 'states') {
+  $cache = &drupal_static('workbench_moderation_exportables_load_all', array());
+
+  // We use array_key_exists because failed loads will be NULL and
+  // isset() will try to load it again.
+  if (empty($cache[$type]) || !array_key_exists($name, $cache[$type])) {
+    ctools_include('export');
+    $result = ctools_export_load_object('workbench_moderation_exportables_' . $type, 'names', array($name));
+    if (isset($result[$name])) {
+      $cache[$type][$name] = $result[$name];
+    }
+    else {
+      $cache[$type][$name] = NULL;
+    }
+  }
+
+  if (isset($cache[$type][$name])) {
+    return $cache[$type][$name];
+  }
+}
+
+/**
  * @todo, document. make event callback.
  */
 function workbench_moderation_exportables_load_all($type = 'states', $reset = FALSE) {
