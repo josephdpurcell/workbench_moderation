@@ -47,10 +47,9 @@ function workbench_moderation_exportables_options($type = 'states', $label_key =
 /**
  * @todo document.
  */
-function workbench_moderation_exportables_exportable_access($node, $exportable, $exportable_type = 'states') {
+function workbench_moderation_exportables_exportable_access($entity, $exportable, $exportable_type = 'states') {
 
-  ctools_include('context');
-  $node_context = ctools_context_create('entity:node', $node);
+  $contexts = array();
 
   // The exportable might already be the loaded object.
   if (is_string($exportable)) {
@@ -58,9 +57,15 @@ function workbench_moderation_exportables_exportable_access($node, $exportable, 
     $exportable = workbench_moderation_exportables_load($exportable_type, $exportable);
   }
 
+  // Create a CTools context.
+  if (!empty($exportable->requiredcontexts[0]['name'])) {
+    ctools_include('context');
+    $contexts[] = ctools_context_create($exportable->requiredcontexts[0]['name'], $entity);
+  }
+
   // Load all the contexts.
   // @todo, we may need a user context other than "currently logged-in user."
-  $contexts = ctools_context_match_required_contexts($exportable->requiredcontexts, array($node_context));
+  $contexts = ctools_context_match_required_contexts($exportable->requiredcontexts, $contexts);
   $contexts = ctools_context_load_contexts($exportable, FALSE, $contexts);
 
   return ctools_access($exportable->access, $contexts);

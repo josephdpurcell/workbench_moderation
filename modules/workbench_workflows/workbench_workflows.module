@@ -98,24 +98,24 @@ function workbench_workflows_state_flow_machine_type_alter(&$machine_type, $node
  */
 function workbench_workflows_guard($event) {
 
-  $node = $event->get_machine()->get_object();
+  $entity = $event->get_machine()->get_object();
   // Check if this is prohibited based on the events rules.
-  if (!workbench_moderation_exportables_exportable_access($node, $event->name, 'events')) {
+  if (!workbench_moderation_exportables_exportable_access($entity, $event->name, 'events')) {
     return FALSE;
   } else {
-    return workbench_moderation_exportables_exportable_access($node, $event->get_option('target'), 'states');
+    return workbench_moderation_exportables_exportable_access($entity, $event->get_option('target'), 'states');
   }
 }
 
 /**
  * Return the appropriate workflow for a node.
  */
-function workbench_workflows_select_workflow($node) {
+function workbench_workflows_select_workflow($entity) {
 
   $workflows = workbench_moderation_exportables_load_all('workflows');
   foreach($workflows as $workflow) {
-    if (workbench_moderation_exportables_exportable_access($node, $workflow, $exportable_type = 'states')) {
-      // Return the first workflow for which ctools_access() returns TRUE.
+    if (workbench_moderation_exportables_exportable_access($entity, $workflow)) {
+      // Return the first workflow for which access returns TRUE.
       return $workflow;
     }
   }
