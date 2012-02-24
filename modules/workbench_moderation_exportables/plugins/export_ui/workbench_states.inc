@@ -5,7 +5,7 @@ $plugin = array(
   'access' => 'administer_workbench_moderation_exportables',
 
   'menu' => array(
-    'menu prefix' => 'admin/structure',
+    'menu prefix' => 'admin/structure/wm-exportables',
     'menu item' => 'workbench-states',
     'menu title' => 'Workbench States',
     'menu description' => 'Add, edit or delete Workbench States.',

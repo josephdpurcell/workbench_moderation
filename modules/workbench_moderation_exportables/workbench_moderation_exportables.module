@@ -138,3 +138,27 @@ function workbench_moderation_exportables_load_all($type = 'states', $reset = FA
 
   return $cache[$type];
 }
+
+/**
+ * Implements hook_menu().
+ */
+function workbench_moderation_exportables_menu() {
+
+  $items = array();
+
+  // Module settings.
+  $items["admin/structure/wm-exportables"] = array(
+    'title' => 'Workbench Moderation Exportables',
+    'description' => 'Configure moderation states, events and workflows.',
+    'page callback' => 'workbench_moderation_exportables_admin_page',
+    'access arguments' => array('administer_workbench_moderation_exportables'),
+    'file' => 'workbench_moderation_exportables.admin.inc',
+  );
+  $items['admin/structure/wm-exportables/general'] = array(
+    'title' => 'Workbench Moderation Exportables',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -1,
+  );
+
+  return $items;
+}
