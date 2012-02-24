@@ -107,3 +107,18 @@ function workbench_workflows_guard($event) {
     return workbench_moderation_exportables_exportable_access($node, $event->get_option('target'), 'states');
   }
 }
+
+/**
+ * Return the appropriate workflow for a node.
+ */
+function workbench_workflows_select_workflow($node) {
+
+  $workflows = workbench_moderation_exportables_load_all('workflows');
+  foreach($workflows as $workflow) {
+    if (workbench_moderation_exportables_exportable_access($node, $workflow, $exportable_type = 'states')) {
+      // Return the first workflow for which ctools_access() returns TRUE.
+      return $workflow;
+    }
+  }
+  return FALSE;
+}
