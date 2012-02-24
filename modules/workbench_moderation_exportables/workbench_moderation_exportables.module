@@ -162,3 +162,10 @@ function workbench_moderation_exportables_menu() {
 
   return $items;
 }
+
+
+function workbench_moderation_exportables_menu_alter(&$items) {
+
+  // @todo, is there a way to set the weight at the plugin registration?
+  $items['admin/structure/wm-exportables/states']['weight'] = -111;
+}
