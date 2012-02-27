@@ -152,15 +152,15 @@ function workbench_workflows_menu() {
   $items = array();
 
   // Module settings.
-  $items["admin/structure/wm-exportables"] = array(
-    'title' => 'Workbench Moderation Exportables',
-    'description' => 'Configure moderation states, events and workflows.',
+  $items["admin/structure/workbench-workflows"] = array(
+    'title' => 'Workbench Workflows',
+    'description' => 'Configure states, events and workflows.',
     'page callback' => 'workbench_workflows_admin_page',
     'access arguments' => array('administer_workbench_workflows'),
     'file' => 'workbench_workflows.admin.inc',
   );
-  $items['admin/structure/wm-exportables/general'] = array(
-    'title' => 'Workbench Moderation Exportables',
+  $items['admin/structure/workbench-workflows/general'] = array(
+    'title' => 'Workbench Workflows',
     'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => -1,
   );
@@ -172,7 +172,7 @@ function workbench_workflows_menu() {
 function workbench_workflows_menu_alter(&$items) {
 
   // @todo, is there a way to set the weight at the plugin registration?
-  $items['admin/structure/wm-exportables/states']['weight'] = -111;
+  $items['admin/structure/workbench-workflows/states']['weight'] = -111;
 }
 
 

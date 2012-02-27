@@ -28,7 +28,7 @@ function workbench_workflows_export_ui_base_plugin($type) {
     "access" => "administer_workbench_workflows",
 
     "menu" => array(
-      "menu prefix" => "admin/structure/wm-exportables",
+      "menu prefix" => "admin/structure/workbench-workflows",
       "menu item" => $plural,
       "menu title" => "Workbench " . $plural,
       "menu description" => "Add, edit or delete Workbench " . ucfirst($plural),
