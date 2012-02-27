@@ -2,7 +2,7 @@
 
 // @todo, document this file.
 
-function workbench_moderation_exportables_admin_page() {
+function workbench_workflows_admin_page() {
 
 $item = menu_get_item();
   if ($content = system_admin_menu_block($item)) {
@@ -19,13 +19,13 @@ $item = menu_get_item();
  *   Allowed values are 'state', 'event', and 'workflow'
  * @return array
  */
-function workbench_moderation_exportables_export_ui_base_plugin($type) {
+function workbench_workflows_export_ui_base_plugin($type) {
 
   $plural = $type . 's';
 
   $plugin = array(
-    "schema" => "workbench_moderation_exportables_$plural",
-    "access" => "administer_workbench_moderation_exportables",
+    "schema" => "workbench_workflows_$plural",
+    "access" => "administer_workbench_workflows",
 
     "menu" => array(
       "menu prefix" => "admin/structure/wm-exportables",

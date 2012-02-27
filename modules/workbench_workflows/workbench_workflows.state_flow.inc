@@ -12,9 +12,9 @@ function _workbench_workflows_state_flow_plugins() {
   $info = array();
 
   // Load all workflows, events and states.
-  $workflows = workbench_moderation_exportables_load_all('workflows');
-  $event_exportables = workbench_moderation_exportables_load_all('events');
-  $state_exportables = workbench_moderation_exportables_load_all('states');
+  $workflows = workbench_workflows_load_all('workflows');
+  $event_exportables = workbench_workflows_load_all('events');
+  $state_exportables = workbench_workflows_load_all('states');
 
   // We're just building on top of the state_flow plugins.
   $class_path = drupal_get_path('module', 'state_flow') . '/plugins';
@@ -87,9 +87,9 @@ function _workbench_workflows_state_flow_plugins() {
  */
 function workbench_workflows_select_workflow($entity) {
 
-  $workflows = workbench_moderation_exportables_load_all('workflows');
+  $workflows = workbench_workflows_load_all('workflows');
   foreach($workflows as $workflow) {
-    if (workbench_moderation_exportables_exportable_access($entity, $workflow)) {
+    if (workbench_workflows_exportable_access($entity, $workflow)) {
       // Return the first workflow for which access returns TRUE.
       return $workflow;
     }

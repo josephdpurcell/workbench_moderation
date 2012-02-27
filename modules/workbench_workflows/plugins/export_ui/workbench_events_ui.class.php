@@ -1,6 +1,6 @@
 <?php
 
-module_load_include('php', 'workbench_moderation_exportables', 'plugins/export_ui/workbench_base_ui.class');
+module_load_include('php', 'workbench_workflows', 'plugins/export_ui/workbench_base_ui.class');
 
 class workbench_events_ui extends workbench_base_ui {
 
@@ -10,7 +10,7 @@ class workbench_events_ui extends workbench_base_ui {
 
     $form['target_state'] = array(
       '#type' => 'select',
-      '#options' => workbench_moderation_exportables_options('states'),
+      '#options' => workbench_workflows_options('states'),
       '#default_value' => $form_state['item']->target_state,
       '#title' => t('Target State'),
       '#description' => t(""),
@@ -18,7 +18,7 @@ class workbench_events_ui extends workbench_base_ui {
 
     $form['origin_states'] = array(
       '#type' => 'checkboxes',
-      '#options' => workbench_moderation_exportables_options('states'),
+      '#options' => workbench_workflows_options('states'),
       '#default_value' => $form_state['item']->origin_states,
       '#title' => t('Origin States'),
       '#description' => t(""),
