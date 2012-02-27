@@ -13,7 +13,7 @@ function workbench_workflows_sample_feature_ctools_plugin_api() {
     return array("version" => "1");
   }
   list($module, $api) = func_get_args();
-  if ($module == "workbench_moderation_exportables" && $api == "workbench_moderation_exportables") {
+  if ($module == "workbench_workflows" && $api == "workbench_workflows") {
     return array("version" => "1");
   }
 }

@@ -28,12 +28,9 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array();
-  $event->target_state = 'draft';
+  $event->target_state = 'test';
   $event->origin_states = array(
-    'needs_review' => 'needs_review',
-    'published' => 'published',
     'test' => 0,
-    'draft' => 0,
   );
   $export['draft'] = $event;
 
@@ -55,12 +52,9 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array();
-  $event->target_state = 'needs_review';
+  $event->target_state = 'test';
   $event->origin_states = array(
-    'draft' => 'draft',
-    'published' => 'published',
     'test' => 0,
-    'needs_review' => 0,
   );
   $export['needs_review'] = $event;
 
@@ -82,12 +76,9 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array();
-  $event->target_state = 'published';
+  $event->target_state = 'test';
   $event->origin_states = array(
-    'draft' => 'draft',
-    'needs_review' => 'needs_review',
     'test' => 0,
-    'published' => 0,
   );
   $export['published'] = $event;
 
