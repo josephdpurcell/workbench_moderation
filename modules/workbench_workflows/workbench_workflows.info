@@ -1,6 +1,5 @@
 name = Workbench Workflows
 description = Exportable workflows
-dependencies[] = workbench_moderation_exportables
 package = Workbench
 ; @todo, do all files need to be declared here?
 files[] = plugins/export_ui/workbench_workflows_ui.class.php
