@@ -15,7 +15,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->api_version = 1;
   $event->name = 'draft';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Draft (defined by workbench_events)';
+  $event->admin_title = 'Going to Draft (event)';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -41,7 +41,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->api_version = 1;
   $event->name = 'needs_review';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Needs Review (defined by workbench_events)';
+  $event->admin_title = 'Going to Needs Review (event)';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -67,7 +67,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->api_version = 1;
   $event->name = 'published';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Published (defined by workbench_events)';
+  $event->admin_title = 'Going to Published (event)';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -102,7 +102,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->api_version = 1;
   $state->name = 'draft';
   $state->editor_title = '';
-  $state->admin_title = 'Draft (defined by workbench_states)';
+  $state->admin_title = 'Draft (state)';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -122,7 +122,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->api_version = 1;
   $state->name = 'needs_review';
   $state->editor_title = '';
-  $state->admin_title = 'Needs Review (defined by workbench_states)';
+  $state->admin_title = 'Needs Review (state)';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -142,7 +142,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->api_version = 1;
   $state->name = 'published';
   $state->editor_title = '';
-  $state->admin_title = 'Published (defined by workbench_states)';
+  $state->admin_title = 'Published (state)';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -171,7 +171,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_workflow
   $workflow->api_version = 1;
   $workflow->name = 'sample_workflow';
   $workflow->editor_title = '';
-  $workflow->admin_title = 'sample_workflow (Defined by Workbench Workflows)';
+  $workflow->admin_title = 'Sample Workflow (workflow)';
   $workflow->admin_description = '';
   $workflow->requiredcontexts = array(
     0 => array(
