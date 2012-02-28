@@ -57,8 +57,6 @@ function workbench_workflows_schema() {
   );
 
   $schema["workbench_workflows_workflows"]['fields'] = array_merge($schema["workbench_workflows_workflows"]['fields'], $additional_workflow_fields);
-  $schema["workbench_workflows_workflows"]['load callback'] = 'workbench_workflows_load';
-  $schema["workbench_workflows_workflows"]['load all callback'] = 'workbench_workflows_load_all';
 
   return $schema;
 }
@@ -75,8 +73,6 @@ function workbench_workflows_starter_schema($type) {
       "identifier" => "$type",
       "bulk export" => TRUE,
       "primary key" => $type . "id",
-
-      // @todo I"m not sure what this array should be.
       "api" => array(
         "owner" => "workbench_workflows",
         "api" => "workbench_workflows",

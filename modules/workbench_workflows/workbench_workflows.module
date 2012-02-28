@@ -50,7 +50,14 @@ function workbench_workflows_options($type = 'states', $label_key = 'admin_title
 }
 
 /**
- * @todo document.
+ * Determines if access an entity has access to a state/event/workflow
+ *
+ * @param $entity
+ *   A Drupal entity. Currently only nodes are supported.
+ * @param $exportable
+ *   The machine name of an exportable or the loaded object.
+ * @param $exportable_type
+ *   Allowed values are 'states', 'events', and 'workflows'
  */
 function workbench_workflows_exportable_access($entity, $exportable, $exportable_type = 'states') {
 

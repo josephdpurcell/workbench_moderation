@@ -2,33 +2,10 @@
 
 class workbench_base_ui extends ctools_export_ui {
 
-  function edit_form(&$form, &$form_state) {
-    // Get the basic edit form
-    parent::edit_form($form, $form_state);
-  }
-
-  /**
-   * Validate submission of the mini panel edit form.
-   */
-  function edit_form_basic_validate($form, &$form_state) {
-    parent::edit_form_validate($form, $form_state);
-    // Need to validate target and origin_states
-
-// if (preg_match("/[^A-Za-z0-9 ]/", $form_state['values']['category'])) {
-     // form_error($form['category'], t('Categories may contain only alphanumerics or spaces.'));
-   // }
-  }
-
-  function edit_form_submit(&$form, &$form_state) {
-    parent::edit_form_submit($form, $form_state);
-    //$form_state['item']->target_state = $form_state['values']['target_state'];
-  }
-
-
   function edit_form_context(&$form, &$form_state) {
 
     // Force setting of the node required context.
-    // This is a bad way to do this. Works for now.
+    // @todo, add a way of setting which entity type this state, event, workflow works with.
     $form_state['item']->requiredcontexts = array(
       0 => array(
           'identifier' => 'Node',
