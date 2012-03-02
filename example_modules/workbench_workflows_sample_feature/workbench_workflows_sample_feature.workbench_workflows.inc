@@ -54,7 +54,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array();
-  $event->target_state = 'draft';
+  $event->target_state = 'needs_review';
   $event->origin_states = array(
     'draft' => 'draft',
     'published' => 'published',
@@ -80,7 +80,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array();
-  $event->target_state = 'draft';
+  $event->target_state = 'published';
   $event->origin_states = array(
     'draft' => 'draft',
     'needs_review' => 'needs_review',

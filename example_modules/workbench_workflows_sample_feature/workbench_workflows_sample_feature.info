@@ -1,5 +1,5 @@
 name = "Workbench Workflows Sample Feature"
-description = ""Contains the states and events: draft, needs_review and published. Also the workflow "main_workflow.""
+description = "Contains the states and events: draft, needs_review and published. Also the workflow "main_workflow."
 core = "7.x"
 package = "Features"
 php = "5.2.4"
