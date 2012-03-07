@@ -188,6 +188,7 @@ function workbench_workflows_menu_alter(&$items) {
  * Implements hook_state_flow_plugins().
  */
 function workbench_workflows_state_flow_plugins() {
+  // @todo, need to clear the cache of these plugins after a state/event/workflow is saved.
   module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow');
   return _workbench_workflows_state_flow_plugins();
 }
