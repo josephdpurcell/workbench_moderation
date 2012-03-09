@@ -56,6 +56,41 @@ function workbench_moderation_menu_alter(&$items) {
 }
 
 /**
+ * Implements hook_permission().
+ *
+ * Provides permissions for each state to state change.
+ */
+function workbench_moderation_permission() {
+  $permissions = array();
+  // @todo which perms do we need in 2.x
+  /*$permissions['view all unpublished content'] = array(
+    'title' => t('View all unpublished content'),
+  );
+  $permissions['administer workbench moderation'] = array(
+    'title' => t('Administer Workbench Moderation'),
+  );
+  $permissions['bypass workbench moderation'] = array(
+    'title' => t('Bypass moderation restrictions'),
+    'restrict access' => TRUE,
+  );
+  $permissions['view moderation history'] = array(
+    'title' => t('View moderation history'),
+  );
+  $permissions['view moderation messages'] = array(
+    'title' => t('View the moderation messages on a node')
+  );*/
+
+  $permissions['use workbench_moderation my drafts tab'] = array(
+    'title' => t('Use "My Drafts" workbench tab')
+  );
+  $permissions['use workbench_moderation needs review tab'] = array(
+    'title' => t('Use "Needs Review" workbench tab')
+  );
+
+  return $permissions;
+}
+
+/**
  * Redirects 'node/%node/revisions' to node/%node/moderation
  *
  * workbench_moderation_menu_alter() changes the page callback
