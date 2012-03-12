@@ -5,3 +5,9 @@ core = 7.x
 ; Core classes
 ; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
 dependencies[] = state_flow
+files[]=includes/workbench_moderation_handler_filter_state.inc
+
+// @todo - we may need these yet but i doubt it
+files[]=includes/workbench_moderation_handler_field_links.inc
+files[]=includes/workbench_moderation_handler_filter_moderated_type.inc
+files[]=includes/workbench_moderation_handler_filter_can_moderate.inc
