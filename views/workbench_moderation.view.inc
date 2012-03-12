@@ -123,29 +123,29 @@ $handler->display->display_options['relationships']['hid']['id'] = 'hid';
 $handler->display->display_options['relationships']['hid']['table'] = 'state_flow_states';
 $handler->display->display_options['relationships']['hid']['field'] = 'hid';
 $handler->display->display_options['relationships']['hid']['required'] = 0;
-/* Field: State Flow States: Revision current state */
-$handler->display->display_options['fields']['state']['id'] = 'state';
-$handler->display->display_options['fields']['state']['table'] = 'state_flow_states';
-$handler->display->display_options['fields']['state']['field'] = 'state';
-$handler->display->display_options['fields']['state']['label'] = 'Moderation State';
-$handler->display->display_options['fields']['state']['alter']['alter_text'] = 0;
-$handler->display->display_options['fields']['state']['alter']['make_link'] = 0;
-$handler->display->display_options['fields']['state']['alter']['absolute'] = 0;
-$handler->display->display_options['fields']['state']['alter']['external'] = 0;
-$handler->display->display_options['fields']['state']['alter']['replace_spaces'] = 0;
-$handler->display->display_options['fields']['state']['alter']['trim_whitespace'] = 0;
-$handler->display->display_options['fields']['state']['alter']['nl2br'] = 0;
-$handler->display->display_options['fields']['state']['alter']['word_boundary'] = 1;
-$handler->display->display_options['fields']['state']['alter']['ellipsis'] = 1;
-$handler->display->display_options['fields']['state']['alter']['more_link'] = 0;
-$handler->display->display_options['fields']['state']['alter']['strip_tags'] = 0;
-$handler->display->display_options['fields']['state']['alter']['trim'] = 0;
-$handler->display->display_options['fields']['state']['alter']['html'] = 0;
-$handler->display->display_options['fields']['state']['element_label_colon'] = 1;
-$handler->display->display_options['fields']['state']['element_default_classes'] = 1;
-$handler->display->display_options['fields']['state']['hide_empty'] = 0;
-$handler->display->display_options['fields']['state']['empty_zero'] = 0;
-$handler->display->display_options['fields']['state']['hide_alter_empty'] = 1;
+/* Field: State Flow States: Workbench State Filter */
+$handler->display->display_options['fields']['state_1']['id'] = 'state_1';
+$handler->display->display_options['fields']['state_1']['table'] = 'state_flow_states';
+$handler->display->display_options['fields']['state_1']['field'] = 'state';
+$handler->display->display_options['fields']['state_1']['label'] = 'Moderation State';
+$handler->display->display_options['fields']['state_1']['alter']['alter_text'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['make_link'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['absolute'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['external'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['replace_spaces'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['trim_whitespace'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['nl2br'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['word_boundary'] = 1;
+$handler->display->display_options['fields']['state_1']['alter']['ellipsis'] = 1;
+$handler->display->display_options['fields']['state_1']['alter']['more_link'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['strip_tags'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['trim'] = 0;
+$handler->display->display_options['fields']['state_1']['alter']['html'] = 0;
+$handler->display->display_options['fields']['state_1']['element_label_colon'] = 0;
+$handler->display->display_options['fields']['state_1']['element_default_classes'] = 1;
+$handler->display->display_options['fields']['state_1']['hide_empty'] = 0;
+$handler->display->display_options['fields']['state_1']['empty_zero'] = 0;
+$handler->display->display_options['fields']['state_1']['hide_alter_empty'] = 1;
 /* Field: Content: Nid */
 $handler->display->display_options['fields']['nid_1']['id'] = 'nid_1';
 $handler->display->display_options['fields']['nid_1']['table'] = 'node';
@@ -273,7 +273,7 @@ $handler->display->display_options['fields']['state_flow_events_form']['element_
 $handler->display->display_options['fields']['state_flow_events_form']['hide_empty'] = 0;
 $handler->display->display_options['fields']['state_flow_events_form']['empty_zero'] = 0;
 $handler->display->display_options['fields']['state_flow_events_form']['hide_alter_empty'] = 1;
-$handler->display->display_options['fields']['state_flow_events_form']['show_only_for_active_revision_ids'] = 1;
+$handler->display->display_options['fields']['state_flow_events_form']['show_only_for_active_revision_ids'] = TRUE;
 /* Sort criterion: Content: Updated date */
 $handler->display->display_options['sorts']['changed']['id'] = 'changed';
 $handler->display->display_options['sorts']['changed']['table'] = 'node';
@@ -309,26 +309,6 @@ $handler->display->display_options['filters']['type']['expose']['operator'] = 't
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
 $handler->display->display_options['filters']['type']['expose']['remember'] = 1;
 $handler->display->display_options['filters']['type']['expose']['reduce'] = 0;
-/* Filter criterion: Broken/missing handler */
-$handler->display->display_options['filters']['state']['id'] = 'state';
-$handler->display->display_options['filters']['state']['table'] = 'workbench_moderation_node_history';
-$handler->display->display_options['filters']['state']['field'] = 'state';
-$handler->display->display_options['filters']['state']['value'] = array(
-  'all' => 'all',
-  'draft' => 'draft',
-  'needs_review' => 'needs_review',
-  'published' => 'published',
-);
-$handler->display->display_options['filters']['state']['exposed'] = TRUE;
-$handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-$handler->display->display_options['filters']['state']['expose']['label'] = 'State';
-$handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
-$handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
-$handler->display->display_options['filters']['state']['expose']['remember'] = 1;
-/* Filter criterion: Broken/missing handler */
-$handler->display->display_options['filters']['current']['id'] = 'current';
-$handler->display->display_options['filters']['current']['table'] = 'workbench_moderation_node_history';
-$handler->display->display_options['filters']['current']['field'] = 'current';
 
 /* Display: Needs Review Page */
 $handler = $view->new_display('page', 'Needs Review Page', 'needs_review_page');
@@ -375,16 +355,19 @@ $handler->display->display_options['filters']['active']['id'] = 'active';
 $handler->display->display_options['filters']['active']['table'] = 'state_flow_states';
 $handler->display->display_options['filters']['active']['field'] = 'active';
 $handler->display->display_options['filters']['active']['value'] = '1';
-/* Filter criterion: State Flow States: Revision current state */
+/* Filter criterion: State Flow States: Workbench State Filter */
 $handler->display->display_options['filters']['state']['id'] = 'state';
 $handler->display->display_options['filters']['state']['table'] = 'state_flow_states';
 $handler->display->display_options['filters']['state']['field'] = 'state';
-$handler->display->display_options['filters']['state']['value'] = 'needs_review';
-$handler->display->display_options['filters']['state']['expose']['operator_id'] = '';
-$handler->display->display_options['filters']['state']['expose']['label'] = 'Revision current state';
+$handler->display->display_options['filters']['state']['value'] = array(
+  'needs_review' => 'needs_review',
+);
+$handler->display->display_options['filters']['state']['exposed'] = TRUE;
+$handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+$handler->display->display_options['filters']['state']['expose']['label'] = 'State';
 $handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
 $handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
-$handler->display->display_options['filters']['state']['expose']['required'] = 0;
+$handler->display->display_options['filters']['state']['expose']['reduce'] = 0;
 $handler->display->display_options['path'] = 'admin/workbench/needs-review';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'Needs Review';
@@ -403,7 +386,7 @@ $handler->display->display_options['empty']['area']['empty'] = FALSE;
 $handler->display->display_options['empty']['area']['content'] = 'This list displays content you have created that is not published. Currently there is no such content.';
 $handler->display->display_options['empty']['area']['format'] = 'plain_text';
 $handler->display->display_options['defaults']['fields'] = FALSE;
-/* Field: State Flow States: Revision current state */
+/* Field: State Flow States: Workbench State Filter */
 $handler->display->display_options['fields']['state']['id'] = 'state';
 $handler->display->display_options['fields']['state']['table'] = 'state_flow_states';
 $handler->display->display_options['fields']['state']['field'] = 'state';
@@ -553,7 +536,7 @@ $handler->display->display_options['fields']['state_flow_events_form']['element_
 $handler->display->display_options['fields']['state_flow_events_form']['hide_empty'] = 0;
 $handler->display->display_options['fields']['state_flow_events_form']['empty_zero'] = 0;
 $handler->display->display_options['fields']['state_flow_events_form']['hide_alter_empty'] = 1;
-$handler->display->display_options['fields']['state_flow_events_form']['show_only_for_active_revision_ids'] = 1;
+$handler->display->display_options['fields']['state_flow_events_form']['show_only_for_active_revision_ids'] = TRUE;
 $handler->display->display_options['defaults']['filters'] = FALSE;
 /* Filter criterion: User: Current */
 $handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
@@ -588,24 +571,24 @@ $handler->display->display_options['filters']['type']['expose']['operator'] = 't
 $handler->display->display_options['filters']['type']['expose']['identifier'] = 'type';
 $handler->display->display_options['filters']['type']['expose']['remember'] = 1;
 $handler->display->display_options['filters']['type']['expose']['reduce'] = 0;
-/* Filter criterion: State Flow States: Revision current state */
-$handler->display->display_options['filters']['state']['id'] = 'state';
-$handler->display->display_options['filters']['state']['table'] = 'state_flow_states';
-$handler->display->display_options['filters']['state']['field'] = 'state';
-$handler->display->display_options['filters']['state']['value'] = 'draft';
-$handler->display->display_options['filters']['state']['group'] = 1;
-$handler->display->display_options['filters']['state']['exposed'] = TRUE;
-$handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
-$handler->display->display_options['filters']['state']['expose']['label'] = 'Revision current state';
-$handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
-$handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
-$handler->display->display_options['filters']['state']['expose']['required'] = 0;
-$handler->display->display_options['filters']['state']['expose']['multiple'] = FALSE;
 /* Filter criterion: State Flow States: Active */
 $handler->display->display_options['filters']['active']['id'] = 'active';
 $handler->display->display_options['filters']['active']['table'] = 'state_flow_states';
 $handler->display->display_options['filters']['active']['field'] = 'active';
 $handler->display->display_options['filters']['active']['value'] = '1';
+/* Filter criterion: State Flow States: Workbench State Filter */
+$handler->display->display_options['filters']['state']['id'] = 'state';
+$handler->display->display_options['filters']['state']['table'] = 'state_flow_states';
+$handler->display->display_options['filters']['state']['field'] = 'state';
+$handler->display->display_options['filters']['state']['value'] = array(
+  'draft' => 'draft',
+);
+$handler->display->display_options['filters']['state']['exposed'] = TRUE;
+$handler->display->display_options['filters']['state']['expose']['operator_id'] = 'state_op';
+$handler->display->display_options['filters']['state']['expose']['label'] = 'State';
+$handler->display->display_options['filters']['state']['expose']['operator'] = 'state_op';
+$handler->display->display_options['filters']['state']['expose']['identifier'] = 'state';
+$handler->display->display_options['filters']['state']['expose']['reduce'] = 0;
 $handler->display->display_options['path'] = 'admin/workbench/drafts';
 $handler->display->display_options['menu']['type'] = 'tab';
 $handler->display->display_options['menu']['title'] = 'My Drafts';
