@@ -65,7 +65,6 @@ function workbench_moderation_views_data_alter(&$data) {
       'type' => 'yes-no',
     ),
   );
-  dpm($data['state_flow_states']);
   return $data;
 
 }
