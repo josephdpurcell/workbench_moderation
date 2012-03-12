@@ -6,13 +6,9 @@
  */
 class workbench_moderation_handler_filter_state extends views_handler_filter_in_operator {
   function get_value_options() {
-    dpm("in get_value_options");
-    dpm(workbench_workflows_options('states'));
     if (!isset($this->value_options)) {
-      $this->value_title = t('Moderation Status');
+      $this->value_title = t('Workbench Moderation States');
       $this->value_options = array_map('check_plain', workbench_workflows_options('states'));
-//      $this->value_options = array_map('check_plain', array('state1', 'state2', 'staet3'));
-      //$this->value_options = array_map('check_plain', workbench_moderation_state_labels());
     }
   }
 }

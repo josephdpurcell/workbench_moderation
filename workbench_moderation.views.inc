@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Implements hook_views_default_views().
+ */
+function workbench_moderation_views_default_views() {
+  $module = 'workbench_moderation';
+  $directory = 'views';
+  $extension = 'view.inc';
+  $name = 'view';
+
+  // From workbench_load_all_exports().
+  $return = array();
+  // Find all the files in the directory with the correct extension.
+  $files = file_scan_directory(drupal_get_path('module', $module) . "/$directory", "/.$extension/");
+  foreach ($files as $path => $file) {
+    require $path;
+    if (isset($$name)) {
+      $return[$$name->name] = $$name;
+    }
+  }
+
+  return $return;
+}
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @file
+ *  Content moderation views integration for Workbench.
+ */
+
+/**
+ * Implements hook_views_data().
+ */
+function workbench_moderation_views_data_alter(&$data) {
+  // unlike State Flow, Workbench Moderation knows its states and can provide
+  // them as options in Views
+  $data['state_flow_states']['state']['title'] = t("Workbench State Filter");
+  $data['state_flow_states']['state']['help'] = t("Use the States defined in Workbench Moderation to filter revisions");
+  $data['state_flow_states']['state']['filter'] = array(
+    'handler' => 'workbench_moderation_handler_filter_state',
+    'label' => t('Current State Filter'),
+    'type' => 'select',
+  );
+
+  // @todo do we still need these virtual fields?
+  // Declare virtual fields on the {node} table.
+  $data['node']['workbench_moderation_moderated_type'] = array(
+    'group' => t('Workbench Moderation'),
+    'title' => t('Type is moderated'),
+    'help' => t('Whether the content type is moderated.'),
+    'real field' => 'type',
+    'filter' => array(
+      'handler' => 'workbench_moderation_handler_filter_moderated_type',
+      'label' => t('Type is moderated'),
+      'type' => 'yes-no',
+    ),
+  );
+  dpm($data['state_flow_states']);
+  return $data;
+
+}
