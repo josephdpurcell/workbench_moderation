@@ -75,12 +75,15 @@ function _workbench_workflows_state_flow_plugins() {
         'path' => $class_path,
         'parent' => 'state_flow_entity',
         'workflow_options' => $workflow_options,
-        // steve - these are some new items a workflow handler needs
-        // feel free to change this as needed
-        'entity path' => 'node/%node',
-        'edit paths' => 'node/%/edit',
-        'revision path' => 'node/%/revisions',
         'entity_type' => 'node',
+
+        // @todo, make this configurable in workflow exportables.
+        // @todo, should this key be inside "handler" or at the top level of the plugin?
+        'event_form_options' => array(
+          'event_element_label' => t('Change State'),
+          'require_log_message' => FALSE,
+        ),
+
       ),
     );
   }
