@@ -4,4 +4,7 @@ package = State Machine
 core = 7.x
 ; Core classes
 ; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
+
 dependencies[] = state_flow
+
+files[]=includes/workbench_moderation_handler_filter_state.inc
