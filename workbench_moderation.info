@@ -7,4 +7,8 @@ core = 7.x
 
 dependencies[] = state_flow
 
+; @todo, It's possible that workbench moderation could be used without
+; workbench_workflows. There are currently coded assumptions that workbench_workflows is used.
+dependencies[] = workbench_workflows
+
 files[]=includes/workbench_moderation_handler_filter_state.inc
