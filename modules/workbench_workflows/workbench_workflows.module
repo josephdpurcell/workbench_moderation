@@ -114,6 +114,22 @@ function workbench_workflows_load($type, $name) {
 }
 
 /**
+ * Load a single, unsanitized workbench moderation exportable label.
+ *
+ * @param string $type
+ *   Allowed values are 'states', 'events', and 'workflows'
+ * @param string $name
+ *   The machine name of the exportable.
+ * @param string $label_property
+ *   The property on the exportable to return. Defaults to admin_title.
+ * Returns an UNESCAPED string.
+ */
+function workbench_workflows_load_label($type, $name, $label_property = 'admin_title') {
+  $exportable = workbench_workflows_load($type, $name);
+  return $exportable->{$label_property};
+}
+
+/**
  * Load a single workbench moderation exportable.
  *
  * @param string $type
