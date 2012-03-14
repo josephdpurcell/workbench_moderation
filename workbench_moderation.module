@@ -13,6 +13,9 @@
  */
 function workbench_moderation_menu_alter(&$items) {
 
+  // hide Workflow tab provided by State Flow
+  $items['node/%node/workflow']['access callback'] = FALSE;
+
   // Redirect node/%node/revisions
   $items['node/%node/revisions']['page callback'] = 'workbench_moderation_node_revisions_redirect';
   $items['node/%node/revisions']['page arguments'] = array(1);
