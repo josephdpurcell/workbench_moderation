@@ -72,10 +72,6 @@ function workbench_moderation_permission() {
   $permissions['administer workbench moderation'] = array(
     'title' => t('Administer Workbench Moderation'),
   );
-  $permissions['bypass workbench moderation'] = array(
-    'title' => t('Bypass moderation restrictions'),
-    'restrict access' => TRUE,
-  );
   $permissions['view moderation history'] = array(
     'title' => t('View moderation history'),
   );
@@ -83,6 +79,10 @@ function workbench_moderation_permission() {
     'title' => t('View the moderation messages on a node')
   );*/
 
+  $permissions['bypass workbench moderation'] = array(
+    'title' => t('Bypass moderation restrictions'),
+    'restrict access' => TRUE,
+  );
   $permissions['use workbench_moderation my drafts tab'] = array(
     'title' => t('Use "My Drafts" workbench tab')
   );
