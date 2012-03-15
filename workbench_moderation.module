@@ -112,6 +112,10 @@ function workbench_moderation_node_access($node, $op, $account) {
 function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_id) {
   // Hide Published checkbox
   $form['options']['status']['#access'] = FALSE;
+
+  // info block messages
+  $node = $form_state['node'];
+  workbench_moderation_messages('edit', $node);
 }
 
 /**
@@ -145,15 +149,6 @@ function workbench_moderation_node_revisions_redirect($node) {
   }
    *
    */
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- */
-function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_id) {
-
-  $node = $form_state['node'];
-  workbench_moderation_messages('edit', $node);
 }
 
 /**
