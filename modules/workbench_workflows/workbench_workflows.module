@@ -4,12 +4,10 @@
  * @file workbench_workflows.module
  */
 
-
 function workbench_workflows_permission() {
   return array(
     'administer_workbench_workflows' => array(
       'title' => t('Administer workbench moderation exportables'),
-      'description' => t(''),
     ),
   );
 }
