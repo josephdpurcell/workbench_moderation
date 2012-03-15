@@ -123,58 +123,14 @@ function workbench_moderation_node_revisions_redirect($node) {
    */
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_id) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  $node = $form_state['node'];
+  workbench_moderation_messages('edit', $node);
+}
 
 /**
  * Implements hook_node_view().
@@ -183,23 +139,11 @@ function workbench_moderation_node_revisions_redirect($node) {
  */
 function workbench_moderation_node_view($node, $view_mode = 'full') {
 
-  //dsm($node);
-
   // Show moderation state messages if we're on a node page.
   if (node_is_page($node) && $view_mode == 'full' && empty($node->in_preview)) {
     workbench_moderation_messages('view', $node);
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 /**
  * Implements hook_block_view_workbench_block().
@@ -208,19 +152,13 @@ function workbench_moderation_node_view($node, $view_mode = 'full') {
  */
 function workbench_moderation_workbench_block() {
 
-
-
-
-  $output = array('HELLLO!!!');
+  $output = array();
   foreach (workbench_moderation_set_message() as $message) {
     $output[] = t('!label: <em>!message</em>', array('!label' => $message['label'], '!message' => $message['message']));
   }
 
   return $output;
 }
-
-
-
 
 /**
  * Stores status messages for delivery.
@@ -244,9 +182,6 @@ function workbench_moderation_set_message($new_messages = array()) {
   $messages = array_merge($messages, $new_messages);
   return $messages;
 }
-
-
-
 
 /**
  * Sets status messages for a node.
@@ -272,176 +207,38 @@ function workbench_moderation_messages($context, $node = NULL) {
     return;
   }
 
-
   if ($state_machine = state_flow_entity_load_state_machine($node, 'vid') && !empty($node->current_state)) {
-   // dsm($node->current_state);
 
     $info_block_messages[] = array(
       'label' => t('Revision state'),
       'message' => check_plain(workbench_workflows_load_label('states', $node->current_state)),
     );
-  // Send the info block array to a static variable.
-  workbench_moderation_set_message($info_block_messages);
+
+    $any_published_vid = !empty($node->published_revision_id);
+    $published = $any_published_vid && $node->published_revision_id == $node->vid && $node->status == '1';
 
 
-}
-/*
-  dsm($state_machine);
-  dsm($node);
-
-  if
-
-  current_state
- *
- *
- */
-
-}
-  /*
-
-
-  $node_published = FALSE;
-  $revision_published = FALSE;
-  $revision_current = FALSE;
-
-  // For new content, this property will not be set.
-  if (isset($node->workbench_moderation)) {
-    $state = $node->workbench_moderation;
-    if (!empty($state['published'])) {
-      $node_published = TRUE;
-    }
-    if ($state['my_revision']->published) {
-      $revision_published = TRUE;
-    }
-    if ($state['my_revision']->vid == $state['current']->vid) {
-      $revision_current = TRUE;
-    }
-  }
-
-  // An array of messages to add to the general workbench block.
-  $info_block_messages = array();
-
-  if ($context == 'view') {
     $info_block_messages[] = array(
-      'label' => t('Revision state'),
-      'message' => check_plain(workbench_moderation_state_label($state['my_revision']->state)),
-    );
-    $info_block_messages[] = array(
-      'label' => t('Current draft'),
-      'message' => !empty($revision_current) ? t('Yes') : t('No'),
+      'label' => t('Public'),
+      'message' => $published ? t('Yes') : t('No'),
     );
 
-    // Check node access.
-    drupal_static('_node_revision_access', array(), TRUE);
-
-    // Add a moderation form.
-    if ($revision_current && !$revision_published && _workbench_moderation_access('update', $node) && $moderate_form = drupal_get_form('workbench_moderation_moderate_form', $node, "node/{$node->nid}/current-revision")) {
-      if ($moderate_form = drupal_render($moderate_form)) {
-        $info_block_messages[] = array(
-          'label' => t('Moderate'),
-          'message' => $moderate_form,
-        );
-      }
-    }
-
-    // Add an unpublish link.
-    $next_states = workbench_moderation_states_next(workbench_moderation_state_published(), $user, $node->type);
-    if ($revision_published && !empty($next_states) && $link = workbench_moderation_access_link(t('Unpublish this revision'), "node/{$node->nid}/moderation/{$node->vid}/unpublish")) {
+    // If there is a published vid, that's something else, create a link.
+    if ($any_published_vid && !$published) {
       $info_block_messages[] = array(
-        'label' => t('Actions'),
-        'message' => $link,
+      'label' => t('Public revision'),
+      'message' => l('Public version', 'node/' . $node->nid),
       );
     }
 
-    // Revision navigation links. This is disabled for the time being, since
-    // node tabs are lost when navigating through old revisions.
-    // @TODO remove this entirely?
-    if (variable_get('workbench_moderation_show_revision_navigation', FALSE) && user_access('view revisions')) {
-      $links = array();
-
-      // Get previous and next revision ids.
-      $args = array(':nid' => $node->nid, ':vid' => $node->vid);
-      if ($prev_vid = db_query_range("SELECT nr.vid FROM {node_revision} nr WHERE nr.nid = :nid AND nr.vid < :vid ORDER BY nr.vid DESC", 0, 1, $args)->fetchField()) {
-        $links[$prev_vid] = array('title' => t('Previous revision'), 'href' => "node/{$node->nid}/revisions/{$prev_vid}/view");
-      }
-      if ($next_vid = db_query_range("SELECT nr.vid FROM {node_revision} nr WHERE nr.nid = :nid AND nr.vid > :vid ORDER BY nr.vid ASC", 0, 1, $args)->fetchField()) {
-        $links[$next_vid] = array('title' => t('Next revision'), 'href' => "node/{$node->nid}/revisions/{$next_vid}/view");
-      }
-
-      // If the current revision is next or previous, use the "node/%node/current-revision" path.
-      if (($current = $state['current']->vid) && isset($links[$current])) {
-        $links[$current]['href'] = "node/{$node->nid}/current-revision";
-      }
-
-      // If the published revision is next or previous, use the "node/%node" path.
-      if (isset($state['published']) && ($published = $state['published']->vid) && isset($links[$published])) {
-        $links[$published]['href'] = "node/{$node->nid}";
-      }
-
-      // Link it up, with access checks.
-      foreach ($links as $key => $args) {
-        $links[$key] = call_user_func_array('workbench_moderation_access_link', $args);
-      }
-
-      // Post the links in a non-repeating message.
-      if (!empty($links)) {
-        $info_block_messages[] = array(
-          'label' => t('View'),
-          'message' => implode(', ', $links),
-        );
-      }
-    }
-  }
-  // @TODO: Clean these up.
-  elseif ($context == 'edit') {
-    if ($node_published && $revision_published) {
+    if (!$published) {
       $info_block_messages[] = array(
-        'label' => t('Status'),
-        'message' => t('New draft of live content.'),
+        'label' => t('Moderate'),
+        'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions/' . $node->vid . '/workflow'),
       );
     }
-    elseif ($node_published && !$revision_published) {
-      $info_block_messages[] = array(
-        'label' => t('Status'),
-        'message' => t('New draft from current revision'),
-      );
-      $link = workbench_moderation_access_link(t('Create a new draft from the published revision.'), "node/{$node->nid}/revisions/{$state['published']->vid}/revert");
-      $info_block_messages[] = array(
-        'label' => t('Actions'),
-        'message' => $link,
-      );
-    }
-    else {
-      // New content.
-      $info_block_messages[] = array(
-        'label' => t('New content'),
-        'message' => t('Your draft will be placed in moderation.'),
-      );
-    }
-  }
 
-  // Send the info block array to a static variable.
-  workbench_moderation_set_message($info_block_messages);
-}
-
-/**
- * Builds a link for use in messages.
- *
- * @see workbench_moderation_messages()
- *
- * @param $text
- *   The link text to use.
- * @param $internal_path
- *   The Drupal path for the link.
- * @param $options
- *   Link options, following the format of url().
- *
- * @return
- *   A drupal-formatted HTML link.
- *   /
-function workbench_moderation_access_link($text, $internal_path, $options = array()) {
-  if (($item = menu_get_item($internal_path)) && !empty($item['access'])) {
-    return l($text, $internal_path, $options);
+    // Send the info block array to a static variable.
+    workbench_moderation_set_message($info_block_messages);
   }
 }
-*/
