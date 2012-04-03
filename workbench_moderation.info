@@ -1,6 +1,6 @@
 name = Workbench Moderation
 description = Workbench Moderation now extends State Flow
-package = State Machine
+package = Workbench
 core = 7.x
 ; Core classes
 ; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
