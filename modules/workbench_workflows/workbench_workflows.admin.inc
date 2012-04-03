@@ -34,7 +34,7 @@ function workbench_workflows_export_ui_base_plugin($type) {
       "menu description" => "Add, edit or delete Workbench " . ucfirst($plural),
     ),
 
-    "title singular" => t("workbench state"),
+    "title singular" => t("workbench $type"),
     "title singular proper" => t("Workbench " . ucfirst($type)),
     "title plural" => t("workbench $type"),
     "title plural proper" => t("Workbench " . ucfirst($plural)),
