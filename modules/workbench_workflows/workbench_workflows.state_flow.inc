@@ -26,43 +26,48 @@ function _workbench_workflows_state_flow_plugins() {
 
     // Build up states in a way compatible with state_flow_plugins.
     foreach ($workflow->states as $state_name => $state) {
-      $state_array = array(
-        'label' => $state_exportables[$state_name]->admin_title,
-      );
+      // make sure the load_all() array has the state
+      if(isset($state_exportables[$state_name])) {
+        $state_array = array(
+          'label' => $state_exportables[$state_name]->admin_title,
+        );
 
-      // @todo, should there be a UI way of adding more of these?
-      // Perhaps just a ui flag for "treat this as a published state."
-      if ($state_name === 'published') {
-        $state_array['on_enter'] = 'on_enter_published';
-        $state_array['on_exit'] = 'on_exit_published';
+        // @todo, should there be a UI way of adding more of these?
+        // Perhaps just a ui flag for "treat this as a published state."
+        if ($state_name === 'published') {
+          $state_array['on_enter'] = 'on_enter_published';
+          $state_array['on_exit'] = 'on_exit_published';
+        }
+
+        $workflow_options['states'][$state_name] = $state_array;
       }
-
-      $workflow_options['states'][$state_name] = $state_array;
     }
 
     // Build up events in a way compatible with state_flow_plugins.
     foreach ($workflow->events as $event_name => $event) {
 
       $origins = array();
+      // make sure the load_all() array has the event
+      if(isset($event_exportables[$event_name])) {
+        foreach($event_exportables[$event_name]->origin_states as $key => $state_value) {
 
-      foreach($event_exportables[$event_name]->origin_states as $key => $state_value) {
-
-        // $state_value might be 0.
-        // This transformation is a little annoying. It might be better to fix
-        // This in the validation of saving workbench_events.
-        if (!empty($state_value)) {
-          $origins[$key] = $state_value;
+          // $state_value might be 0.
+          // This transformation is a little annoying. It might be better to fix
+          // This in the validation of saving workbench_events.
+          if (!empty($state_value)) {
+            $origins[$key] = $state_value;
+          }
         }
+
+        $event_array = array(
+          'origin' => $origins,
+          'target' => $event_exportables[$event_name]->target_state,
+          'guard' => 'workbench_workflows_guard',
+          'label' => $event_exportables[$event_name]->admin_title,
+        );
+
+        $workflow_options['events'][$event_name] = $event_array;
       }
-
-      $event_array = array(
-        'origin' => $origins,
-        'target' => $event_exportables[$event_name]->target_state,
-        'guard' => 'workbench_workflows_guard',
-        'label' => $event_exportables[$event_name]->admin_title,
-      );
-
-      $workflow_options['events'][$event_name] = $event_array;
     }
 
     $info['workbench_workflows__' . $workflow->name] = array(
