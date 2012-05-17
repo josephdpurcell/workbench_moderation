@@ -138,7 +138,6 @@ function workbench_workflows_starter_schema($type) {
       ),
       'weight' => array(
         'type' => 'int',
-        'no export' => TRUE,
         'description' => 'Weight',
       ),
     ),

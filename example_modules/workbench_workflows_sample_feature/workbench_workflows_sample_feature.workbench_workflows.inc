@@ -10,7 +10,7 @@
 function workbench_workflows_sample_feature_default_workbench_workflows_events() {
   $export = array();
 
-  $event = new stdClass;
+  $event = new stdClass();
   $event->disabled = FALSE; /* Edit this to true to make a default event disabled initially */
   $event->api_version = 1;
   $event->name = 'draft';
@@ -27,16 +27,19 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   );
   $event->contexts = array();
   $event->relationships = array();
-  $event->access = array();
+  $event->access = array(
+    'logic' => NULL,
+  );
+  $event->weight = 0;
   $event->target_state = 'draft';
   $event->origin_states = array(
+    'draft' => 'draft',
     'needs_review' => 'needs_review',
     'published' => 'published',
-    'draft' => 0,
   );
   $export['draft'] = $event;
 
-  $event = new stdClass;
+  $event = new stdClass();
   $event->disabled = FALSE; /* Edit this to true to make a default event disabled initially */
   $event->api_version = 1;
   $event->name = 'needs_review';
@@ -53,16 +56,19 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   );
   $event->contexts = array();
   $event->relationships = array();
-  $event->access = array();
+  $event->access = array(
+    'logic' => NULL,
+  );
+  $event->weight = 0;
   $event->target_state = 'needs_review';
   $event->origin_states = array(
     'draft' => 'draft',
+    'needs_review' => 'needs_review',
     'published' => 'published',
-    'needs_review' => 0,
   );
   $export['needs_review'] = $event;
 
-  $event = new stdClass;
+  $event = new stdClass();
   $event->disabled = FALSE; /* Edit this to true to make a default event disabled initially */
   $event->api_version = 1;
   $event->name = 'published';
@@ -79,12 +85,15 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   );
   $event->contexts = array();
   $event->relationships = array();
-  $event->access = array();
+  $event->access = array(
+    'logic' => NULL,
+  );
+  $event->weight = 0;
   $event->target_state = 'published';
   $event->origin_states = array(
     'draft' => 'draft',
     'needs_review' => 'needs_review',
-    'published' => 0,
+    'published' => 'published',
   );
   $export['published'] = $event;
 
@@ -97,7 +106,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
 function workbench_workflows_sample_feature_default_workbench_workflows_states() {
   $export = array();
 
-  $state = new stdClass;
+  $state = new stdClass();
   $state->disabled = FALSE; /* Edit this to true to make a default state disabled initially */
   $state->api_version = 1;
   $state->name = 'draft';
@@ -115,9 +124,10 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->contexts = array();
   $state->relationships = array();
   $state->access = array();
+  $state->weight = 0;
   $export['draft'] = $state;
 
-  $state = new stdClass;
+  $state = new stdClass();
   $state->disabled = FALSE; /* Edit this to true to make a default state disabled initially */
   $state->api_version = 1;
   $state->name = 'needs_review';
@@ -135,9 +145,10 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->contexts = array();
   $state->relationships = array();
   $state->access = array();
+  $state->weight = 0;
   $export['needs_review'] = $state;
 
-  $state = new stdClass;
+  $state = new stdClass();
   $state->disabled = FALSE; /* Edit this to true to make a default state disabled initially */
   $state->api_version = 1;
   $state->name = 'published';
@@ -155,6 +166,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
   $state->contexts = array();
   $state->relationships = array();
   $state->access = array();
+  $state->weight = 0;
   $export['published'] = $state;
 
   return $export;
@@ -166,7 +178,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_states()
 function workbench_workflows_sample_feature_default_workbench_workflows_workflows() {
   $export = array();
 
-  $workflow = new stdClass;
+  $workflow = new stdClass();
   $workflow->disabled = FALSE; /* Edit this to true to make a default workflow disabled initially */
   $workflow->api_version = 1;
   $workflow->name = 'sample_workflow';
@@ -184,6 +196,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_workflow
   $workflow->contexts = array();
   $workflow->relationships = array();
   $workflow->access = array();
+  $workflow->weight = 2;
   $workflow->category = '';
   $workflow->states = array(
     'draft' => 'draft',
