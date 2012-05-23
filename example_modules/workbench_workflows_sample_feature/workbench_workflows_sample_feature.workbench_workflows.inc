@@ -28,7 +28,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array(
-    'logic' => NULL,
+    'logic' => 'and',
   );
   $event->weight = 0;
   $event->target_state = 'draft';
@@ -57,7 +57,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array(
-    'logic' => NULL,
+    'logic' => 'and',
   );
   $event->weight = 0;
   $event->target_state = 'needs_review';
@@ -86,7 +86,7 @@ function workbench_workflows_sample_feature_default_workbench_workflows_events()
   $event->contexts = array();
   $event->relationships = array();
   $event->access = array(
-    'logic' => NULL,
+    'logic' => 'and',
   );
   $event->weight = 0;
   $event->target_state = 'published';

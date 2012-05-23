@@ -65,7 +65,8 @@ class workbench_base_ui extends ctools_export_ui {
   }
 
   function edit_form_submit(&$form, &$form_state) {
-    $form_state['item']->access['logic'] = $form_state['values']['logic'];
+    if (!empty($form_state['values']['logic'])) {
+      $form_state['item']->access['logic'] = $form_state['values']['logic'];
+    }
   }
-
 }
