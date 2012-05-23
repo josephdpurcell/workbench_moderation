@@ -64,9 +64,11 @@ class workbench_base_ui extends ctools_export_ui {
       <a href='http://drupal.org/node/1376258'>http://drupal.org/node/1376258</a>", 'warning');
   }
 
+  function edit_form_rules_submit(&$form, &$form_state) {
+    $form_state['item']->access['logic'] = $form_state['values']['logic'];
+  }
+
   function edit_form_submit(&$form, &$form_state) {
-    if (!empty($form_state['values']['logic'])) {
-      $form_state['item']->access['logic'] = $form_state['values']['logic'];
-    }
+    parent::edit_form_submit($form, $form_state);
   }
 }
