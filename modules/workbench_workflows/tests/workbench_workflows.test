@@ -1,0 +1,57 @@
+<?php
+/**
+ * @file
+ * Provides tests.
+ */
+
+/**
+ * Unit tests for the upgrade routines.
+ */
+class WorkbenchWorkflowsTestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Workbench Workflows Web Tests',
+      'description' => '',
+      'group' => 'Workbench Workflows',
+    );
+  }
+
+  protected function setUp() {
+    parent::setUp(array('workbench_workflows'));
+    module_load_include('inc', 'workbench_workflows', 'includes/workbench_workflows.starter');
+    workbench_workflows_import_starter_exportables();
+  }
+
+  /**
+   * Tests the upgrade routines (outside of the user interface).
+   */
+  protected function testInstallOfExportables() {
+
+    // These are the machine names and labels of the expected starter
+    // states, events, and workflows.
+    $exportables = array(
+      'states' => array(
+        'draft' => 'Draft (state)',
+        'needs_review' => 'Needs Review (state)',
+        'published' => 'Published (state)',
+      ),
+      'events' => array(
+        'draft' => 'Going to Draft (event)',
+        'needs_review' => 'Going to Needs Review (event)',
+        'published' => 'Going to Published (event)',
+      ),
+      'workflows' => array(
+        'sample_workflow' => 'Sample Workflow (workflow)',
+      ),
+    );
+
+    foreach ($exportables as $exportable_type => $set_of_exportables) {
+      foreach ($set_of_exportables as $exportable_machine_name => $exportable_admin_title) {
+        $loaded_exportable = workbench_workflows_load($exportable_type, $exportable_machine_name);
+
+        $this->assertEqual($loaded_exportable->admin_title, $exportable_admin_title, 'Loading ' . $exportable_type. ': ' . $exportable_machine_name . ' was loaded.');
+      }
+    }
+  }
+}

@@ -3,4 +3,5 @@ description = Exportable workflows
 package = Workbench
 ; @todo, do all files need to be declared here?
 files[] = plugins/export_ui/workbench_workflows_ui.class.php
+files[] = tests/workbench_workflows.test
 core = "7.x"
