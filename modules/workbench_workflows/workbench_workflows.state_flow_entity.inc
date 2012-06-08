@@ -6,9 +6,9 @@
 
 
 /**
- * Implements hook_state_flow_plugins().
+ * Helper function for hook_state_flow_entity_plugins().
  */
-function _workbench_workflows_state_flow_plugins() {
+function _workbench_workflows_state_flow_entity_plugins() {
   $info = array();
 
   // Load all workflows, events and states.

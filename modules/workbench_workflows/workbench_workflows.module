@@ -201,10 +201,10 @@ function workbench_workflows_menu_alter(&$items) {
 /**
  * Implements hook_state_flow_plugins().
  */
-function workbench_workflows_state_flow_plugins() {
+function workbench_workflows_state_flow_entity_plugins() {
   // @todo, need to clear the cache of these plugins after a state/event/workflow is saved.
-  module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow');
-  return _workbench_workflows_state_flow_plugins();
+    module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow_entity');
+  return _workbench_workflows_state_flow_entity_plugins();
 }
 
 /**
@@ -212,9 +212,9 @@ function workbench_workflows_state_flow_plugins() {
  *
  * @todo, this hook currently uses $node but will likely switch to $entity eventually.
  */
-function workbench_workflows_state_flow_machine_type_alter( &$machine_type, $node) {
+function workbench_workflows_state_flow_entity_machine_type_alter( &$machine_type, $node) {
 
-  module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow');
+  module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow_entity');
   $workflow = workbench_workflows_select_workflow($node);
   if (!empty($workflow->name)) {
     $machine_type = 'workbench_workflows__' . $workflow->name;
