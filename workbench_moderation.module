@@ -229,7 +229,7 @@ function workbench_moderation_messages($context, $node = NULL) {
     return;
   }
 
-  if ($state_machine = state_flow_entity_load_state_machine($node, 'vid') && !empty($node->current_state)) {
+  if ($state_machine = state_flow_entity_load_state_machine($node, 'node') && !empty($node->current_state)) {
 
     $info_block_messages[] = array(
       'label' => t('Revision state'),
