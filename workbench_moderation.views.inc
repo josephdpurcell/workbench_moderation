@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ *  Content moderation views integration for Workbench.
+ */
+
+/**
  * Implements hook_views_default_views().
  */
 function workbench_moderation_views_default_views() {
@@ -23,23 +28,9 @@ function workbench_moderation_views_default_views() {
   return $return;
 }
 
-
-
-
-
-
-
-
-
-
-
-/**
- * @file
- *  Content moderation views integration for Workbench.
- */
-
 /**
  * Implements hook_views_data().
+ *
  */
 function workbench_moderation_views_data_alter(&$data) {
   // unlike State Flow, Workbench Moderation knows its states and can provide
