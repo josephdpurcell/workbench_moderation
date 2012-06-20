@@ -152,13 +152,7 @@ function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
 
     ctools_include('export');
     $type_exportables = ctools_export_load_object('workbench_workflows_' . $type);
-
-    // @todo, getting errors when used on non-workflows.
-    // fix that.
-    if ($type == 'workflows') {
-      uasort($type_exportables, 'ctools_plugin_sort');
-    }
-
+    uasort($type_exportables, 'ctools_plugin_sort');
     $cache[$type] = $type_exportables;
   }
 
