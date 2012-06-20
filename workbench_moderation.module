@@ -264,7 +264,7 @@ function workbench_moderation_messages($context, $node = NULL) {
     if (!$published) {
       $info_block_messages[] = array(
         'label' => t('Moderate'),
-        'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions/' . $node->vid . '/workflow'),
+        'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions-state-flow-states'),
       );
     }
 
