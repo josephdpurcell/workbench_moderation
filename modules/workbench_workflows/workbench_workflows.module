@@ -124,7 +124,10 @@ function workbench_workflows_load($type, $name) {
  */
 function workbench_workflows_load_label($type, $name, $label_property = 'admin_title') {
   $exportable = workbench_workflows_load($type, $name);
-  return $exportable->{$label_property};
+  if (!empty($exportable->{$label_property})) {
+    return $exportable->{$label_property};
+  }
+  return '';
 }
 
 /**
