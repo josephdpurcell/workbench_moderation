@@ -110,15 +110,23 @@ function workbench_moderation_node_access($node, $op, $account) {
  * Implements hook_form_FORM_ID_alter().
  */
 function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_id) {
-  // Hide Published checkbox
-  $form['options']['status']['#access'] = FALSE;
 
-  // enforce new revision
-  $form['revision_information']['revision']['#value'] = TRUE;
 
-  // info block messages
-  $node = $form_state['node'];
-  workbench_moderation_messages('edit', $node);
+  if (!empty($form['revision_information']['state_flow'])) {
+
+    // Hide Published checkbox
+    $form['options']['status']['#access'] = FALSE;
+
+    // enforce new revision
+    $form['revision_information']['revision']['#value'] = TRUE;
+
+    // Allow access to revision info.
+    $form['revision_information']['#access'] = TRUE;
+
+    // info block messages
+    $node = $form_state['node'];
+    workbench_moderation_messages('edit', $node);
+  }
 }
 
 /**
@@ -256,7 +264,7 @@ function workbench_moderation_messages($context, $node = NULL) {
     if (!$published) {
       $info_block_messages[] = array(
         'label' => t('Moderate'),
-        'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions/' . $node->vid . '/workflow'),
+        'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions-state-flow-states'),
       );
     }
 

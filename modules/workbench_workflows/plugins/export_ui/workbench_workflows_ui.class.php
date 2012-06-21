@@ -110,13 +110,6 @@ class workbench_workflows_ui extends workbench_base_ui {
       '#title' => t('States'),
       '#description' => t("States available in this workflow."),
     );
-
-    $form['weight'] = array(
-      '#type' => 'textfield',
-      '#default_value' => $form_state['item']->weight,
-      '#title' => t('Weight'),
-      '#element_validate' => array('element_validate_integer_positive'),
-    );
   }
 
   /**

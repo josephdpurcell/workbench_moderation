@@ -2,6 +2,20 @@
 
 class workbench_base_ui extends ctools_export_ui {
 
+  function edit_form(&$form, &$form_state) {
+    // Get the basic edit form
+    parent::edit_form($form, $form_state);
+
+    // @todo, add a description.
+    $form['weight'] = array(
+      '#type' => 'textfield',
+      '#default_value' => $form_state['item']->weight,
+      '#title' => t('Weight'),
+      '#element_validate' => array('element_validate_integer_positive'),
+    );
+  }
+
+
   function edit_form_context(&$form, &$form_state) {
 
     // Force setting of the node required context.
