@@ -2,7 +2,7 @@
 
 /**
  * @file
- *  Content moderation views integration for Workbench.
+ * Content moderation views integration for Workbench.
  */
 
 /**

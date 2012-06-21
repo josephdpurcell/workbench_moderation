@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file workbench_workflows.module
+ * @file
+ * Helper function for hook_state_flow_entity_plugins().
  */
 
 
@@ -27,7 +28,7 @@ function _workbench_workflows_state_flow_entity_plugins() {
     // Build up states in a way compatible with state_flow_plugins.
     foreach ($workflow->states as $state_name => $state) {
       // make sure the load_all() array has the state
-      if(isset($state_exportables[$state_name])) {
+      if (isset($state_exportables[$state_name])) {
         $state_array = array(
           'label' => $state_exportables[$state_name]->admin_title,
         );
@@ -48,8 +49,8 @@ function _workbench_workflows_state_flow_entity_plugins() {
 
       $origins = array();
       // make sure the load_all() array has the event
-      if(isset($event_exportables[$event_name])) {
-        foreach($event_exportables[$event_name]->origin_states as $key => $state_value) {
+      if (isset($event_exportables[$event_name])) {
+        foreach ($event_exportables[$event_name]->origin_states as $key => $state_value) {
 
           // $state_value might be 0.
           // This transformation is a little annoying. It might be better to fix
@@ -102,7 +103,7 @@ function _workbench_workflows_state_flow_entity_plugins() {
 function workbench_workflows_select_workflow($entity) {
 
   $workflows = workbench_workflows_load_all('workflows');
-  foreach($workflows as $workflow) {
+  foreach ($workflows as $workflow) {
     if (workbench_workflows_exportable_access($entity, $workflow)) {
       // Return the first workflow for which access returns TRUE.
       return $workflow;

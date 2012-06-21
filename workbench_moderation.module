@@ -3,9 +3,9 @@
 /**
  * Implements hook_views_api().
  */
- function workbench_moderation_views_api() {
-   // @todo, Should this be 3.0?
-   return array('api' => 2.0);
+function workbench_moderation_views_api() {
+  // @todo, Should this be 3.0?
+  return array('api' => 2.0);
 }
 
 /**

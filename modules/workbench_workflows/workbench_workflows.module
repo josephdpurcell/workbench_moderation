@@ -4,6 +4,9 @@
  * @file workbench_workflows.module
  */
 
+/**
+ * Implements hook_permissions().
+ */
 function workbench_workflows_permission() {
   return array(
     'administer_workbench_workflows' => array(

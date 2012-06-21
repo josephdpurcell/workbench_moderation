@@ -1,7 +1,8 @@
 <?php
 
 /**
- * @file workbench_moderation.view.inc
+ * @file
+ *
  * Default view. Provides two tabs on the Workbench, "My Drafts" and "Needs
  * Review", which list the moderation state for content relevant to the current
  * user.

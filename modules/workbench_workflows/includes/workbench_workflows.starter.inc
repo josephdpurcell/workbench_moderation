@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @file
+ *
+ * Functions to install exportables.
+ */
+
+/**
  * Save the starter exportables to the database.
  */
 function workbench_workflows_import_starter_exportables() {

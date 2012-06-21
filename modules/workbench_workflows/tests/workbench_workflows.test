@@ -50,7 +50,7 @@ class WorkbenchWorkflowsTestCase extends DrupalWebTestCase {
       foreach ($set_of_exportables as $exportable_machine_name => $exportable_admin_title) {
         $loaded_exportable = workbench_workflows_load($exportable_type, $exportable_machine_name);
 
-        $this->assertEqual($loaded_exportable->admin_title, $exportable_admin_title, 'Loading ' . $exportable_type. ': ' . $exportable_machine_name . ' was loaded.');
+        $this->assertEqual($loaded_exportable->admin_title, $exportable_admin_title, 'Loading ' . $exportable_type . ': ' . $exportable_machine_name . ' was loaded.');
       }
     }
   }

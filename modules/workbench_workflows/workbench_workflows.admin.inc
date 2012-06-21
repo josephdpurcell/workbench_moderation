@@ -1,6 +1,10 @@
 <?php
 
-// @todo, document this file.
+/**
+ * @file
+ *
+ * Administrative functions for workbench_workflows.
+ */
 
 function workbench_workflows_admin_page() {
 
@@ -31,15 +35,15 @@ function workbench_workflows_export_ui_base_plugin($type) {
       "menu prefix" => "admin/structure/workbench-workflows",
       "menu item" => $plural,
       "menu title" => "Workbench " . $plural,
-      "menu description" => "Add, edit or delete Workbench " . ucfirst($plural),
+      "menu description" => "Add, edit or delete Workbench " . drupal_ucfirst($plural),
     ),
 
     "title singular" => t("workbench $type"),
-    "title singular proper" => t("Workbench " . ucfirst($type)),
+    "title singular proper" => t("Workbench " . drupal_ucfirst($type)),
     "title plural" => t("workbench $type"),
-    "title plural proper" => t("Workbench " . ucfirst($plural)),
+    "title plural proper" => t("Workbench " . drupal_ucfirst($plural)),
 
-    "handler" => "workbench_". $plural . "_ui",
+    "handler" => "workbench_" . $plural . "_ui",
 
     "use wizard" => TRUE,
     "form info" => array(

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ *
+ * The UI class for events exportables.
+ */
+
 module_load_include('php', 'workbench_workflows', 'plugins/export_ui/workbench_base_ui.class');
 
 class workbench_events_ui extends workbench_base_ui {

@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Database functions for workbench_workflows.
+ */
+
+/**
  * Implements hook_schema().
  */
 function workbench_workflows_schema() {
@@ -141,7 +146,7 @@ function workbench_workflows_starter_schema($type) {
         'description' => 'Weight',
       ),
     ),
-    "primary key" => array($type. "id"),
+    "primary key" => array($type . "id"),
     'unique keys' => array(
       'name' => array('name'),
     ),

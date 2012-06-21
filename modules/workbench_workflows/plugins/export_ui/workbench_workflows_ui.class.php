@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @file
+ *
+ * The UI class for workflows exportables.
+ */
+
 module_load_include('php', 'workbench_workflows', 'plugins/export_ui/workbench_base_ui.class');
 
 class workbench_workflows_ui extends workbench_base_ui {
@@ -34,7 +40,7 @@ class workbench_workflows_ui extends workbench_base_ui {
 
     return parent::list_filter($form_state, $item);
   }
-*/
+ */
   function list_sort_options() {
     return array(
       'disabled' => t('Enabled, title'),
@@ -146,7 +152,8 @@ class workbench_workflows_ui extends workbench_base_ui {
       // Exclude events when there is not an origin state in the workflow.
       if (in_array($workbench_event->target_state, $available_states)) {
         $event_options[$workbench_event->name] = $workbench_event->admin_title;
-      } else {
+      }
+      else {
         $unavailable_text_string .= '%' . $workbench_event->name . ', ';
         $unavailable_events[$workbench_event->name] = $workbench_event->admin_title;
         $unavailable_events_replacements['%' . $workbench_event->name] = $workbench_event->admin_title;
