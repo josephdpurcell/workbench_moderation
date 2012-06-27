@@ -272,3 +272,11 @@ function workbench_moderation_messages($context, $node = NULL) {
     workbench_moderation_set_message($info_block_messages);
   }
 }
+
+/**
+ * Implements hook_state_flow_menu_node_access_alter().
+ */
+function workbench_moderation_state_flow_menu_node_access_alter(&$access, $node, $account) {
+  // Simplify state flow access down to match node edit access.
+  $access = node_access('update', $node, $account);
+}
