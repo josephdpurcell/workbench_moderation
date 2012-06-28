@@ -158,6 +158,16 @@ function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
 
     ctools_include('export');
     $type_exportables = ctools_export_load_object('workbench_workflows_' . $type);
+
+    // The sort function expects a title property.
+    // @todo, perhaps these objects should have those as a column. For now,
+    // copy the admin_title.
+    foreach($type_exportables as $machine_name => $exportable) {
+      if (empty($exportable->title) && !empty($exportable->admin_title)) {
+        $type_exportables[$machine_name]->title = $exportable->admin_title;
+      }
+    }
+
     uasort($type_exportables, 'ctools_plugin_sort');
     $cache[$type] = $type_exportables;
   }
