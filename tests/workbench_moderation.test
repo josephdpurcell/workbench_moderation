@@ -1,0 +1,27 @@
+<?php
+/**
+ * @file
+ * state_flow.test
+ */
+/**
+ * Unit tests for the StateFlow revision state machine.
+ */
+class WorkbenchModerationWebTestCase extends StateFlowWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Workbench Moderation basic tests',
+      'description' => 'Perform basic web tests on Workbench Moderation.',
+      'group' => 'State Machine',
+    );
+  }
+
+  function setup() {
+
+    // install the basic workflow.
+    module_load_include('inc', 'workbench_workflows', 'includes/workbench_workflows.starter');
+    workbench_workflows_import_starter_exportables();
+
+    $web_user = $this->drupalCreateUser(array('administer nodes', 'bypass node access'));
+    $this->drupalLogin($web_user);
+  }
+}
