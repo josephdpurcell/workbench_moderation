@@ -6,22 +6,87 @@
 /**
  * Unit tests for the StateFlow revision state machine.
  */
-class WorkbenchModerationWebTestCase extends StateFlowWebTestCase {
+class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Workbench Moderation basic tests',
       'description' => 'Perform basic web tests on Workbench Moderation.',
-      'group' => 'State Machine',
+      'group' => 'Workbench Moderation',
     );
   }
 
   function setup() {
-
+    // @todo These arguments might be handled by dependencies.
+    parent::setup('state_machine', 'state_flow', 'state_flow_entity', 'workbench_workflows', 'views');
     // install the basic workflow.
     module_load_include('inc', 'workbench_workflows', 'includes/workbench_workflows.starter');
     workbench_workflows_import_starter_exportables();
 
     $web_user = $this->drupalCreateUser(array('administer nodes', 'bypass node access'));
     $this->drupalLogin($web_user);
+  }
+
+  /**
+   * Test embargoed nodes scheduled to publish in the future.
+   */
+  function testViewDraftTab() {
+
+    // This first chunk is not specific to the draft tab and perhaps should be
+    // abstracted to a helper function.
+
+    $edit = array();
+    $title = $this->randomName(8);
+    $edit['title'] = $title;
+    $edit['event'] = 'draft';
+    $edit['event_comment'] = $this->randomName(8);
+    $this->drupalPost("node/add/article", $edit, t('Save'));
+    $this->drupalGet("node/1");
+    $this->assertText($title, t('Title is visible on draft node for logged in user.'));
+
+    // Check anonymous behavior. Verify access denied.
+    $this->drupalLogout();
+    $this->drupalGet("node/1");
+    $this->assertNoText($title, t('Title is not visible on draft node for anonymous user.'));
+    $this->assertResponse(403, 'Draft node page responds with 403 to anonymous user');
+
+    // Log in again.
+    $web_user = $this->drupalCreateUser(array('administer nodes', 'bypass node access'));
+    $this->drupalLogin($web_user);
+
+    // Set the node to published.
+    $edit =array();
+    $edit['event'] = 'published';
+    $edit['event_comment'] = $this->randomName(8);
+    $this->drupalPost("node/1/revisions-state-flow-states", $edit, t('Update State'));
+    $this->drupalGet("node/1");
+    $this->assertText($title, t('Title is visible on published node for logged in user.'));
+
+    // Check anonymous behavior. Verify access after publishing.
+    $this->drupalGet("node/1");
+    $this->assertText($title, t('After publishing, anonymous user can see node title.'));
+    $this->assertResponse(200, 'After publishing,  anonymous user gets a 200 for node page.');
+
+
+    // -------------------------------------------------------------------------
+    // Here is the part that actually tests the forward revision tab.
+
+    // Edit the node, creating a new title, set to needs review.
+
+    /*
+      $edit = array();
+      $new_title = $this->randomName(8);
+      $edit['title'] = $new_title;
+     */
+
+    // Check node/1.
+    // Verify that it is still showing the old title.
+    // Check node/1/draft
+    // Verify that it is showing the new draft title.
+    
+    // Log out.
+    // Check node/1.
+    // Verify that it is still showing the old title to anonymous users.
+    // Check node/1/draft
+    // Verify that gives an access denied.
   }
 }
