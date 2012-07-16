@@ -1,11 +1,58 @@
 <?php
 
 /**
+ * @file workbench_moderation.module
+ */
+
+/**
  * Implements hook_views_api().
  */
 function workbench_moderation_views_api() {
   // @todo, Should this be 3.0?
   return array('api' => 2.0);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function workbench_moderation_menu() {
+  $items = array();
+
+  // View the current draft of a node.
+  $items["node/%node/draft"] = array(
+    'title' => 'View draft',
+    'page callback' => 'workbench_moderation_node_view_draft',
+    'page arguments' => array(1),
+    'access callback' => '_workbench_moderation_access_current_draft',
+    'access arguments' => array(1),
+    'file' => 'workbench_moderation.node.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => -9,
+  );
+
+  return $items;
+}
+
+/**
+ * Checks if the user can view the current node revision.
+ *
+ * This is the access callback for node/%node/draft as defined in
+ * workbench_moderation_menu().
+ *
+ * @param $node
+ *   The node being acted upon.
+ *
+ * @return
+ *   Booelan TRUE or FALSE.
+ */
+function _workbench_moderation_access_current_draft($node) {
+
+  $active_id = state_flow_entity_get_active_revision_id($node, 'node');
+  if($active_id == $node->vid){
+    return FALSE;
+  }
+
+  return state_flow_menu_node_access($node);
 }
 
 /**
