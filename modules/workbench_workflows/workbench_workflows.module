@@ -199,14 +199,14 @@ function workbench_workflows_menu() {
   return $items;
 }
 
-
+/**
+ * Implements hook_menu_alter().
+ */
 function workbench_workflows_menu_alter(&$items) {
-
+  // Move up the states link.
   // @todo, is there a way to set the weight at the plugin registration?
   $items['admin/structure/workbench-workflows/states']['weight'] = -111;
 }
-
-
 
 /**
  * Implements hook_state_flow_plugins().
