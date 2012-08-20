@@ -4,5 +4,6 @@ package = Workbench
 dependencies[] = ctools
 ; @todo, do all files need to be declared here?
 files[] = plugins/export_ui/workbench_workflows_ui.class.php
+files[] = plugins/state_flow_entity/workbench_workflows_ignore.inc
 files[] = tests/workbench_workflows.test
 core = "7.x"

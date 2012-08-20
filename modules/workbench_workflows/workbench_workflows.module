@@ -222,12 +222,16 @@ function workbench_workflows_state_flow_entity_plugins() {
  *
  * @todo, this hook currently uses $node but will likely switch to $entity eventually.
  */
-function workbench_workflows_state_flow_entity_machine_type_alter( &$machine_type, $node) {
+function workbench_workflows_state_flow_entity_machine_type_alter(&$machine_type, $node) {
 
   module_load_include('inc', 'workbench_workflows', 'workbench_workflows.state_flow_entity');
   $workflow = workbench_workflows_select_workflow($node);
   if (!empty($workflow->name)) {
     $machine_type = 'workbench_workflows__' . $workflow->name;
+  }
+  // This variable still needs a UI @http://drupal.org/node/1741432
+  else if (variable_get('workbench_workflows_default_to_ignore', FALSE)) {
+    $machine_type = 'workbench_workflows_ignore';
   }
 }
 
