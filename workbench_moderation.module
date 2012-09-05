@@ -68,6 +68,12 @@ function workbench_moderation_menu_alter(&$items) {
   $items['node/%node/revisions']['page arguments'] = array(1);
   $items['node/%node/revisions']['type'] = MENU_NORMAL_ITEM;
 
+
+  // Override the node revision view callback.
+  $items['node/%node/revisions/%/view']['page callback'] = 'workbench_moderation_node_view_revision';
+  $items['node/%node/revisions/%/view']['file path'] = drupal_get_path('module', 'workbench_moderation');
+  $items['node/%node/revisions/%/view']['file'] = 'workbench_moderation.node.inc';
+
   // Redirect node/%node/workflow
   if (!empty($items['node/%node/workflow']) && $items['node/%node/workflow']['module'] === 'state_flow') {
     // @todo, Uncomment this when the moderation tab is ready.
@@ -78,12 +84,6 @@ function workbench_moderation_menu_alter(&$items) {
 
   /**
    * @todo, revisit these alters from version 1.x
-
-  // Override the node revision view callback.
-  $items['node/%node/revisions/%/view']['page callback'] = 'workbench_moderation_node_view_revision';
-  $items['node/%node/revisions/%/view']['file path'] = drupal_get_path('module', 'workbench_moderation');
-  $items['node/%node/revisions/%/view']['file'] = 'workbench_moderation.node.inc';
-
   // For revert and delete operations, use our own access check.
   $items['node/%node/revisions/%/revert']['access callback'] = '_workbench_moderation_revision_access';
   $items['node/%node/revisions/%/delete']['access callback'] = '_workbench_moderation_revision_access';

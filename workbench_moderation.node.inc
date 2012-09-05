@@ -39,3 +39,16 @@ function workbench_moderation_router_item_page_callback($node) {
   // definition acting on node/%node.
   return $router_item['page_callback']($node);
 }
+
+/**
+ * Displays a specific revisison of the node.
+ *
+ * @param $node
+ *   The node being acted upon.
+ *
+ * @return
+ *   A fully themed node page.
+ */
+function workbench_moderation_node_view_revision($node) {
+  return workbench_moderation_router_item_page_callback($node);
+}
