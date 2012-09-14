@@ -35,7 +35,7 @@ function _workbench_workflows_starter_exportables() {
   $event->api_version = 1;
   $event->name = 'draft';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Draft (event)';
+  $event->admin_title = 'Draft';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -67,7 +67,7 @@ function _workbench_workflows_starter_exportables() {
   $event->api_version = 1;
   $event->name = 'needs_review';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Needs Review (event)';
+  $event->admin_title = 'Needs Review';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -99,7 +99,7 @@ function _workbench_workflows_starter_exportables() {
   $event->api_version = 1;
   $event->name = 'published';
   $event->editor_title = '';
-  $event->admin_title = 'Going to Published (event)';
+  $event->admin_title = 'Published';
   $event->admin_description = '';
   $event->requiredcontexts = array(
     0 => array(
@@ -135,7 +135,7 @@ function _workbench_workflows_starter_exportables() {
   $state->api_version = 1;
   $state->name = 'draft';
   $state->editor_title = '';
-  $state->admin_title = 'Draft (state)';
+  $state->admin_title = 'Draft';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -159,7 +159,7 @@ function _workbench_workflows_starter_exportables() {
   $state->api_version = 1;
   $state->name = 'needs_review';
   $state->editor_title = '';
-  $state->admin_title = 'Needs Review (state)';
+  $state->admin_title = 'Needs Review';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -183,7 +183,7 @@ function _workbench_workflows_starter_exportables() {
   $state->api_version = 1;
   $state->name = 'published';
   $state->editor_title = '';
-  $state->admin_title = 'Published (state)';
+  $state->admin_title = 'Published';
   $state->admin_description = '';
   $state->requiredcontexts = array(
     0 => array(
@@ -210,9 +210,9 @@ function _workbench_workflows_starter_exportables() {
   $workflow->export_type = 'workbench_workflows_workflows';
   $workflow->disabled = FALSE; /* Edit this to true to make a default workflow disabled initially */
   $workflow->api_version = 1;
-  $workflow->name = 'sample_workflow';
+  $workflow->name = 'default_workflow';
   $workflow->editor_title = '';
-  $workflow->admin_title = 'Sample Workflow (workflow)';
+  $workflow->admin_title = 'Default Workflow';
   $workflow->admin_description = '';
   $workflow->requiredcontexts = array(
     0 => array(

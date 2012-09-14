@@ -151,6 +151,14 @@ function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
   // We check our own private static because individual minis could have
   // been loaded prior to load all and we need to know that.
   if (empty($cache[$type]) || $reset) {
+
+    // If reseting, also reset ctools_export_load_object_all.
+    // It seems like overkill but it is the cache used by ctools_export_load_object()
+    // @todo, this needs a test.
+    if ($reset) {
+      drupal_static_reset('ctools_export_load_object_all');
+    }
+
     $all_loaded = TRUE;
     if ($reset) {
       $cache = array();

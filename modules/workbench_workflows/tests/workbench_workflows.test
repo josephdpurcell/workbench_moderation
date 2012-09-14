@@ -5,7 +5,7 @@
  */
 
 /**
- * Unit tests for the upgrade routines.
+ * Tests for Workbench Workflows
  */
 class WorkbenchWorkflowsTestCase extends DrupalWebTestCase {
 
@@ -32,17 +32,17 @@ class WorkbenchWorkflowsTestCase extends DrupalWebTestCase {
     // states, events, and workflows.
     $exportables = array(
       'states' => array(
-        'draft' => 'Draft (state)',
-        'needs_review' => 'Needs Review (state)',
-        'published' => 'Published (state)',
+        'draft' => 'Draft',
+        'needs_review' => 'Needs Review',
+        'published' => 'Published',
       ),
       'events' => array(
-        'draft' => 'Going to Draft (event)',
-        'needs_review' => 'Going to Needs Review (event)',
-        'published' => 'Going to Published (event)',
+        'draft' => 'Draft',
+        'needs_review' => 'Needs Review',
+        'published' => 'Published',
       ),
       'workflows' => array(
-        'sample_workflow' => 'Sample Workflow (workflow)',
+        'default_workflow' => 'Default Workflow',
       ),
     );
 
@@ -53,5 +53,88 @@ class WorkbenchWorkflowsTestCase extends DrupalWebTestCase {
         $this->assertEqual($loaded_exportable->admin_title, $exportable_admin_title, 'Loading ' . $exportable_type . ': ' . $exportable_machine_name . ' was loaded.');
       }
     }
+  }
+}
+
+/**
+ * Tests for Workbench Workflows
+ */
+class WorkbenchWorkflowsAdminUITestCase extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Workbench Workflows Admin UI Web Tests',
+      'description' => '',
+      'group' => 'Workbench Workflows',
+    );
+  }
+
+  protected function setUp() {
+    parent::setUp(array('workbench_workflows'));
+  }
+
+  /**
+   * Test View Draft tab.
+   */
+  function testUIInstallofDefaultWorkflow() {
+    $web_user = $this->drupalCreateUser(array('administer_workbench_workflows', 'access administration pages'));
+    $this->drupalLogin($web_user);
+    $this->drupalGet("admin/structure/workbench-workflows");
+    $this->assertResponse(200, 'The Workbench Workflows page responded with a 200.');
+
+    // Load all states, events, workflows.
+    $states = workbench_workflows_load_all('states');
+    $events = workbench_workflows_load_all('events');
+    $workflows = workbench_workflows_load_all('workflows');
+
+    // Confirm that none of these types have any objects.
+    $this->assert(empty($states), 'There are no states');
+    $this->assert(empty($events), 'There are no events');
+    $this->assert(empty($workflows), 'There are no workflows');
+
+
+    // Check that the form mesage is present.
+    $this->assertText('There are no states, events, or workflows yet on this site. Would you like to install a default configuration?', 'Default configuration message found.');
+
+    // Submit the form.
+    $edit = array();
+    $this->drupalPost("admin/structure/workbench-workflows", $edit, t('Install the default workflow'));
+
+    // Load all states, events, workflows.
+    $states = workbench_workflows_load_all('states', TRUE);
+    $events = workbench_workflows_load_all('events');
+    $workflows = workbench_workflows_load_all('workflows');
+
+    // Confirm that none of these types have any objects.
+    $this->assert(count($states) === 3, 'There are three states');
+    $this->assert(count($events) === 3, 'There are three events');
+    $this->assert(count($workflows) === 1, 'There is one workflow');
+
+    // Check for the post-install message.
+    $this->assertText('A default workflow with the states and events of Draft, Needs Review, and Published.', 'Post-install message found.');
+
+    // Go to the page again and check that the form is gone.
+    $this->drupalGet("admin/structure/workbench-workflows");
+    $this->assertResponse(200, 'The Workbench Workflows page responded with a 200.');
+
+    // Check that the form mesage is no longer present.
+    $this->assertNoText('There are no states, events, or workflows yet on this site. Would you like to install a default configuration?', 'Default configuration message found not found after installation of default configuration.');
+
+
+    // @todo, check that all the objects are installed.
+    $this->drupalGet("admin/structure/workbench-workflows/states");
+    $this->assertRaw('<td class="ctools-export-ui-title">Draft</td>', 'The Draft state is present.');
+    $this->assertRaw('<td class="ctools-export-ui-title">Needs Review</td>', 'The Needs Review state is present.');
+    $this->assertRaw('<td class="ctools-export-ui-title">Published</td>', 'The Published state is present.');
+
+    // @todo, check that all the objects are installed.
+    $this->drupalGet("admin/structure/workbench-workflows/events");
+    $this->assertRaw('<td class="ctools-export-ui-title">Draft</td>', 'The Draft event is present.');
+    $this->assertRaw('<td class="ctools-export-ui-title">Needs Review</td>', 'The Needs Review event is present.');
+    $this->assertRaw('<td class="ctools-export-ui-title">Published</td>', 'The Published event is present.');
+
+    // @todo, check that all the objects are installed.
+    $this->drupalGet("admin/structure/workbench-workflows/workflows");
+    $this->assertRaw('<td class="ctools-export-ui-title">Default Workflow</td>', 'Default Workflow');
   }
 }
