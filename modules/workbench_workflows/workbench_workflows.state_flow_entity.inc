@@ -101,7 +101,7 @@ function _workbench_workflows_state_flow_entity_plugins() {
       'file' => 'workbench_workflows_ignore.inc',
       'path' => drupal_get_path('module', 'workbench_workflows') . '/plugins/state_flow_entity',
       'parent' => 'state_flow_node',
-      'workflow_options' => $workflow_options,
+      'workflow_options' => array(),
       'entity_type' => 'node',
       'event_form_options' => array(),
     ),
