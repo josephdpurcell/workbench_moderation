@@ -44,6 +44,9 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     $this->drupalGet("node/1");
     $this->assertText($title, t('Title is visible on draft node for logged in user.'));
 
+    // Check for duplicate state records.
+    $this->_testOfDuplicateStates();
+
     // Check that view draft tab is not displaying.
     $this->drupalGet('node/1/draft');
     $this->assertResponse(403, 'View Draft tab responds with 403 to logged in user');
@@ -70,6 +73,9 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     $this->drupalGet("node/1");
     $this->assertText($title, t('Title is visible on published node for logged in user.'));
 
+    // Check for duplicate state records.
+    $this->_testOfDuplicateStates();
+
     // Check that view draft tab is not displaying.
     $this->drupalGet('node/1/draft');
     $this->assertResponse(403, 'View Draft tab responds with 403 to logged in user');
@@ -94,6 +100,9 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     $edit['title'] = $new_title;
     $edit['event'] = 'needs_review';
     $this->drupalPost("node/1/edit", $edit, t('Save'));
+
+    // Check for duplicate state records.
+    $this->_testOfDuplicateStates();
 
     // Check node/1.
     // Verify that it is still showing the old title.
@@ -120,5 +129,35 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     $this->drupalGet("node/1/draft");
     $this->assertNoText($new_title, t('Title is not visible on draft node for anonymous user.'));
     $this->assertResponse(403, 'Draft node page responds with 403 to anonymous user');
+  }
+
+  /**
+   * Helper function to check for duplicate state records.
+   */
+  function _testOfDuplicateStates() {
+
+    $states = db_select('state_flow_states')
+                ->fields('state_flow_states', array())
+                ->execute()
+                ->fetchAll();
+
+    $hids = array();
+    $duplicates = FALSE;
+    foreach ($states as $state) {
+      if (!empty($state->hid)) {
+        if (empty($hids[$state->hid])) {
+          $hids[$state->hid][] = $state;
+        }
+        else {
+          $duplicates = TRUE;
+        }
+      }
+    }
+
+    $this->assertFalse($duplicates, t('There are no duplicate records in State Flow States'));
+
+    if ($duplicates) {
+      debug($states);
+    }
   }
 }
