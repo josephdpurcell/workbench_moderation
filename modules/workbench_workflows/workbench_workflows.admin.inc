@@ -21,7 +21,7 @@ function workbench_workflows_admin_page() {
     $events = workbench_workflows_load_all('events');
     $workflows = workbench_workflows_load_all('workflows');
 
-    if (empty($states) && empty($states) && empty($states)) {
+    if (empty($states) && empty($events) && empty($workflows)) {
       $form = drupal_get_form('workbench_workflows_install_default_workflow_form');
       $output = drupal_render($form);
     }
