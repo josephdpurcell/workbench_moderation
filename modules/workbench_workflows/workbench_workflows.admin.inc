@@ -81,7 +81,7 @@ function workbench_workflows_export_ui_base_plugin($type) {
     "access" => "administer_workbench_workflows",
 
     "menu" => array(
-      "menu prefix" => "admin/structure/workbench-workflows",
+      "menu prefix" => "admin/config/workflow/workbench-workflows",
       "menu item" => $plural,
       "menu title" => "Workbench " . $plural,
       "menu description" => "Add, edit or delete Workbench " . drupal_ucfirst($plural),
