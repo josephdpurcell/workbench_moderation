@@ -5,6 +5,7 @@ core = 7.x
 ; Core classes
 ; files[] = plugins/state_flow/workbench_stateflow.inc @todo, remove this file
 
+dependencies[] = state_machine (3.x)
 dependencies[] = state_flow (3.x)
 dependencies[] = views
 
