@@ -328,3 +328,19 @@ function workbench_moderation_state_flow_menu_node_access_alter(&$access, $node,
   // Simplify state flow access down to match node edit access.
   $access = node_access('update', $node, $account);
 }
+
+/**
+ * Prepare variables for the state_flow_history_entity template.
+ */
+function workbench_moderation_preprocess_state_flow_history_entity(&$variables) {
+
+  $states = workbench_workflows_options('states');
+
+  // Rewrite state machine names into labels.
+  if (!empty($variables['state']) && array_key_exists($variables['state'], $states)) {
+    $variables['state'] = $states[$variables['state']];
+  }
+  if (!empty($variables['from_state']) && array_key_exists($variables['from_state'], $states)) {
+    $variables['from_state'] = $states[$variables['from_state']];
+  }
+}
