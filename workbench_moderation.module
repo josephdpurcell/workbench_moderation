@@ -48,7 +48,9 @@ function workbench_moderation_menu() {
 function _workbench_moderation_access_current_draft($node) {
 
   $active_id = state_flow_entity_get_active_revision_id($node, 'node');
-  if($active_id == $node->vid){
+  // @todo, Add test for when active_id is empty. This occurs when a node is
+  // created before this module is created.
+  if(empty($active_id) || $active_id == $node->vid){
     return FALSE;
   }
 
