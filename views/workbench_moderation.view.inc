@@ -112,6 +112,10 @@ $handler->display->display_options['relationships']['nid']['required'] = TRUE;
 $handler->display->display_options['relationships']['uid']['id'] = 'uid';
 $handler->display->display_options['relationships']['uid']['table'] = 'node_revision';
 $handler->display->display_options['relationships']['uid']['field'] = 'uid';
+/* Relationship: State Flow History Record: State Flow States Table */
+$handler->display->display_options['relationships']['hid']['id'] = 'hid';
+$handler->display->display_options['relationships']['hid']['table'] = 'state_flow_history';
+$handler->display->display_options['relationships']['hid']['field'] = 'hid';
 /* Field: State Flow States: Available event links */
 $handler->display->display_options['fields']['state_flow_entity_available_events']['id'] = 'state_flow_entity_available_events';
 $handler->display->display_options['fields']['state_flow_entity_available_events']['table'] = 'state_flow_states';
@@ -224,6 +228,7 @@ $handler->display->display_options['defaults']['filters'] = FALSE;
 $handler->display->display_options['filters']['active']['id'] = 'active';
 $handler->display->display_options['filters']['active']['table'] = 'state_flow_states';
 $handler->display->display_options['filters']['active']['field'] = 'active';
+$handler->display->display_options['filters']['active']['relationship'] = 'hid';
 $handler->display->display_options['filters']['active']['value'] = '1';
 /* Filter criterion: State Flow States: Workbench State Filter */
 $handler->display->display_options['filters']['state']['id'] = 'state';
@@ -320,6 +325,7 @@ $handler->display->display_options['filters']['type']['expose']['remember'] = TR
 $handler->display->display_options['filters']['active']['id'] = 'active';
 $handler->display->display_options['filters']['active']['table'] = 'state_flow_states';
 $handler->display->display_options['filters']['active']['field'] = 'active';
+$handler->display->display_options['filters']['active']['relationship'] = 'hid';
 $handler->display->display_options['filters']['active']['value'] = '1';
 $handler->display->display_options['path'] = 'admin/workbench/drafts';
 $handler->display->display_options['menu']['type'] = 'tab';
@@ -344,6 +350,7 @@ $translatables['workbench_moderation'] = array(
   t('You haven\'t created or edited any content.'),
   t('Node'),
   t('revision user'),
+  t('State Flow States Table'),
   t('state_flow_entity_handler_field_available_events'),
   t('Moderation State'),
   t('[state]<br>

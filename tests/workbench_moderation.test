@@ -23,7 +23,13 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     module_load_include('inc', 'workbench_workflows', 'includes/workbench_workflows.starter');
     workbench_workflows_import_starter_exportables();
 
-    $web_user = $this->drupalCreateUser(array('administer nodes', 'bypass node access'));
+    $permissions = array(
+      'administer nodes',
+      'bypass node access',
+      'use workbench_moderation my drafts tab',
+      'use workbench_moderation needs review tab'
+    );
+    $web_user = $this->drupalCreateUser($permissions);
     $this->drupalLogin($web_user);
   }
 
@@ -130,6 +136,46 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
     $this->assertNoText($new_title, t('Title is not visible on draft node for anonymous user.'));
     $this->assertResponse(403, 'Draft node page responds with 403 to anonymous user');
   }
+
+  /**
+   * Without the correct joins, there can be duplicates on the My Drafts tab.
+   * This is a test of one of those instances.
+   */
+  function testMyDraftsTabDuplicates() {
+
+    // Make a node, save as draft and change the state twice. This creates three
+    // state_flow_history_entities for one node revision.
+    $edit = array();
+    $new_title = $this->randomName(8);
+    $edit['event'] = 'draft';
+    $edit['title'] = $this->randomName(8);
+    $this->drupalPost("node/add/article", $edit, t('Save'));
+
+    $edit = array(
+      'event' => 'needs_review'
+    );
+    // Go to needs review twice.
+    $this->drupalPost("node/1/revisions-state-flow-states", $edit, t('Update State'));
+    $this->drupalPost("node/1/revisions-state-flow-states", $edit, t('Update State'));
+
+    // Check the my drafts tab.
+    $this->drupalGet("admin/workbench/drafts");
+    $this->assertResponse(200);
+
+    $xpath_string = "//tbody/tr";
+    $tr = $this->xpath($xpath_string);
+    $this->assertEqual(count($tr), 1, 'There is only one row for the one existing revision');
+
+
+    // Also check the needs review tab.
+    $this->drupalGet("admin/workbench/needs-review");
+    $this->assertResponse(200);
+
+
+    $tr = $this->xpath($xpath_string);
+    $this->assertEqual(count($tr), 1, 'There is only one row for the one existing revision');
+  }
+
 
   /**
    * Helper function to check for duplicate state records.
