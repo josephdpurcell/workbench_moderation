@@ -27,10 +27,55 @@ class WorkbenchModerationWebTestCase extends DrupalWebTestCase {
       'administer nodes',
       'bypass node access',
       'use workbench_moderation my drafts tab',
-      'use workbench_moderation needs review tab'
+      'use workbench_moderation needs review tab',
+      'administer_workbench_workflows',
+      'access administration pages',
+      'administer site configuration'
     );
     $web_user = $this->drupalCreateUser($permissions);
     $this->drupalLogin($web_user);
+  }
+
+  /**
+   * This test verifies that workflows are not used after being disabled.
+   *
+   * The test also sets the variable to ignore nodes that have no workflow set.
+   *
+   * The flow of this test is to
+   * 1. Go to the node add page to verify that a workflow events are present.
+   * 2. Disable the one workflow.
+   * 3. Go back to the node add page to verify that no workflow events are present.
+   */
+  function testOfDisbablingWorkflow() {
+
+    // Set the variable that will cause the ignore class to be picked up if no
+    // other workflow is explicitly set.
+    variable_set('workbench_workflows_default_to_ignore', TRUE);
+
+    // Assert that workflow events are available.
+    $this->drupalGet("node/add/article");
+    $this->assertResponse(200);
+    $xpath_string = "//select[@id=:select_id]";
+    $xpath_replacements = array(
+      ':select_id' => 'edit-event',
+    );
+    $tr = $this->xpath($xpath_string, $xpath_replacements);
+    $this->assertEqual(count($tr), 1, 'There is a workflow available on the node add form.');
+
+    // Go to the Workflows admin page and disable the only workflow.
+    $this->drupalGet("admin/config/workflow/workbench-workflows/workflows");
+    $this->assertResponse(200);
+    // Click the disable link.
+    $this->clickLink('Disable');
+
+
+    // Assert that workflow events are not available.
+    $this->drupalGet("node/add/article");
+    $this->assertResponse(200);
+    $xpath_string = "//select[@id=:select_id]";
+    $xpath_replacements = array(':select_id' => 'edit-event');
+    $tr = $this->xpath($xpath_string, $xpath_replacements);
+    $this->assertEqual(count($tr), 0, 'There is not workflow available on the node add form.');
   }
 
   /**

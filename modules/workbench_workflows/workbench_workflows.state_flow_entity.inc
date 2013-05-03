@@ -115,7 +115,7 @@ function _workbench_workflows_state_flow_entity_plugins() {
  */
 function workbench_workflows_select_workflow($entity) {
 
-  $workflows = workbench_workflows_load_all('workflows');
+  $workflows = workbench_workflows_load_enabled('workflows');
   foreach ($workflows as $workflow) {
     if (workbench_workflows_exportable_access($entity, $workflow, 'workflows')) {
       // Return the first workflow for which access returns TRUE.

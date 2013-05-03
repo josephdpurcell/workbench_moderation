@@ -184,6 +184,27 @@ function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
 }
 
 /**
+ * Load enabled workbench moderation exportables.
+ *
+ * @param string $type
+ *   Allowed values are 'states', 'events', and 'workflows'
+ * @param string $name
+ *   The machine name of the exportable.
+ * @param $reset
+ *   A boolean for whether the static cache should be reset.
+ * Returns a CTools exportable object.
+ */
+function workbench_workflows_load_enabled($type = 'states', $reset = FALSE) {
+  $exportables = workbench_workflows_load_all($type, $reset);
+  foreach($exportables as $machine_name => $exportable) {
+    if (!empty($exportable->disabled)) {
+      unset($exportables[$machine_name]);
+    }
+  }
+  return $exportables;
+}
+
+/**
  * Implements hook_menu_alter().
  */
 function workbench_workflows_menu_alter(&$items) {
