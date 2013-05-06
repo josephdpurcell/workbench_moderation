@@ -39,6 +39,11 @@ function _workbench_workflows_state_flow_entity_plugins() {
           $state_array['on_enter'] = 'on_enter_published';
           $state_array['on_exit'] = 'on_exit_published';
         }
+        // @todo, this piece should be tested here as well as the unpublished
+        // test in state machine.
+        else if ($state_name === 'unpublished') {
+          $state_array['on_enter'] = 'on_enter_unpublished';
+        }
 
         $workflow_options['states'][$state_name] = $state_array;
       }
