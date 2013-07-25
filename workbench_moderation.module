@@ -176,6 +176,15 @@ function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_i
     // info block messages
     $node = $form_state['node'];
     workbench_moderation_messages('edit', $node);
+
+    // Add the javascript for vertical tabs.
+    drupal_add_js(drupal_get_path('module', 'workbench_moderation') . '/js/workbench_moderation.js', array('weight' => 90));
+
+    // Change the title of core options from "Publishing Options" to "Additional
+    // Options because the event the publish checkbox is hidden.
+    if (!empty($form['options']['#title'])) {
+      $form['options']['#title'] = t('Additional options');
+    }
   }
 }
 
