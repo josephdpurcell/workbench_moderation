@@ -44,6 +44,10 @@ function _workbench_workflows_state_flow_entity_plugins() {
         else if ($state_name === 'unpublished') {
           $state_array['on_enter'] = 'on_enter_unpublished';
         }
+        // Integrate with state_flow_schedule.
+        else if ($state_name === 'schedule') {
+          $state_array['on_exit'] = 'on_exit_scheduled';
+        }
 
         $workflow_options['states'][$state_name] = $state_array;
       }
