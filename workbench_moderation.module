@@ -180,6 +180,10 @@ function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_i
     $node = $form_state['node'];
     workbench_moderation_messages('edit', $node);
 
+    // Note: Our JS relies on functionality from core that may or may not be on
+    // the page yet.
+    drupal_add_library('system', 'drupal.form');
+
     // Add the javascript for vertical tabs.
     drupal_add_js(drupal_get_path('module', 'workbench_moderation') . '/js/workbench_moderation.js', array('weight' => 90));
 
