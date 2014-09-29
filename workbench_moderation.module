@@ -157,18 +157,21 @@ function workbench_moderation_node_access($node, $op, $account) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_BASE_FORM_ID_alter().
  */
 function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_id) {
-
-
-  if (!empty($form['revision_information']['state_flow'])) {
+  if (!empty($form['options']['state_flow'])) {
 
     // Hide Published checkbox
     $form['options']['status']['#access'] = FALSE;
 
-    // enforce new revision
-    $form['revision_information']['revision']['#value'] = TRUE;
+    // Disable revision checkbox on new nodes. This is also enforced in
+    // workbench_moderation_node_presave().
+    if (!isset($form['#node']->nid) && isset($form['revision_information']['revision'])) {
+      $form['revision_information']['revision']['#default_value'] = TRUE;
+      $form['revision_information']['revision']['#disabled'] = TRUE;
+      $form['revision_information']['revision']['#description'] = t('A new revision must always be created when Workbench Moderation and State Flow are enabled.');
+    }
 
     // Allow access to revision info.
     $form['revision_information']['#access'] = TRUE;
@@ -185,6 +188,16 @@ function workbench_moderation_form_node_form_alter(&$form, &$form_state, $form_i
     if (!empty($form['options']['#title'])) {
       $form['options']['#title'] = t('Additional options');
     }
+  }
+}
+
+/**
+ * Implements hook_node_presave().
+ */
+function workbench_moderation_node_presave($node) {
+  // Enforce a revision for new nodes, even when programmatically created.
+  if ($node->is_new) {
+    $node->revision = 1;
   }
 }
 
