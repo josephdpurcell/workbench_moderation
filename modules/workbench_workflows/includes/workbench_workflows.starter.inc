@@ -149,6 +149,7 @@ function _workbench_workflows_starter_exportables() {
   $state->relationships = array();
   $state->access = array();
   $state->weight = 0;
+  $state->entity_state_change = WORKBENCH_WORKFLOWS_STATE_UNCHANGED;
   $states['draft'] = $state;
 
   $state = new stdClass();
@@ -173,6 +174,7 @@ function _workbench_workflows_starter_exportables() {
   $state->relationships = array();
   $state->access = array();
   $state->weight = 0;
+  $state->entity_state_change = WORKBENCH_WORKFLOWS_STATE_UNCHANGED;
   $states['needs_review'] = $state;
 
   $state = new stdClass();
@@ -197,6 +199,7 @@ function _workbench_workflows_starter_exportables() {
   $state->relationships = array();
   $state->access = array();
   $state->weight = 0;
+  $state->entity_state_change = WORKBENCH_WORKFLOWS_STATE_PUBLISHED;
   $states['published'] = $state;
 
   $exportables['states'] = $states;

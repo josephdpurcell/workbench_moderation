@@ -11,13 +11,26 @@
 function workbench_workflows_schema() {
 
   $schema = array();
-  // Define the states schema
+  // Define the states schema.
   $schema["workbench_workflows_states"] = workbench_workflows_starter_schema('state');
 
-  // Define the events schema
+  // Add fields to the states schema.
+  $additional_state_fields = array(
+    'entity_state_change' => array(
+      'type' => 'int',
+      'length' => 'small',
+      'description' => 'Defines the state change on the entity level',
+      'object default' => -1,
+    ),
+  );
+
+  $schema['workbench_workflows_states']['fields'] = array_merge($schema['workbench_workflows_states']['fields'], $additional_state_fields);
+
+
+  // Define the events schema.
   $schema["workbench_workflows_events"] = workbench_workflows_starter_schema('event');
 
-  // Add fieds to the events schema
+  // Add fields to the events schema.
   $additional_event_fields = array(
     'target_state' => array(
       'type' => 'varchar',
@@ -30,6 +43,12 @@ function workbench_workflows_schema() {
       'description' => 'Origin states',
       'serialize' => TRUE,
       'object default' => array(),
+    ),
+    'schedulable' => array(
+      'type' => 'int',
+      'size' => 'tiny',
+      'description' => 'This state can be scheduled with state flow scheduler',
+      'object default' => FALSE,
     ),
   );
 
@@ -209,4 +228,46 @@ function workbench_workflows_install_default_workflow_form_submit($form, &$form_
 
   // Notify the user that the default workflow is installed.
   drupal_set_message(t('A default workflow with the states and events of Draft, Needs Review, and Published.'));
+}
+
+/**
+ * Helper to do db updates.
+ *
+ * Supported actions based on the schema hook:
+ * - Add new tables
+ * - Add new fields
+ * - Drop tables
+ *
+ * @param string $table
+ *   The name of the table to update.
+ */
+function workbench_workflows_db_update($table) {
+  $schema = workbench_workflows_schema();
+  // If schema contains requested table handle it, else drop it.
+  if (isset($schema[$table])) {
+    // If table exists check existing items, else create table.
+    if (db_table_exists($table)) {
+      if (isset($schema[$table]['fields'])) {
+        foreach ($schema[$table]['fields'] as $field => $field_schema) {
+          if (!db_field_exists($table, $field)) {
+            db_add_field($table, $field, $field_schema);
+          }
+        }
+      }
+    }
+    else {
+      db_create_table($table, $schema[$table]);
+    }
+  }
+  elseif (db_table_exists($table)) {
+    db_drop_table($table);
+  }
+}
+
+
+/**
+ * Add new fields for state and event plugin to support event scheduling.
+ */
+function workbench_workflows_update_7000() {
+  workbench_workflows_db_update('workbench_workflows_states');
 }

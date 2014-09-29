@@ -11,8 +11,16 @@ module_load_include('php', 'workbench_workflows', 'plugins/export_ui/workbench_b
 class workbench_events_ui extends workbench_base_ui {
 
   function edit_form(&$form, &$form_state) {
-  // Get the basic edit form
+  // Get the basic edit form.
   parent::edit_form($form, $form_state);
+
+    $form['schedulable'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => !empty($form_state['item']->schedulable) || (isset($form_state['item']->name) && $form_state['item']->name == 'schedule'),
+      '#title' => t('Schedulable'),
+      '#description' => t('Allow scheduling by State Flow Schedule'),
+      '#access' => module_exists('state_flow_schedule'),
+    );
 
     $form['target_state'] = array(
       '#type' => 'select',

@@ -26,54 +26,48 @@ function _workbench_workflows_state_flow_entity_plugins() {
     $workflow_options = array();
 
     // Build up states in a way compatible with state_flow_plugins.
-    foreach ($workflow->states as $state_name => $state) {
-      // make sure the load_all() array has the state
+    foreach ($workflow->states as $state_name) {
+      // Make sure the load_all() array has the state.
       if (isset($state_exportables[$state_name])) {
+        $state = $state_exportables[$state_name];
         $state_array = array(
-          'label' => $state_exportables[$state_name]->admin_title,
+          'label' => $state->admin_title,
         );
 
-        // @todo, should there be a UI way of adding more of these?
-        // Perhaps just a ui flag for "treat this as a published state."
-        if ($state_name === 'published') {
+        if ($state->entity_state_change == WORKBENCH_WORKFLOWS_STATE_PUBLISHED) {
           $state_array['on_enter'] = 'on_enter_published';
           $state_array['on_exit'] = 'on_exit_published';
         }
-        // @todo, this piece should be tested here as well as the unpublished
-        // test in state machine.
-        else if ($state_name === 'unpublished') {
-          $state_array['on_enter'] = 'on_enter_unpublished';
-        }
-        // Integrate with state_flow_schedule.
-        else if ($state_name === 'schedule') {
+        // Integrate with state flow schedule.
+        elseif ($state_name == 'schedule') {
           $state_array['on_exit'] = 'on_exit_scheduled';
         }
-
+        // @todo, this piece should be tested here as well as the unpublished
+        // test in state machine.
+        elseif ($state->entity_state_change == WORKBENCH_WORKFLOWS_STATE_UNPUBLISHED) {
+          $state_array['on_enter'] = 'on_enter_unpublished';
+        }
         $workflow_options['states'][$state_name] = $state_array;
       }
     }
 
     // Build up events in a way compatible with state_flow_plugins.
-    foreach ($workflow->events as $event_name => $event) {
+    foreach ($workflow->events as $event_name) {
 
       $origins = array();
-      // make sure the load_all() array has the event
+      // Make sure the load_all() array has the event.
       if (isset($event_exportables[$event_name])) {
-        foreach ($event_exportables[$event_name]->origin_states as $key => $state_value) {
+        $event = $event_exportables[$event_name];
+        // Ensure only active origin_states are available.
+        $origins = array_filter($event->origin_states);
 
-          // $state_value might be 0.
-          // This transformation is a little annoying. It might be better to fix
-          // This in the validation of saving workbench_events.
-          if (!empty($state_value)) {
-            $origins[$key] = $state_value;
-          }
-        }
+        $target_state = $event->target_state;
 
         $event_array = array(
           'origin' => $origins,
-          'target' => $event_exportables[$event_name]->target_state,
+          'target' => $target_state,
           'guard' => 'workbench_workflows_guard',
-          'label' => $event_exportables[$event_name]->admin_title,
+          'label' => $event->admin_title,
         );
 
         $workflow_options['events'][$event_name] = $event_array;
@@ -115,7 +109,6 @@ function _workbench_workflows_state_flow_entity_plugins() {
       'event_form_options' => array(),
     ),
   );
-
   return $info;
 }
 

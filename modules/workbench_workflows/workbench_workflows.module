@@ -4,6 +4,10 @@
  * @file workbench_workflows.module
  */
 
+define('WORKBENCH_WORKFLOWS_STATE_UNCHANGED', -1);
+define('WORKBENCH_WORKFLOWS_STATE_UNPUBLISHED', 0);
+define('WORKBENCH_WORKFLOWS_STATE_PUBLISHED', 1);
+
 /**
  * Implements hook_permissions().
  */
@@ -101,6 +105,21 @@ function workbench_workflows_load($type, $name) {
   if (empty($cache[$type]) || !array_key_exists($name, $cache[$type])) {
     ctools_include('export');
     $result = ctools_export_load_object('workbench_workflows_' . $type, 'names', array($name));
+    // If scheduling is enabled we need some transition events and a schedule
+    // state. These items can be generated dynamically based on the available
+    // configuration.
+    if (module_exists('state_flow_schedule')) {
+      // Create transition events for schedulable event.
+      if ($type == 'events' && strpos($name, 'schedule_') === 0 && ($source_event = workbench_workflows_load($type, substr($name, 9))) && !empty($source_event->schedulable)) {
+        $transition_event = workbench_workflows_create_scheduled_tansition_event($source_event);
+        $result[$transition_event->name] = $transition_event;
+      }
+      // Add a schedule state.
+      if ($type == 'states' && $name == 'schedule') {
+        $result['schedule'] = workbench_workflows_create_schedule_state();
+      }
+    }
+
     if (isset($result[$name])) {
       $cache[$type][$name] = $result[$name];
     }
@@ -174,6 +193,22 @@ function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
       if (empty($exportable->title) && !empty($exportable->admin_title)) {
         $type_exportables[$machine_name]->title = $exportable->admin_title;
       }
+
+      // If scheduling is enabled we need some transition events and a schedule
+      // state. These items can be generated dynamically based on the available
+      // configuration.
+      if (module_exists('state_flow_schedule')) {
+        // Create transition events for schedulable event.
+        if ($type == 'events' && !empty($exportable->schedulable)) {
+          $transition_event = workbench_workflows_create_scheduled_tansition_event($type_exportables[$machine_name]);
+          $type_exportables[$transition_event->name] = $transition_event;
+        }
+        // Add schedule state.
+        if ($type == 'states') {
+          $state = workbench_workflows_create_schedule_state();
+          $type_exportables[$state->name] = $state;
+        }
+      }
     }
 
     uasort($type_exportables, 'ctools_plugin_sort');
@@ -202,6 +237,56 @@ function workbench_workflows_load_enabled($type = 'states', $reset = FALSE) {
     }
   }
   return $exportables;
+}
+
+/**
+ * Creates a new transition event for scheduling.
+ *
+ * If an event is schedulable we need an event that doesn't do the
+ * transition immediately but keeps the current state and waits until the
+ * scheduled event is fired.
+ * Create such a transition event based on the schedulable event.
+ *
+ * @param object $event
+ *   Schedulable event to create transition event for.
+ *
+ * @return object
+ *   Transition event.
+ */
+function workbench_workflows_create_scheduled_tansition_event($event) {
+  // As this is a schedulable event, it has to accepts schedule as origin state.
+  $event->origin_states += array('schedule' => 'schedule');
+
+  $transition_event = clone $event;
+  unset($transition_event->eventid);
+  $transition_event->name = 'schedule_' . $event->name;
+  $transition_event->schedulable = 0;
+  $transition_event->target_state = 'schedule';
+  $transition_event->export_type = EXPORT_IN_CODE;
+  $transition_event->export_module = 'workbench_workflows';
+  $transition_event->admin_title = 'Schedule: ' . $event->admin_title;
+  $transition_event->title = $transition_event->admin_title;
+  return $transition_event;
+}
+
+/**
+ * Creates the state used for scheduling.
+ *
+ * @return object
+ *   Schedule state.
+ */
+function workbench_workflows_create_schedule_state() {
+  return (object) array(
+    'name' => 'schedule',
+    'title' => 'Scheduled',
+    'admin_title' => 'Scheduled',
+    'admin_description' => 'Event is scheduled',
+    'requiredcontexts' => array(),
+    'contexts' => array(),
+    'relationships' => array(),
+    'access' => array(),
+    'weight' => 1,
+  );
 }
 
 /**
@@ -251,5 +336,81 @@ function workbench_workflows_guard($event) {
     return FALSE;
   } else {
     return workbench_workflows_exportable_access($entity, $event->get_option('target'), 'states');
+  }
+}
+
+/**
+ * Implements hook_state_flow_schedule_schedulable_events_alter().
+ */
+function workbench_workflows_state_flow_schedule_schedulable_events_alter(&$schedulable_events) {
+  $events = workbench_workflows_load_enabled('events');
+  foreach ($events as $event) {
+    if (!empty($event->schedulable)) {
+      // Register automatically created transition events as schedulable. And
+      // register the schedulable event as target event.
+      $schedulable_events['schedule_' . $event->name] = $event->name;
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_revision_operation_info().
+ */
+function workbench_workflows_entity_revision_operation_info() {
+  $info = array();
+  $events = workbench_workflows_options('events');
+  foreach ($events as $event => $label) {
+    $info['node']['workbench_moderation_' . $event] = array(
+      'label' => t('Moderate to @label', array('@label' => $label)),
+      'access callback' => TRUE,
+      'callback' => 'workbench_workflows_revision_operation_process',
+      'file' => __FILE__,
+    );
+  }
+  return $info;
+}
+
+/**
+ * Implements hook_entity_revision_operation_access().
+ */
+function workbench_workflows_entity_revision_operation_access($operation, $entity_type, $entity, $account) {
+  if (strpos($operation['operation'], 'workbench_moderation_') !== FALSE && !empty($entity) && $entity_type == 'node') {
+    $machine = state_flow_entity_load_state_machine($entity, $entity_type);
+    $events = $machine->get_available_events_options(TRUE);
+
+    $event = substr($operation['operation'], 21);
+    // Make sure this is a valid transition.
+    if (!isset($events[$event])) {
+      return FALSE;
+    }
+  }
+}
+
+/**
+ * Revision operation process callback for scheduled moderation state changes.
+ */
+function workbench_workflows_revision_operation_process($entity, $operation) {
+  // Extract the transition to state from the operation key: 'workbench_moderation_state'.
+  $event = substr($operation->operation, 21);
+  $machine = state_flow_entity_load_state_machine($entity, $operation->entity_type);
+  if (!empty($machine) && !$machine->ignore()) {
+    $machine->fire_event($event);
+  }
+}
+
+/**
+ * Implements hook_entity_revision_operation_result_state().
+ */
+function workbench_workflows_entity_revision_operation_result_state($operation, $entity) {
+  $event_name = substr($operation->operation, 21);
+  $event = workbench_workflows_load('events', $event_name);
+  if ($event) {
+    $state = workbench_workflows_load('states', $event->target_state);
+    if (isset($state->entity_state_change) && $state->entity_state_change != WORKBENCH_WORKFLOWS_STATE_UNCHANGED) {
+      // Return TRUE for accessible if the status is published.
+      return $state->entity_state_change == WORKBENCH_WORKFLOWS_STATE_PUBLISHED;
+    }
+    // Return the unchanged status.
+    return (bool) $entity->status;
   }
 }
