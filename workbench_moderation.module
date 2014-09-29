@@ -295,10 +295,11 @@ function workbench_moderation_messages($context, $node = NULL) {
       || (!$node && !($node = menu_get_object()))) {
     return;
   }
+  $msgid = 'node:' . $node->nid;
 
   if ($state_machine = state_flow_entity_load_state_machine($node, 'node') && !empty($node->current_state)) {
 
-    $info_block_messages[] = array(
+    $info_block_messages[$msgid . ':state:' . $node->current_state] = array(
       'label' => t('Revision state'),
       'message' => check_plain(workbench_workflows_load_label('states', $node->current_state)),
     );
@@ -307,21 +308,21 @@ function workbench_moderation_messages($context, $node = NULL) {
     $published = $any_published_vid && $node->published_revision_id == $node->vid && $node->status == '1';
 
 
-    $info_block_messages[] = array(
+    $info_block_messages[$msgid . ':published:' . (int) $published] = array(
       'label' => t('Public'),
       'message' => $published ? t('Yes') : t('No'),
     );
 
     // If there is a published vid, that's something else, create a link.
     if ($any_published_vid && !$published) {
-      $info_block_messages[] = array(
+      $info_block_messages[$msgid . ':public_rev'] = array(
       'label' => t('Public revision'),
       'message' => l('Public version', 'node/' . $node->nid),
       );
     }
 
     if (!$published) {
-      $info_block_messages[] = array(
+      $info_block_messages[$msgid . ':publish'] = array(
         'label' => t('Moderate'),
         'message' =>  l(t('Change state'), 'node/' . $node->nid . '/revisions-state-flow-states'),
       );
