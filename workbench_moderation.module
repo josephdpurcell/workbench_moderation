@@ -312,7 +312,7 @@ function workbench_moderation_messages($context, $node = NULL) {
       || (!$node && !($node = menu_get_object()))) {
     return;
   }
-  $msgid = 'node:' . $node->nid;
+  $msgid = 'node:' . isset($node->nid) ? $node->nid : $node->created;
 
   if ($state_machine = state_flow_entity_load_state_machine($node, 'node') && !empty($node->current_state)) {
 
