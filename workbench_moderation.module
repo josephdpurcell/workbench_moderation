@@ -2132,7 +2132,6 @@ function workbench_moderation_action_info() {
     'type' => 'node',
     'label' => t('Set moderation state'),
     'configurable' => TRUE,
-    'behavior' => array('changes_property'),
     'triggers' => array('node_presave', 'node_insert', 'node_update', 'workbench_moderation_transition'),
   );
 
@@ -2165,11 +2164,6 @@ function workbench_moderation_set_state_action_form($context) {
     '#default_value' => isset($context['state']) ? $context['state'] : '',
   );
 
-  $form['force_transition'] = array(
-    '#type' => 'checkbox',
-    '#default_value' => FALSE,
-  );
-
   return $form;
 }
 
@@ -2177,7 +2171,7 @@ function workbench_moderation_set_state_action_form($context) {
  * Process workbench_moderation_set_state_action_form form submissions.
  */
 function workbench_moderation_set_state_action_submit($form, $form_state) {
-  return array('state' => $form_state['values']['state'], 'force_transition' => $form_state['values']['force_transition']);
+  return array('state' => $form_state['values']['state']);
 }
 
 /**
@@ -2186,9 +2180,18 @@ function workbench_moderation_set_state_action_submit($form, $form_state) {
 function workbench_moderation_set_state_action($node, $context) {
   if (empty($context['state'])) return;
 
-  if ((array_key_exists('force_transition', $context) && $context['force_transition']) || _workbench_moderation_moderate_access($node, $context['state'])){
-    workbench_moderation_moderate($node, $context['state']);
+  // Check access to perform this moderation, on the latest revision of the node
+  $node = workbench_moderation_node_current_load($node);
+  if (_workbench_moderation_moderate_access($node, $context['state'])) {
+    $node->workbench_moderation_state_new = $context['state'];
+    $node->revision = 1;
+    $node->log = "Bulk moderation state change.";
+    node_save($node);
+
     watchdog('action', 'Change node %nid moderation state to %state.', array('%nid' => $node->nid, '%state' => $context['state']));
+  }
+  else {
+    drupal_set_message(t('You do not have permission to moderate %node', array('%node' => $node->title)), 'warning');
   }
 }
 
