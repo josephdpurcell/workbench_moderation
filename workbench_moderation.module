@@ -499,9 +499,32 @@ function _workbench_moderation_revision_access($node, $op) {
     return _node_revision_access($node, $op);
   }
 
-  // Prevent reverting to or deleting the current revision.
+  // Prevent reverting to (ie, update) the current revision.
   if ($node->workbench_moderation['current']->vid == $node->workbench_moderation['my_revision']->vid) {
-    return FALSE;
+    if ($op == 'update') {
+      return FALSE;
+    }
+  }
+  // Prevent deleting the current revision, if there is no separate published
+  // revision. This also prevents deleting the current revision if it is the
+  // only revision, and its unpublished.
+  if ($node->workbench_moderation['current']->vid == $node->workbench_moderation['my_revision']->vid) {
+    if ($op == 'delete' && !isset($node->workbench_moderation['published'])) {
+      // In theory, deleting the one and only revision of a node could be
+      // allowed but we'd need to add special logic that actually deletes
+      // the node, not just the revision.
+      return FALSE;
+    }
+  }
+  // Prevent deleting a published revision.
+  if (isset($node->workbench_moderation['published']) && $node->workbench_moderation['published']->vid == $node->workbench_moderation['my_revision']->vid) {
+    if ($op == 'delete') {
+      // In theory, deleting a published revision could be allowed but we'd
+      // need to solve the problem of determining what to do if you delete the
+      // published revision, e.g., what database tables and fields would need
+      // to be cascaded for such a change.
+      return FALSE;
+    }
   }
 
   // Temporarily give the node an impossible revision.
