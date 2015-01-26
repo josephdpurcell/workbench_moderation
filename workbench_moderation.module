@@ -1040,9 +1040,11 @@ function workbench_moderation_node_data($node) {
   if (module_exists('path') && isset($node->nid)) {
     $path = array();
     $conditions = array('source' => 'node/' . $node->nid);
-    if ($node->language != LANGUAGE_NONE) {
-      $conditions['language'] = $node->language;
+    $langcode = entity_language('node', $node);
+    if ($langcode != LANGUAGE_NONE) {
+      $conditions['language'] = $langcode;
     }
+
     $path = path_load($conditions);
     if ($path === FALSE) {
       $path = array();
