@@ -1609,7 +1609,9 @@ function workbench_moderation_moderate($node, $state) {
   if (!empty($node->workbench_moderation['published'])) {
     drupal_register_shutdown_function('workbench_moderation_store', $node);
   }
-
+  else {
+    entity_get_controller('node')->resetCache(array($node->nid));
+  }
 
   // Notify other modules that the state was changed.
   module_invoke_all('workbench_moderation_transition', $node, $old_revision->state, $state);
