@@ -544,7 +544,7 @@ function _workbench_moderation_moderate_access($node, $state) {
   $my_revision = $node->workbench_moderation['my_revision'];
   $next_states = workbench_moderation_states_next($my_revision->state, $user, $node);
   $access = node_access('update', $node, $user)       // the user can edit the node
-          && $my_revision->current                    // this is the current revision (no branching the revision history)
+          && $my_revision->is_current                 // this is the current revision (no branching the revision history)
           && (!empty($next_states))                   // there are next states the user may transition to
           && isset($next_states[$state]);             // this state is in the available next states
 
@@ -692,7 +692,7 @@ function workbench_moderation_node_update($node) {
       'nid' => $node->nid,
       'vid' => $node->vid,
       'uid' => $user->uid,
-      'current' => TRUE,
+      'is_current' => TRUE,
       'published' => FALSE,
       'stamp' => $node->changed,
     );
@@ -1073,7 +1073,7 @@ function workbench_moderation_node_data($node) {
     'uid' => $node->uid,
     'stamp' => $node->changed,
     'published' => $node->status,
-    'current' => 1,
+    'is_current' => 1,
   );
 
   // We'll store moderation state information in an array on the node.
@@ -1104,7 +1104,7 @@ function workbench_moderation_node_data($node) {
     }
   }
 
-  $current->current = 1;
+  $current->is_current = 1;
   $node->workbench_moderation['current'] = $current;
 
   // Fetch the published revision. There may not be a workbench_moderation
@@ -1163,7 +1163,7 @@ function workbench_moderation_node_data($node) {
         'uid' => $node->uid,
         'stamp' => $node->changed,
         'published' => 0,
-        'current' => 0,
+        'is_current' => 0,
       );
     }
   }
@@ -1553,17 +1553,17 @@ function workbench_moderation_moderate($node, $state) {
     'nid' => $node->nid,
     'vid' => $node->vid,
     'uid' => $user->uid,
-    'current' => $current,
+    'is_current' => $current,
     'published' => ($state == workbench_moderation_state_published()),
     'stamp' => $_SERVER['REQUEST_TIME'],
   );
 
   // If this is the new 'current' moderation record, it should be the only one
   // flagged 'current' in {workbench_moderation_node_history}.
-  if ($new_revision->current) {
+  if ($new_revision->is_current) {
     $query = db_update('workbench_moderation_node_history')
       ->condition('nid', $node->nid)
-      ->fields(array('current' => 0))
+      ->fields(array('is_current' => 0))
       ->execute();
   }
 
@@ -1587,7 +1587,7 @@ function workbench_moderation_moderate($node, $state) {
   // Update the node's content_moderation information so that we can publish it
   // if necessary.
   $node->workbench_moderation['my_revision'] = $new_revision;
-  if ($new_revision->current) {
+  if ($new_revision->is_current) {
     $node->workbench_moderation['current'] = $new_revision;
   }
   // Handle the published revision.

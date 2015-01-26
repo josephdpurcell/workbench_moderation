@@ -133,7 +133,7 @@ function workbench_moderation_views_data() {
       'handler' => 'views_handler_sort',
     ),
   );
-  $data['workbench_moderation_node_history']['current'] = array(
+  $data['workbench_moderation_node_history']['is_current'] = array(
     'title' => t('Current'),
     'help' => t('Whether or not this is the current revision.'),
     'field' => array(
@@ -157,7 +157,7 @@ function workbench_moderation_views_data() {
       'title' => t('Moderation links'),
       'handler' => 'workbench_moderation_handler_field_links',
       'click sortable' => FALSE,
-      'additional fields' => array('nid', 'vid', 'current'),
+      'additional fields' => array('nid', 'vid', 'is_current'),
     ),
     'filter' => array(
       'title' => t('User can moderate'),

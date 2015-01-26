@@ -168,7 +168,7 @@ function workbench_moderation_schema() {
         'default' => 0,
         'disp-width' => '10',
       ),
-      'current' => array(
+      'is_current' => array(
         'description' => 'Indicated the current revision of a node.',
         'type' => 'int',
         'unsigned' => TRUE,
@@ -657,4 +657,22 @@ function workbench_moderation_update_7009() {
   db_update('workbench_moderation_transitions')
     ->expression('name', "CONCAT(from_name, '-', to_name)")
     ->execute();
+}
+
+/**
+ * Comply with SQL-99:  Rename the 'current' column to 'is_current'.
+ */
+function workbench_moderation_update_7010() {
+  $table = 'workbench_moderation_node_history';
+  $field = 'current';
+  $field_new = 'is_current';
+  $spec = array(
+    'description' => 'Indicated the current revision of a node.',
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  db_change_field($table, $field, $field_new, $spec);
+  return t("Renamed 'current' column in node_history table");
 }
