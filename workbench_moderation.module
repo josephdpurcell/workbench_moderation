@@ -663,9 +663,9 @@ function workbench_moderation_views_default_views() {
 function workbench_moderation_node_presave($node) {
   global $user;
   if (isset($node->workbench_moderation_state_new)) {
-    // If the new moderation state is published, or if this revision is the
-    // published revision, set the node status to published.
-    if ($node->workbench_moderation_state_new == workbench_moderation_state_published() || (!empty($node->workbench_moderation['published']) && $node->vid == $node->workbench_moderation['published']->vid)) {
+    // If the new moderation state is published, set the node status to
+    // published.
+    if ($node->workbench_moderation_state_new == workbench_moderation_state_published()) {
       $node->status = 1;
     }
     else {
