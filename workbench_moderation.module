@@ -672,6 +672,12 @@ function workbench_moderation_node_presave($node) {
       $node->status = 0;
     }
   }
+
+  // Preserve the changed timestamp of the revision when updating live revision.
+  if (!empty($node->workbench_moderation['updating_live_revision'])) {
+    $node->timestamp = $node->workbench_moderation['my_revision']->stamp;
+    $node->changed = $node->workbench_moderation['my_revision']->stamp;
+  }
 }
 
 /**
