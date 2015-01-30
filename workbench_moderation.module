@@ -1761,6 +1761,8 @@ function workbench_moderation_store($node) {
   unset($taxonomy_index_flag[$node->nid]);
 
   // Save the node.
+  $live_revision->revision = 0;
+  $live_revision->path['pathauto'] = 0;
   node_save($live_revision);
 }
 
