@@ -1275,7 +1275,7 @@ function workbench_moderation_node_current_load($node) {
 function workbench_moderation_node_live_load($node) {
   // Is there a live revision of this node?
   if (isset($node->workbench_moderation['published']->vid)) {
-    return node_load($node->nid, $node->workbench_moderation['published']->vid, TRUE);
+    return node_load($node->nid, $node->workbench_moderation['published']->vid);
   }
 }
 
