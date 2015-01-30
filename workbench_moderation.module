@@ -1887,7 +1887,6 @@ function workbench_moderation_moderate_form_submit($form, &$form_state) {
     else {
       $form_state['redirect'] = $form['#destination'];
     }
-    drupal_redirect_form($form_state);
   }
 }
 
