@@ -88,7 +88,9 @@ class workbench_base_ui extends ctools_export_ui {
     $form_state['item']->access['logic'] = $form_state['values']['logic'];
   }
 
-  function edit_form_submit(&$form, &$form_state) {
-    parent::edit_form_submit($form, $form_state);
+  function edit_save_form($form_state) {
+    parent::edit_save_form($form_state);
+    cache_clear_all('ctools_plugin_files:state_flow_entity', 'cache', TRUE);
+    cache_clear_all('plugins:state_flow_entity', 'cache', TRUE);
   }
 }
