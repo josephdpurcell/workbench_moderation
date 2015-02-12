@@ -116,17 +116,10 @@ function workbench_moderation_menu_alter(&$items) {
  */
 function workbench_moderation_permission() {
   $permissions = array();
-  // @todo which perms do we need in 2.x
-  /*
-  $permissions['administer workbench moderation'] = array(
-    'title' => t('Administer Workbench Moderation'),
-  );
-  $permissions['view moderation history'] = array(
-    'title' => t('View moderation history'),
-  );
+
   $permissions['view moderation messages'] = array(
     'title' => t('View the moderation messages on a node')
-  );*/
+  );
 
   $permissions['view all unpublished content'] = array(
     'title' => t('View all unpublished content'),
