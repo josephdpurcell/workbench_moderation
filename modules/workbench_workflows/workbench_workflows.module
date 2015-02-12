@@ -98,7 +98,7 @@ function workbench_workflows_exportable_access($entity, $exportable, $exportable
  * Returns a CTools exportable object.
  */
 function workbench_workflows_load($type, $name) {
-  $cache = &drupal_static('workbench_workflows_load_all', array());
+  $cache = &drupal_static(__FUNCTION__, array());
 
   // We use array_key_exists because failed loads will be NULL and
   // isset() will try to load it again.
@@ -165,7 +165,7 @@ function workbench_workflows_load_label($type, $name, $label_property = 'admin_t
  */
 function workbench_workflows_load_all($type = 'states', $reset = FALSE) {
 
-  $cache = &drupal_static('workbench_workflows_load_all', array());
+  $cache = &drupal_static(__FUNCTION__, array());
 
   // We check our own private static because individual minis could have
   // been loaded prior to load all and we need to know that.
