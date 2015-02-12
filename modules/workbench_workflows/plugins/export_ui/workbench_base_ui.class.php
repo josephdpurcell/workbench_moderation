@@ -17,7 +17,7 @@ class workbench_base_ui extends ctools_export_ui {
       '#type' => 'textfield',
       '#default_value' => $form_state['item']->weight,
       '#title' => t('Weight'),
-      '#element_validate' => array('element_validate_integer_positive'),
+      '#element_validate' => array('element_validate_integer'),
     );
   }
 
