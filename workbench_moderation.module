@@ -1799,6 +1799,16 @@ function workbench_moderation_store($node) {
   $taxonomy_index_flag = &drupal_static('taxonomy_field_update', array());
   unset($taxonomy_index_flag[$node->nid]);
 
+  // Ensure we do not have field translations belonging to a draft revision in
+  // the field data tables.
+  $empty_values = array_fill_keys(array_keys(language_list()), array());
+  foreach (field_info_instances('node', $live_revision->type) as $field_name => $instance) {
+    $field = field_info_field($field_name);
+    if (!empty($live_revision->{$field_name}) && field_is_translatable('node', $field)) {
+      $live_revision->{$field_name} += $empty_values;
+    }
+  }
+
   // Save the node.
   $live_revision->revision = 0;
   $live_revision->path['pathauto'] = 0;
