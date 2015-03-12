@@ -1152,17 +1152,12 @@ function workbench_moderation_state_allowed($account, $from_state, $to_state, $n
 }
 
 /**
- * Adds current and live revision data to a node.
+ * Load path module data onto the node, since path module doesn't do it itself.
  *
  * @param $node
  *   The node being acted upon.
  */
-function workbench_moderation_node_data($node) {
-  // Make sure that this node type is moderated.
-  if (!workbench_moderation_node_type_moderated($node->type)) {
-    return;
-  }
-
+function workbench_moderation_node_path_data($node) {
   // Path module is stupid and doesn't load its data in node_load.
   if (module_exists('path') && isset($node->nid)) {
     $path = array();
@@ -1188,6 +1183,22 @@ function workbench_moderation_node_data($node) {
 
     $node->path = $path;
   }
+}
+
+/**
+ * Adds current and live revision data to a node.
+ *
+ * @param $node
+ *   The node being acted upon.
+ */
+function workbench_moderation_node_data($node) {
+  // Make sure that this node type is moderated.
+  if (!workbench_moderation_node_type_moderated($node->type)) {
+    return;
+  }
+
+  // Initialize path data if needed.
+  workbench_moderation_node_path_data($node);
 
   // Build a default 'current' moderation record. Nodes will lack a
   // workbench_moderation record if moderation was not enabled for their node
