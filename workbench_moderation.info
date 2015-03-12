@@ -2,6 +2,7 @@ name = Workbench Moderation
 description = Provides content moderation services
 package = Workbench
 core = 7.x
+dependencies[] = drafty
 
 configure = admin/config/workbench/moderation
 
