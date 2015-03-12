@@ -765,31 +765,7 @@ function workbench_moderation_node_update($node) {
     return;
   }
 
-  // Set moderation state values.
-  if (!isset($node->workbench_moderation_state_current)) {
-    $node->workbench_moderation_state_current = !empty($node->original->workbench_moderation['current']->state) ? $node->original->workbench_moderation['current']->state : workbench_moderation_state_none();
-  }
-  if (!isset($node->workbench_moderation_state_new)) {
-    // Moving from published to unpublished.
-    if ($node->status == NODE_NOT_PUBLISHED && isset($node->original->status) && $node->original->status == NODE_PUBLISHED) {
-      // @todo Currently we cannot set the state correctly if the default state
-      //   is "Published".
-      // @see https://www.drupal.org/node/1436260
-      $node->workbench_moderation_state_new = variable_get('workbench_moderation_default_state_' . $node->type, workbench_moderation_state_none());
-    }
-    // Moving from unpublished to published.
-    elseif ($node->status == NODE_PUBLISHED && isset($node->original->status) && $node->original->status == NODE_NOT_PUBLISHED) {
-      $node->workbench_moderation_state_new = workbench_moderation_state_published();
-    }
-    else {
-      if (!empty($node->original->workbench_moderation['current']->state)) {
-        $node->workbench_moderation_state_new = $node->original->workbench_moderation['current']->state;
-      }
-      else {
-        $node->workbench_moderation_state_new = variable_get('workbench_moderation_default_state_' . $node->type, workbench_moderation_state_none());
-      }
-    }
-  }
+  workbench_moderation_set_state_values($node);
 
   // If this is a new node, give it some information about 'my revision'.
   if (!isset($node->workbench_moderation)) {
@@ -816,6 +792,42 @@ function workbench_moderation_node_update($node) {
   }
 
   return;
+}
+
+/**
+ * Update a node's moderation state while saving.
+ *
+ * @param $node
+ *   The node being acted upon.
+ */
+function workbench_moderation_set_state_values($node) {
+
+  // Set moderation state values.
+  if (!isset($node->workbench_moderation_state_current)) {
+    $node->workbench_moderation_state_current = !empty($node->original->workbench_moderation['current']->state) ? $node->original->workbench_moderation['current']->state : workbench_moderation_state_none();
+  }
+  if (!isset($node->workbench_moderation_state_new)) {
+    // Moving from published to unpublished.
+    if ($node->status == NODE_NOT_PUBLISHED && isset($node->original->status) && $node->original->status == NODE_PUBLISHED) {
+      // @todo Currently we cannot set the state correctly if the default state
+      //   is "Published".
+      // @see https://www.drupal.org/node/1436260
+      $node->workbench_moderation_state_new = variable_get('workbench_moderation_default_state_' . $node->type, workbench_moderation_state_none());
+    }
+    // Moving from unpublished to published.
+    elseif ($node->status == NODE_PUBLISHED && isset($node->original->status) && $node->original->status == NODE_NOT_PUBLISHED) {
+      $node->workbench_moderation_state_new = workbench_moderation_state_published();
+    }
+    else {
+      if (!empty($node->original->workbench_moderation['current']->state)) {
+        $node->workbench_moderation_state_new = $node->original->workbench_moderation['current']->state;
+      }
+      else {
+        $node->workbench_moderation_state_new = variable_get('workbench_moderation_default_state_' . $node->type, workbench_moderation_state_none());
+      }
+    }
+  }
+
 }
 
 /**
