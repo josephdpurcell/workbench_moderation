@@ -1769,7 +1769,12 @@ function workbench_moderation_moderate($node, $state) {
   if (!empty($node->workbench_moderation['published']) || !empty($node->workbench_moderation['current']->unpublishing)) {
     // Clone the node to make sure our data arrives intact in the shutdown
     // function. It might still be altered before the shutdown is reached.
-    drupal_register_shutdown_function('workbench_moderation_store', clone $node);
+    static $semaphore = 0;
+    if (!$semaphore) {
+      workbench_moderation_store($node);
+    }
+
+    //drupal_register_shutdown_function('workbench_moderation_store', clone $node);
   }
   else {
     entity_get_controller('node')->resetCache(array($node->nid));
