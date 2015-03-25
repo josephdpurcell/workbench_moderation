@@ -1810,8 +1810,6 @@ function workbench_moderation_store($node) {
   }
 
   // Save the node.
-  $live_revision->revision = 0;
-  $live_revision->path['pathauto'] = 0;
   node_save($live_revision);
 }
 
