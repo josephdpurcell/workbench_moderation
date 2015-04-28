@@ -116,6 +116,14 @@ class workbench_workflows_ui extends workbench_base_ui {
       '#title' => t('States'),
       '#description' => t("States available in this workflow."),
     );
+
+    $form['default_state'] = array(
+      '#type' => 'radios',
+      '#options' => workbench_workflows_options('states'),
+      '#default_value' => isset($form_state['item']->default_state) ? $form_state['item']->default_state : NULL,
+      '#title' => t('Default state'),
+      '#description' => t("The starting state of the workflow."),
+    );
   }
 
   /**

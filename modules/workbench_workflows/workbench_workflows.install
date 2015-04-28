@@ -71,6 +71,13 @@ function workbench_workflows_schema() {
       'object default' => array(),
       'description' => 'An array of states allowed in the workflow',
     ),
+    'default_state' => array(
+      'type' => 'text',
+      'size' => 'big',
+      'serialize' => FALSE,
+      'object default' => '',
+      'description' => 'The starter state of the workflow.',
+    ),
     'events' => array(
       'type' => 'text',
       'size' => 'big',
@@ -270,4 +277,11 @@ function workbench_workflows_db_update($table) {
  */
 function workbench_workflows_update_7000() {
   workbench_workflows_db_update('workbench_workflows_states');
+}
+
+/**
+ * Add new fields for workflow to have default state per workflows.
+ */
+function workbench_workflows_update_7001() {
+  workbench_workflows_db_update('workbench_workflows_workflows');
 }

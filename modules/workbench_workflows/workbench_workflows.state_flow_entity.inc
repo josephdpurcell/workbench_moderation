@@ -24,6 +24,7 @@ function _workbench_workflows_state_flow_entity_plugins() {
 
     // This array will be built up and included with the state_flow plugin.
     $workflow_options = array();
+    $workflow_options['default_state'] = $workflow->default_state;
 
     // Build up states in a way compatible with state_flow_plugins.
     foreach ($workflow->states as $state_name) {
