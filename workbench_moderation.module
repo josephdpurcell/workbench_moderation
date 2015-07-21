@@ -19,7 +19,7 @@ function workbench_moderation_menu() {
   $items = array();
 
   // View the current draft of a node.
-  $items["node/%node/draft"] = array(
+  $items["node/%workbench_moderation_node_current_draft/draft"] = array(
     'title' => 'View draft',
     'page callback' => 'workbench_moderation_node_view_draft',
     'page arguments' => array(1),
@@ -28,9 +28,29 @@ function workbench_moderation_menu() {
     'file' => 'workbench_moderation.node.inc',
     'type' => MENU_LOCAL_TASK,
     'weight' => -9,
+    'tab_parent' => 'node/%',
+    'tab_root' => 'node/%',
   );
 
   return $items;
+}
+
+/**
+ * Replacement menu loader for viewing a current draft node.
+ *
+ * This ensures that page.tpl gets the correct version of the node.
+ *
+ * @param int $nid
+ *   The node ID.
+ *
+ * @return object
+ *   The current node according to moderation.
+ */
+function workbench_moderation_node_current_draft_load($nid) {
+  $node = node_load($nid);
+  // Get draft node.
+  $draft_node = state_flow_entity_get_active_revision($node, 'node');
+  return $draft_node;
 }
 
 /**
@@ -39,10 +59,10 @@ function workbench_moderation_menu() {
  * This is the access callback for node/%node/draft as defined in
  * workbench_moderation_menu().
  *
- * @param $node
+ * @param int $node
  *   The node being acted upon.
  *
- * @return
+ * @return bool
  *   Booelan TRUE or FALSE.
  */
 function _workbench_moderation_access_current_draft($node) {
@@ -50,7 +70,7 @@ function _workbench_moderation_access_current_draft($node) {
   $active_id = state_flow_entity_get_active_revision_id($node, 'node');
   // @todo, Add test for when active_id is empty. This occurs when a node is
   // created before this module is created.
-  if(empty($active_id) || $active_id == $node->vid){
+  if (empty($active_id) || $active_id == $node->vid) {
     return FALSE;
   }
 
