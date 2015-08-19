@@ -95,7 +95,7 @@ function workbench_moderation_menu_alter(&$items) {
   $items['node/%node/revisions/%/view']['page callback'] = 'workbench_moderation_node_view_revision';
   $items['node/%node/revisions/%/view']['file path'] = drupal_get_path('module', 'workbench_moderation');
   $items['node/%node/revisions/%/view']['file'] = 'workbench_moderation.node.inc';
-  $items['node/%node/revisions/%/view']['access callback'] = 'state_flow_menu_node_access';
+  $items['node/%node/revisions/%/view']['access callback'] = 'workbench_moderation_revision_access';
 
   // Redirect node/%node/workflow
   if (!empty($items['node/%node/workflow']) && $items['node/%node/workflow']['module'] === 'state_flow') {
@@ -138,7 +138,7 @@ function workbench_moderation_permission() {
   $permissions = array();
 
   $permissions['view moderation messages'] = array(
-    'title' => t('View the moderation messages on a node')
+    'title' => t('View the moderation messages on a node'),
   );
 
   $permissions['view all unpublished content'] = array(
@@ -155,6 +155,18 @@ function workbench_moderation_permission() {
     'title' => t('Use "Needs Review" workbench tab'),
   );
 
+  // Add permissions for every state.
+  $states = workbench_workflows_load_all();
+  foreach ($states as $state => $info) {
+    $permission = 'view all content in state ' . $state;
+    $permissions[$permission] = array(
+      'title' => t('View all content in state "!state"', array('!state' => $info->title)),
+    );
+    if ($info->entity_state_change < 1) {
+      $permissions[$permission]['warning'] = t('This permission will give users access to probably unpublished content.');
+    }
+  }
+
   return $permissions;
 }
 
@@ -164,10 +176,30 @@ function workbench_moderation_permission() {
  * Allows users with the 'view all unpublished content' permission to do so.
  */
 function workbench_moderation_node_access($node, $op, $account) {
-  if ($op == 'view' && !$node->status && user_access('view all unpublished content', $account)) {
-    return NODE_ACCESS_ALLOW;
+  if ($op == 'view') {
+    if (!$node->status && user_access('view all unpublished content', $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
+    // Check if user has specific access to the workflow state the node has.
+    if (($state = state_flow_entity_load_state_machine($node, 'node')->get_current_state()) && user_access('view all content in state ' . $state, $account)) {
+      return NODE_ACCESS_ALLOW;
+    }
   }
   return NODE_ACCESS_IGNORE;
+}
+
+/**
+ * Access callback used to check if a revision is accessible.
+ *
+ * This re-uses the node_access() as well as state_flow_menu_node_access().
+ * Our implementation of hook_node_access() allows fine grained access control
+ * based on the workflow state of a node.
+ */
+function workbench_moderation_revision_access($node, $op = 'view', $account = NULL) {
+  if ($op == 'view') {
+    return node_access('view', $node, $account);
+  }
+  return state_flow_menu_node_access($node, $account);
 }
 
 /**
