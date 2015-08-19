@@ -307,7 +307,7 @@ function workbench_workflows_state_flow_entity_plugins() {
 }
 
 /**
- * Implements hook_state_flow_machine_type_alter()
+ * Implements hook_state_flow_machine_type_alter().
  */
 function workbench_workflows_state_flow_entity_machine_type_alter(&$machine_type, $entity, $entity_type) {
   if ($entity_type == 'node') {
