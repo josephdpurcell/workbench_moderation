@@ -1354,11 +1354,47 @@ function workbench_moderation_state_labels() {
   if (!isset($labels)) {
     $labels = array();
     foreach (workbench_moderation_states() as $machine_name => $state) {
-      $labels[$machine_name] = $state->label;
+      if (module_exists('i18n_string')) {
+        $labels[$machine_name] = i18n_string_translate(array('workbench_moderation', 'moderation_state', $machine_name, 'label'), $state->label);
+      }
+      else {
+        $labels[$machine_name] = $state->label;
+      }
     }
   }
 
   return $labels;
+}
+
+/**
+ * Implements hook_i18n_string_info().
+ */
+function workbench_moderation_i18n_string_info() {
+  $groups['workbench_moderation'] = array(
+    'title' => t('Workbench moderation'),
+    'description' => t('Translatable workbench moderation states: label.'),
+    // This group doesn't have strings with format.
+    'format' => FALSE,
+    // This group can list all strings.
+    'list' => TRUE,
+  );
+  return $groups;
+}
+
+/**
+ * Implements hook_i18n_string_list().
+ */
+function workbench_moderation_i18n_string_list($group) {
+  $strings = array();
+
+  if ($group == 'workbench_moderation') {
+    foreach (workbench_moderation_states() as $state) {
+      $strings['workbench_moderation']['moderation_state'][$state->name]['label'] = $state->label;
+      $strings['workbench_moderation']['moderation_state'][$state->name]['description'] = $state->description;
+    }
+  }
+
+  return $strings;
 }
 
 /**
