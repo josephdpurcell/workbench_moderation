@@ -44,7 +44,7 @@ function workbench_workflows_ctools_plugin_directory($module, $plugin) {
 function workbench_workflows_options($type = 'states', $label_key = 'admin_title', $reset = FALSE) {
 
   // load all objects of this type
-  $exportables = workbench_workflows_load_all($type, $reset);
+  $exportables = workbench_workflows_load_enabled($type, $reset);
 
   $return = array();
   foreach($exportables as $exportable) {
