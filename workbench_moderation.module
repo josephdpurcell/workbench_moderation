@@ -361,17 +361,16 @@ function workbench_moderation_messages($context, $node = NULL) {
   if (($state_machine = state_flow_entity_load_state_machine($node, 'node')) && !empty($node->current_state)) {
     $any_published_vid = !empty($node->published_revision_id);
     $published = $any_published_vid && $node->published_revision_id == $node->vid && $node->status == '1';
-    $latest_revision_id = $state_machine->get_latest_revision();
+    $active_revision_id = $state_machine->get_active_revision();
 
     $info_block_messages[$msgid . ':state:' . $node->current_state] = array(
       'label' => t('Revision state'),
       'message' => check_plain(workbench_workflows_load_label('states', $node->current_state)),
     );
-    $info_block_messages[$msgid . ':revent_revision'] = array(
-      'label' => t('Most recent revision'),
-      'message' => ($latest_revision_id == $node->vid) ? t('Yes') : t('No'),
+    $info_block_messages[$msgid . ':active_revision'] = array(
+      'label' => t('Active revision'),
+      'message' => ($active_revision_id == $node->vid) ? t('Yes') : t('No'),
     );
-
     $info_block_messages[$msgid . ':published:' . (int) $published] = array(
       'label' => t('Public'),
       'message' => $published ? t('Yes') : t('No'),
