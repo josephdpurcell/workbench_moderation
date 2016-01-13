@@ -9,10 +9,12 @@
 namespace Drupal\workbench_moderation\Plugin\UpdateRunner;
 
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\scheduled_updates\Plugin\BaseUpdateRunner;
+use Drupal\scheduled_updates\Plugin\EntityMonitorUpdateRunnerInterface;
 use Drupal\scheduled_updates\RevisionUtils;
 use Drupal\workbench_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -29,7 +31,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *   description = @Translation("Runs updates for moderation content.")
  * )
  */
-class ModerationUpdateRunner extends BaseUpdateRunner{
+class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUpdateRunnerInterface{
 
   /**
    * @var \Drupal\workbench_moderation\ModerationInformationInterface
@@ -117,4 +119,18 @@ class ModerationUpdateRunner extends BaseUpdateRunner{
     }
     return $revisions;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function onEntityUpdate(ContentEntityInterface $entity) {
+    // @todo Check to see if revisions before latest have updates attached that
+    // are not also attached to latest revision.
+    // these revisions will need to be set to canceled.
+    // Also check if to see if a revision that was previsously set to canceled
+    // was re-added to this revision. Via revert?
+    debug('Responding to entity change: ' . $entity->label());
+  }
+
+
 }
