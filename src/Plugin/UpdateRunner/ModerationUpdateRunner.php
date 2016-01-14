@@ -126,9 +126,7 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
    */
   public function onEntityUpdate(ContentEntityInterface $entity) {
     $this->deactivateUpdates($entity);
-
-    // @todo Also check if to see if a revision that was previsously set to canceled
-    // was re-added to this revision. Via revert?
+    $this->reactivateUpdates($entity);
   }
 
 
@@ -225,6 +223,26 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
         $update->status = ScheduledUpdateInterface::STATUS_INACTIVE;
         $update->save();
       }
+    }
+  }
+
+  /**
+   * Reactive any updates that are on this entity that have been deactived previously.
+   *
+   * @see ::deactivateUpdates()
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   */
+  protected function reactivateUpdates(ContentEntityInterface $entity) {
+    $update_ids = $this->getUpdateIdsOnEntity($entity);
+    $storage = $this->entityTypeManager->getStorage('scheduled_update');
+    $query = $storage->getQuery();
+    $query->condition('status', [ScheduledUpdateInterface::STATUS_UNRUN, ScheduledUpdateInterface::STATUS_REQUEUED], 'NOT IN');
+    $query->condition($this->entityTypeManager->getDefinition('scheduled_update')->getKey('id'), $update_ids, 'IN');
+    $non_active_update_ids = $query->execute();
+    $non_active_updates = $storage->loadMultiple($non_active_update_ids);
+    foreach ($non_active_updates as $non_active_update) {
+      $non_active_update->status = ScheduledUpdateInterface::STATUS_UNRUN;
     }
   }
 
