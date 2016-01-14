@@ -16,6 +16,7 @@ use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\scheduled_updates\Plugin\BaseUpdateRunner;
 use Drupal\scheduled_updates\Plugin\EntityMonitorUpdateRunnerInterface;
 use Drupal\scheduled_updates\RevisionUtils;
+use Drupal\scheduled_updates\ScheduledUpdateInterface;
 use Drupal\workbench_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -124,13 +125,107 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
    * {@inheritdoc}
    */
   public function onEntityUpdate(ContentEntityInterface $entity) {
-    // @todo Check to see if revisions before latest have updates attached that
-    // are not also attached to latest revision.
-    // these revisions will need to be set to canceled.
-    // Also check if to see if a revision that was previsously set to canceled
+    $this->deactivateUpdates($entity);
+
+    // @todo Also check if to see if a revision that was previsously set to canceled
     // was re-added to this revision. Via revert?
-    debug('Responding to entity change: ' . $entity->label());
   }
 
+
+  /**
+   * Get all update ids for this connected Update type.
+   *
+   * @todo Should results be cached per entity_id and revision_id to avoiding loading updates.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *
+   * @return array
+   */
+  protected function getUpdateIdsOnEntity(ContentEntityInterface $entity, $include_inactive = FALSE) {
+    $field_ids = $this->getReferencingFieldIds();
+    $update_ids = [];
+    foreach ($field_ids as $field_id) {
+      $field_update_ids = $this->getEntityReferenceTargetIds($entity, $field_id);
+      // This field could reference other update bundles
+      // remove any that aren't of the attached scheduled update type.
+      foreach ($field_update_ids as $field_update_id) {
+        $update = $this->entityTypeManager->getStorage('scheduled_update')->load($field_update_id);
+        if ($update->bundle() == $this->scheduled_update_type->id()) {
+          if (!$include_inactive) {
+            if ($update->status->value == ScheduledUpdateInterface::STATUS_INACTIVE) {
+              continue;
+            }
+          }
+          $update_ids[$field_update_id] = $field_update_id;
+        }
+      }
+    }
+    return $update_ids;
+  }
+
+  /**
+   * Get all previous revisions that have updates of the attached type.
+   *
+   * This function would be easier and more performant if this core issue with Entity Query was fixed:
+   *  https://www.drupal.org/node/2649268
+   *  Without this fix can't filter query on type of update and whether they are active.
+   *  So therefore all previous revisions have to be loaded.
+   *
+   * @todo Help get that core issue fixed or rewrite this function query table fields directly.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   */
+  protected function getPreviousRevisionsWithUpdates(ContentEntityInterface $entity) {
+    /** @var ContentEntityInterface[] $revisions */
+    $revisions = [];
+    $type = $entity->getEntityType();
+    $query = $this->entityTypeManager->getStorage($entity->getEntityTypeId())->getQuery();
+    $query->allRevisions()
+      ->condition($type->getKey('id'), $entity->id())
+      ->condition($type->getKey('revision'), $entity->getRevisionId(), '<')
+      ->sort($type->getKey('revision'), 'DESC');
+    if ($revision_ids = $query->execute()) {
+      $revision_ids = array_keys($revision_ids);
+      $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
+      foreach ($revision_ids as $revision_id) {
+        /** @var ContentEntityInterface $revision */
+        $revision = $storage->loadRevision($revision_id);
+        if ($update_ids = $this->getUpdateIdsOnEntity($revision)) {
+          $revisions[$revision_id] = $revision;
+        }
+      }
+    }
+    return $revisions;
+  }
+
+  /**
+   * Deactivate any Scheduled Updates that are previous revision but not on current.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   */
+  protected function deactivateUpdates(ContentEntityInterface $entity) {
+    $current_update_ids = $this->getUpdateIdsOnEntity($entity);
+    // Loop through all previous revisions and deactive updates not on current revision.
+    $revisions = $this->getPreviousRevisionsWithUpdates($entity);
+    if (empty($revisions)) {
+      return;
+    }
+    $all_revisions_update_ids = [];
+    foreach ($revisions as $revision) {
+      // array_merge so so elements with same key are not replaced.
+      $all_revisions_update_ids = array_merge($all_revisions_update_ids,$this->getUpdateIdsOnEntity($revision));
+    }
+    $all_revisions_update_ids = array_unique($all_revisions_update_ids);
+    $updates_ids_not_on_current = array_diff($all_revisions_update_ids, $current_update_ids);
+    if ($updates_ids_not_on_current) {
+      $storage = $this->entityTypeManager->getStorage('scheduled_update');
+      foreach ($updates_ids_not_on_current as $update_id) {
+        /** @var ScheduledUpdateInterface $update */
+        $update = $storage->load($update_id);
+        $update->status = ScheduledUpdateInterface::STATUS_INACTIVE;
+        $update->save();
+      }
+    }
+  }
 
 }
