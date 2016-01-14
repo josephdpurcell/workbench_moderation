@@ -225,7 +225,7 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
       }
     }
   }
-
+  
   /**
    * Reactive any updates that are on this entity that have been deactived previously.
    *
@@ -245,5 +245,4 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
       $non_active_update->status = ScheduledUpdateInterface::STATUS_UNRUN;
     }
   }
-
 }
