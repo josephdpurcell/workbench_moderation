@@ -93,12 +93,13 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
     if ($field_ids = $this->getReferencingFieldIds()) {
       $entity_storage = $this->entityTypeManager->getStorage($this->updateEntityType());
       $all_ready_update_ids = $this->getReadyUpdateIds();
-      foreach ($field_ids as $field_id) {
-
-        $query = $entity_storage->getQuery('AND');
-        $query->condition("$field_id.target_id", $all_ready_update_ids, 'IN');
-        $query->allRevisions();
-        $entity_ids += $query->execute();
+      if ($all_ready_update_ids) {
+        foreach ($field_ids as $field_id) {
+          $query = $entity_storage->getQuery('AND');
+          $query->condition("$field_id.target_id", $all_ready_update_ids, 'IN');
+          $query->allRevisions();
+          $entity_ids += $query->execute();
+        }
       }
     }
     return $entity_ids;
@@ -225,7 +226,7 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
       }
     }
   }
-  
+
   /**
    * Reactive any updates that are on this entity that have been deactived previously.
    *
@@ -234,15 +235,16 @@ class ModerationUpdateRunner extends BaseUpdateRunner implements EntityMonitorUp
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    */
   protected function reactivateUpdates(ContentEntityInterface $entity) {
-    $update_ids = $this->getUpdateIdsOnEntity($entity);
-    $storage = $this->entityTypeManager->getStorage('scheduled_update');
-    $query = $storage->getQuery();
-    $query->condition('status', [ScheduledUpdateInterface::STATUS_UNRUN, ScheduledUpdateInterface::STATUS_REQUEUED], 'NOT IN');
-    $query->condition($this->entityTypeManager->getDefinition('scheduled_update')->getKey('id'), $update_ids, 'IN');
-    $non_active_update_ids = $query->execute();
-    $non_active_updates = $storage->loadMultiple($non_active_update_ids);
-    foreach ($non_active_updates as $non_active_update) {
-      $non_active_update->status = ScheduledUpdateInterface::STATUS_UNRUN;
+    if ($update_ids = $this->getUpdateIdsOnEntity($entity)) {
+      $storage = $this->entityTypeManager->getStorage('scheduled_update');
+      $query = $storage->getQuery();
+      $query->condition('status', [ScheduledUpdateInterface::STATUS_UNRUN, ScheduledUpdateInterface::STATUS_REQUEUED], 'NOT IN');
+      $query->condition($this->entityTypeManager->getDefinition('scheduled_update')->getKey('id'), $update_ids, 'IN');
+      $non_active_update_ids = $query->execute();
+      $non_active_updates = $storage->loadMultiple($non_active_update_ids);
+      foreach ($non_active_updates as $non_active_update) {
+        $non_active_update->status = ScheduledUpdateInterface::STATUS_UNRUN;
+      }
     }
   }
 }
