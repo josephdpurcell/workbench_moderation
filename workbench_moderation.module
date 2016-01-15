@@ -119,3 +119,17 @@ function workbench_moderation_form_alter(&$form, FormStateInterface $form_state,
 function workbench_moderation_preprocess_node(&$variables) {
   \Drupal::service('workbench_moderation.workbench_preprocess')->preprocessNode($variables);
 }
+
+/**
+ * Implements hook_entity_extra_field_info().
+ */
+function workbench_moderation_entity_extra_field_info() {
+  return \Drupal::service('workbench_moderation.entity_type')->entityExtraFieldInfo();
+}
+
+/**
+ * Implements hook_entity_view().
+ */
+function workbench_moderation_entity_view(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display, $view_mode) {
+  \Drupal::service('workbench_moderation.entity_operations')->entityView($build, $entity, $display, $view_mode);
+}

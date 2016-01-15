@@ -44,7 +44,7 @@ interface ModerationHandlerInterface {
    *   The bundle definition that is being saved.
    * @return mixed
    */
-  public function onEntityModerationFormSubmit(ConfigEntityInterface $bundle);
+  public function onBundleModerationConfigurationFormSubmit(ConfigEntityInterface $bundle);
 
   /**
    * Alters entity forms to enforce revision handling.

@@ -18,6 +18,18 @@ use Drupal\Core\Form\FormInterface;
 interface ModerationInformationInterface {
 
   /**
+   * Loads a specific bundle entity.
+   *
+   * @param string $bundle_entity_type_id
+   *   The bundle entity type ID.
+   * @param string $bundle_id
+   *   The bundle ID.
+   *
+   * @return \Drupal\Core\Config\Entity\ConfigEntityInterface|null
+   */
+  public function loadBundleEntity($bundle_entity_type_id, $bundle_id);
+
+  /**
    * Determines if an entity is one we should be moderating.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity

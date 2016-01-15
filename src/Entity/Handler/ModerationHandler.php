@@ -48,7 +48,7 @@ class ModerationHandler implements ModerationHandlerInterface, EntityHandlerInte
   /**
    * {@inheritdoc}
    */
-  public function onEntityModerationFormSubmit(ConfigEntityInterface $bundle) {
+  public function onBundleModerationConfigurationFormSubmit(ConfigEntityInterface $bundle) {
     // The Revisions portion of Entity API is not uniformly applied or consistent.
     // Until that's fixed in core, we'll make a best-attempt to apply it to
     // the common entity patterns so as to avoid every entity type needing to

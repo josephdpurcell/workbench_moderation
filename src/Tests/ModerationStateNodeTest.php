@@ -42,6 +42,12 @@ class ModerationStateNodeTest extends ModerationStateTestBase {
       ->loadByProperties([
         'title' => 'moderated content',
       ]);
+
+    if (!$nodes) {
+      $this->fail('Test node was not saved correctly.');
+      return;
+    }
+
     $node = reset($nodes);
 
     $path = 'node/' . $node->id() . '/edit';

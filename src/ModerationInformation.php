@@ -64,16 +64,9 @@ class ModerationInformation implements ModerationInformationInterface {
   }
 
   /**
-   * Loads a specific bundle entity.
-   *
-   * @param string $bundle_entity_type_id
-   *   The bundle entity type ID.
-   * @param string $bundle_id
-   *   The bundle ID.
-   *
-   * @return \Drupal\Core\Config\Entity\ConfigEntityInterface|null
+   * {@inheritdoc}
    */
-  protected function loadBundleEntity($bundle_entity_type_id, $bundle_id) {
+  public function loadBundleEntity($bundle_entity_type_id, $bundle_id) {
     if ($bundle_entity_type_id) {
       return $this->entityTypeManager->getStorage($bundle_entity_type_id)->load($bundle_id);
     }

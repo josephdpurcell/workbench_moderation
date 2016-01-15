@@ -7,8 +7,13 @@
 
 namespace Drupal\workbench_moderation;
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\workbench_moderation\Entity\ModerationState;
+use Drupal\workbench_moderation\Entity\ModerationStateTransition;
 
 /**
  * Validates whether a certain state transition is allowed.
@@ -16,43 +21,154 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 class StateTransitionValidation {
 
   /**
-   * @var \Drupal\Core\Entity\EntityStorageInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $transitionStorage;
+  protected $entityTypeManager;
+
+  /**
+   * @var \Drupal\Core\Entity\Query\QueryFactory
+   */
+  protected $queryFactory;
 
   /**
    * Stores the possible state transitions.
    *
-   * @var array|NULL
+   * @var array
    */
-  protected $possibleTransitions = NULL;
+  protected $possibleTransitions = [];
 
   /**
-   * Creates a new StateTransitionValidation instance.
+   * Constructs a new StateTransitionValidation.
    *
-   * @param \Drupal\Core\Entity\EntityStorageInterface $transitionStorage
-   *   The transition storage.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager service.
+   * @param \Drupal\Core\Entity\Query\QueryFactory $query_factory
+   *   The entity query factory.
    */
-  public function __construct(EntityStorageInterface $transitionStorage) {
-    $this->transitionStorage = $transitionStorage;
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, QueryFactory $query_factory) {
+    $this->entityTypeManager = $entity_type_manager;
+    $this->queryFactory = $query_factory;
   }
 
-  public static function create(EntityTypeManagerInterface $entity_type_manager) {
-    return new static($entity_type_manager->getStorage('moderation_state_transition'));
-  }
-
+  /**
+   * Computes a mapping of possible transitions.
+   *
+   * This method is uncached and will recalculate the list on every request.
+   * In most cases you want to use getPossibleTransitions() instead.
+   *
+   * @see static::getPossibleTransitions()
+   *
+   * @return array[]
+   *   An array containing all possible transitions. Each entry is keyed by the
+   *   "from" state, and the value is an array of all legal "to" states based
+   *   on the currently defined transition objects.
+   */
   protected function calculatePossibleTransitions() {
-    if (isset($this->possibleTransitions)) {
-      return $this->possibleTransitions;
-    }
-    $transitions = $this->transitionStorage->loadMultiple();
+    $transitions = $this->transitionStorage()->loadMultiple();
 
-    $this->possibleTransitions = [];
+    $possible_transitions = [];
+    /** @var \Drupal\workbench_moderation\ModerationStateTransitionInterface $transition */
     foreach ($transitions as $transition) {
-      /** @var \Drupal\workbench_moderation\ModerationStateTransitionInterface $transition */
-      $this->possibleTransitions[$transition->getFromState()][] = $transition->getToState();
+      $possible_transitions[$transition->getFromState()][] = $transition->getToState();
+    }
+    return $possible_transitions;
+  }
+
+  /**
+   * Returns a mapping of possible transitions.
+   *
+   * @return array[]
+   *   An array containing all possible transitions. Each entry is keyed by the
+   *   "from" state, and the value is an array of all legal "to" states based
+   *   on the currently defined transition objects.
+   */
+  protected function getPossibleTransitions() {
+    if (empty($this->possibleTransitions)) {
+      $this->possibleTransitions = $this->calculatePossibleTransitions();
     }
     return $this->possibleTransitions;
+  }
+
+  /**
+   * Gets a list of states a user may transition an entity to.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity to be transitioned.
+   * @param \Drupal\Core\Session\AccountInterface $user
+   *   The account that wants to perform a transition.
+   *
+   * @return ModerationState[]
+   *   Returns an array of States to which the specified user may transition the
+   *   entity.
+   */
+  public function getValidTransitionTargets(ContentEntityInterface $entity, AccountInterface $user) {
+    $bundle = $this->loadBundleEntity($entity->getEntityType()->getBundleEntityType(), $entity->bundle());
+
+    $states_for_bundle = $bundle->getThirdPartySetting('workbench_moderation', 'allowed_moderation_states', []);
+
+    /** @var ModerationState $state */
+    $state = $entity->moderation_state->entity;
+    $current_state_id = $state->id();
+
+    $all_transitions = $this->getPossibleTransitions();
+    $destinations = $all_transitions[$current_state_id];
+
+    $destinations = array_intersect($states_for_bundle, $destinations);
+
+    $permitted_destinations = array_filter($destinations, function($state_name) use ($current_state_id, $user) {
+      return $this->userMayTransition($current_state_id, $state_name, $user);
+    });
+
+    return $this->entityTypeManager->getStorage('moderation_state')->loadMultiple($permitted_destinations);
+  }
+
+  /**
+   * Determines if a user is allowed to transition from one state to another.
+   *
+   * This method will also return FALSE if there is no transition between the
+   * specified states at all.
+   *
+   * @param string $from
+   *   The origin state machine name.
+   * @param string $to
+   *   The desetination state machine name.
+   * @param \Drupal\Core\Session\AccountInterface $user
+   *   The user to validate.
+   *
+   * @return bool
+   *   TRUE if the given user may transition between those two states.
+   */
+  public function userMayTransition($from, $to, AccountInterface $user) {
+    if ($transition = $this->getTransitionFromStates($from, $to)) {
+      return $user->hasPermission('use ' . $transition->id() . ' transition');
+    }
+    return FALSE;
+  }
+
+  /**
+   * Returns the transition object that transitions from one state to another.
+   *
+   * @param string $from
+   *   The name of the "from" state.
+   * @param string $to
+   *   The name of the "to" state.
+   *
+   * @return ModerationStateTransition|null
+   *   A transition object, or NULL if there is no such transition in the system.
+   */
+  protected function getTransitionFromStates($from, $to) {
+    $from = $this->transitionStateQuery()
+      ->condition('stateFrom', $from)
+      ->condition('stateTo', $to)
+      ->execute();
+
+    $transitions = $this->transitionStorage()->loadMultiple($from);
+
+    if ($transitions) {
+      return current($transitions);
+    }
+    return NULL;
+
   }
 
   /**
@@ -74,4 +190,46 @@ class StateTransitionValidation {
     return FALSE;
   }
 
+  /**
+   *
+   * @return \Drupal\Core\Entity\Query\QueryInterface
+   *   A transition state query.
+   */
+  protected function transitionStateQuery() {
+    return $this->queryFactory->get('moderation_state_transition', 'AND');
+  }
+
+  /**
+   * Returns the transition entity storage service.
+   *
+   * @return \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected function transitionStorage() {
+    return $this->entityTypeManager->getStorage('moderation_state_transition');
+  }
+
+  /**
+   * Returns the state entity storage service.
+   *
+   * @return \Drupal\Core\Entity\EntityStorageInterface
+   */
+  protected function stateStorage() {
+    return $this->entityTypeManager->getStorage('moderation_state');
+  }
+
+  /**
+   * Loads a specific bundle entity.
+   *
+   * @param string $bundle_entity_type_id
+   *   The bundle entity type ID.
+   * @param string $bundle_id
+   *   The bundle ID.
+   *
+   * @return \Drupal\Core\Config\Entity\ConfigEntityInterface|null
+   */
+  protected function loadBundleEntity($bundle_entity_type_id, $bundle_id) {
+    if ($bundle_entity_type_id) {
+      return $this->entityTypeManager->getStorage($bundle_entity_type_id)->load($bundle_id);
+    }
+  }
 }

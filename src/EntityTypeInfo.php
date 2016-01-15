@@ -7,6 +7,7 @@
 namespace Drupal\workbench_moderation;
 
 use Drupal\Core\Config\Entity\ConfigEntityTypeInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -15,13 +16,12 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\Core\Url;
-use Drupal\workbench_moderation\Form\EntityModerationForm;
-use Drupal\workbench_moderation\Routing\EntityModerationRouteProvider;
-use Drupal\workbench_moderation\Routing\EntityTypeModerationRouteProvider;
-use Drupal\workbench_moderation\Entity\Handler\NodeModerationHandler;
 use Drupal\workbench_moderation\Entity\Handler\BlockContentModerationHandler;
 use Drupal\workbench_moderation\Entity\Handler\ModerationHandler;
-use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\workbench_moderation\Entity\Handler\NodeModerationHandler;
+use Drupal\workbench_moderation\Form\BundleModerationConfigurationForm;
+use Drupal\workbench_moderation\Routing\EntityModerationRouteProvider;
+use Drupal\workbench_moderation\Routing\EntityTypeModerationRouteProvider;
 
 /**
  * Service class for manipulating entity type information.
@@ -55,6 +55,7 @@ class EntityTypeInfo {
 
   /**
    * EntityTypeInfo constructor.
+   *
    * @param \Drupal\Core\StringTranslation\TranslationInterface $translation
    *   The translation service. for form alters.
    * @param \Drupal\workbench_moderation\ModerationInformationInterface $moderation_information
@@ -137,7 +138,7 @@ class EntityTypeInfo {
     }
 
     if (!$type->getFormClass('moderation')) {
-      $type->setFormClass('moderation', EntityModerationForm::class);
+      $type->setFormClass('moderation', BundleModerationConfigurationForm::class);
     }
 
     // @todo Core forgot to add a direct way to manipulate route_provider, so
@@ -175,6 +176,73 @@ class EntityTypeInfo {
     }
 
     return $operations;
+  }
+
+  /**
+   * Gets the "extra fields" for a bundle.
+   *
+   * This is a hook bridge.
+   *
+   * @see hook_entity_extra_field_info()
+   *
+   * @return array
+   *   A nested array of 'pseudo-field' elements. Each list is nested within the
+   *   following keys: entity type, bundle name, context (either 'form' or
+   *   'display'). The keys are the name of the elements as appearing in the
+   *   renderable array (either the entity form or the displayed entity). The
+   *   value is an associative array:
+   *   - label: The human readable name of the element. Make sure you sanitize
+   *     this appropriately.
+   *   - description: A short description of the element contents.
+   *   - weight: The default weight of the element.
+   *   - visible: (optional) The default visibility of the element. Defaults to
+   *     TRUE.
+   *   - edit: (optional) String containing markup (normally a link) used as the
+   *     element's 'edit' operation in the administration interface. Only for
+   *     'form' context.
+   *   - delete: (optional) String containing markup (normally a link) used as the
+   *     element's 'delete' operation in the administration interface. Only for
+   *     'form' context.
+   */
+  public function entityExtraFieldInfo() {
+    $return = [];
+    foreach ($this->getModeratedBundles() as $bundle) {
+      $return[$bundle['entity']][$bundle['bundle']]['display']['workbench_moderation_control'] = [
+        'label' => $this->t('Moderation control'),
+        'description' => $this->t('Status listing and form for the entitiy\'s moderation state.'),
+        'weight' => -20,
+        'visible' => TRUE,
+      ];
+    }
+
+    return $return;
+  }
+
+  /**
+   * Returns an iterable list of entity names and bundle names under moderation.
+   *
+   * That is, this method returns a list of bundles that have Workbench
+   * Moderation enabled on them.
+   *
+   * @return \Generator
+   *   A generator, yielding a 2 element associative array:
+   *   - entity: The machine name of an entity, such as "node" or "block_content".
+   *   - bundle: The machine name of a bundle, such as "page" or "article".
+   */
+  protected function getModeratedBundles() {
+    $revisionable_types = $this->moderationInfo->selectRevisionableEntityTypes($this->entityTypeManager->getDefinitions());
+    /** @var ConfigEntityTypeInterface $type */
+    foreach ($revisionable_types as $type_name => $type) {
+      $result = $this->entityTypeManager
+        ->getStorage($type_name)
+        ->getQuery()
+        ->condition('third_party_settings.workbench_moderation.enabled', TRUE)
+        ->execute();
+
+      foreach ($result as $bundle_name) {
+        yield ['entity' => $type->getBundleOf(), 'bundle' => $bundle_name];
+      }
+    }
   }
 
   /**
