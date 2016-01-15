@@ -10,12 +10,12 @@ namespace Drupal\workbench_moderation\Plugin\UpdateRunner;
 
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
-use Drupal\scheduled_updates\Plugin\BaseUpdateRunner;
-use Drupal\scheduled_updates\Plugin\EntityMonitorUpdateRunnerInterface;
 use Drupal\scheduled_updates\Plugin\UpdateRunner\DefaultUpdateRunner;
 use Drupal\scheduled_updates\Plugin\UpdateRunner\EmbeddedUpdateRunner;
 use Drupal\scheduled_updates\RevisionUtils;
+use Drupal\scheduled_updates\ScheduledUpdateTypeInterface;
 use Drupal\workbench_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -113,4 +113,25 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
     }
     return $revisions;
   }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function validateConfigurationForm(array &$form, FormStateInterface $form_state) {
+    parent::validateConfigurationForm($form, $form_state);
+    /** @var ScheduledUpdateTypeInterface $scheduled_update_type */
+    $scheduled_update_type = $form_state->get('scheduled_update_type');
+    // Check if entity type to be updated supports revisions.
+    if (!$this->revisionUtils->supportsRevisionUpdates($scheduled_update_type)) {
+      // @todo Check if any bundles in update entity type is moderated
+      $form_state->setError(
+        $form['update_entity_type'],
+        $this->t('The workbench moderation runner cannot be used with an entity type that does not support revisions.'
+        )
+      );
+    }
+
+  }
+
+
 }
