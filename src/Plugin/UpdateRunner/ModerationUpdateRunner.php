@@ -12,9 +12,8 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
-use Drupal\scheduled_updates\Plugin\UpdateRunner\DefaultUpdateRunner;
 use Drupal\scheduled_updates\Plugin\UpdateRunner\EmbeddedUpdateRunner;
-use Drupal\scheduled_updates\RevisionUtils;
+use Drupal\scheduled_updates\UpdateUtils;
 use Drupal\scheduled_updates\ScheduledUpdateTypeInterface;
 use Drupal\workbench_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -47,12 +46,12 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
    * @param mixed $plugin_definition
    * @param \Drupal\Core\Entity\EntityFieldManagerInterface $fieldManager
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   * @param \Drupal\scheduled_updates\RevisionUtils $revisionUtils
+   * @param \Drupal\scheduled_updates\UpdateUtils $updateUtils
    * @param \Drupal\Core\Session\AccountSwitcherInterface $accountSwitcher
    * @param \Drupal\workbench_moderation\ModerationInformationInterface $moderationInfo
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityFieldManagerInterface $fieldManager, EntityTypeManagerInterface $entityTypeManager, RevisionUtils $revisionUtils, AccountSwitcherInterface $accountSwitcher, ModerationInformationInterface $moderationInfo) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition, $fieldManager, $entityTypeManager, $revisionUtils, $accountSwitcher);
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityFieldManagerInterface $fieldManager, EntityTypeManagerInterface $entityTypeManager, UpdateUtils $updateUtils, AccountSwitcherInterface $accountSwitcher, ModerationInformationInterface $moderationInfo) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition, $fieldManager, $entityTypeManager, $updateUtils, $accountSwitcher);
     $this->moderationInfo = $moderationInfo;
   }
 
@@ -122,7 +121,7 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
     /** @var ScheduledUpdateTypeInterface $scheduled_update_type */
     $scheduled_update_type = $form_state->get('scheduled_update_type');
     // Check if entity type to be updated supports revisions.
-    if (!$this->revisionUtils->supportsRevisionUpdates($scheduled_update_type)) {
+    if (!$this->updateUtils->supportsRevisionUpdates($scheduled_update_type)) {
       // @todo Check if any bundles in update entity type is moderated
       $form_state->setError(
         $form['update_entity_type'],
