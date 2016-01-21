@@ -70,7 +70,7 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
       $plugin_definition,
       $container->get('entity_field.manager'),
       $container->get('entity_type.manager'),
-      $container->get('scheduled_updates.type_info'),
+      $container->get('scheduled_updates.update_utils'),
       $container->get('account_switcher'),
       $container->get('workbench_moderation.moderation_information')
     );
@@ -78,6 +78,13 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
 
   /**
    * {@inheritdoc}
+   *
+   * This method is overridden because the version in BaseUpdateRunner only needs
+   * to get default revisions so does not call $query->allRevisions().
+   *
+   * $query->condition("$field_id.entity.update_timestamp", $all_ready_update_ids, 'IN');
+   *
+   *
    */
   protected function getEntityIdsReferencingReadyUpdates() {
     $entity_ids = [];
@@ -88,6 +95,7 @@ class ModerationUpdateRunner extends EmbeddedUpdateRunner {
         foreach ($field_ids as $field_id) {
           $query = $entity_storage->getQuery('AND');
           $query->condition("$field_id.target_id", $all_ready_update_ids, 'IN');
+
           $query->allRevisions();
           $entity_ids += $query->execute();
         }
