@@ -27,26 +27,6 @@ entity.moderation_state.add_form:
   options:
     _admin_route: TRUE
 
-entity.moderation_state.edit_form:
-  path: '/admin/structure/workbench-moderation/states/{moderation_state}'
-  defaults:
-    _entity_form: 'moderation_state.edit'
-    _title: 'Edit Moderation state'
-  requirements:
-    _permission: 'administer moderation states'
-  options:
-    _admin_route: TRUE
-
-entity.moderation_state.delete_form:
-  path: '/admin/structure/workbench-moderation/states/{moderation_state}/delete'
-  defaults:
-    _entity_form: 'moderation_state.delete'
-    _title: 'Delete Moderation state'
-  requirements:
-    _permission: 'administer moderation states'
-  options:
-    _admin_route: TRUE
-
 # ModerationStateTransition routing definition
 entity.moderation_state_transition.collection:
   path: '/admin/structure/workbench-moderation/transitions'

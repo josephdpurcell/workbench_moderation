@@ -23,6 +23,9 @@ use Drupal\workbench_moderation\ModerationStateInterface;
  *       "edit" = "Drupal\workbench_moderation\Form\ModerationStateForm",
  *       "delete" = "Drupal\workbench_moderation\Form\ModerationStateDeleteForm"
  *     },
+ *     "route_provider" = {
+ *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider"
+ *     },
  *   },
  *   config_prefix = "moderation_state",
  *   admin_permission = "administer moderation states",
