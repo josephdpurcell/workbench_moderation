@@ -23,6 +23,9 @@ use Drupal\workbench_moderation\ModerationStateTransitionInterface;
  *       "edit" = "Drupal\workbench_moderation\Form\ModerationStateTransitionForm",
  *       "delete" = "Drupal\workbench_moderation\Form\ModerationStateTransitionDeleteForm"
  *     },
+ *     "route_provider" = {
+ *       "html" = "Drupal\Core\Entity\Routing\AdminHtmlRouteProvider"
+ *     },
  *     "storage" = "Drupal\workbench_moderation\ModerationStateTransitionStorage"
  *   },
  *   config_prefix = "moderation_state_transition",

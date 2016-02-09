@@ -17,6 +17,7 @@ entity.moderation_state.collection:
   options:
     _admin_route: TRUE
 
+# @todo This can probably be removed after https://www.drupal.org/node/2596095
 entity.moderation_state.add_form:
   path: '/admin/structure/workbench-moderation/states/add'
   defaults:
@@ -38,31 +39,12 @@ entity.moderation_state_transition.collection:
   options:
     _admin_route: TRUE
 
+# @todo This can probably be removed after https://www.drupal.org/node/2596095
 entity.moderation_state_transition.add_form:
   path: '/admin/structure/workbench-moderation/transitions/add'
   defaults:
     _entity_form: 'moderation_state_transition.add'
     _title: 'Add Moderation state transition'
-  requirements:
-    _permission: 'administer moderation state transitions'
-  options:
-    _admin_route: TRUE
-
-entity.moderation_state_transition.edit_form:
-  path: '/admin/structure/workbench-moderation/transitions/{moderation_state_transition}'
-  defaults:
-    _entity_form: 'moderation_state_transition.edit'
-    _title: 'Edit Moderation state transition'
-  requirements:
-    _permission: 'administer moderation state transitions'
-  options:
-    _admin_route: TRUE
-
-entity.moderation_state_transition.delete_form:
-  path: '/admin/structure/workbench-moderation/transitions/{moderation_state_transition}/delete'
-  defaults:
-    _entity_form: 'moderation_state_transition.delete'
-    _title: 'Delete Moderation state transition'
   requirements:
     _permission: 'administer moderation state transitions'
   options:
