@@ -16,3 +16,6 @@ files[] = workbench_moderation.migrate.inc
 files[] = tests/external_node_update.test
 files[] = tests/workbench_moderation.test
 files[] = tests/workbench_moderation.files.test
+
+; Dependencies that are only required for the testbot.
+test_dependencies[] = drafty
